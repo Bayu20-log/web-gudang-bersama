@@ -1,0 +1,32 @@
+name: Auto Deploy ke InfinityFree
+
+on:
+  push:
+    branches:
+      - master # Berjalan otomatis saat ada kodingan masuk ke cabang master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Mengambil kode dari GitHub
+      uses: actions/checkout@v3
+
+    - name: Setup Sistem Mesin PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2' # Pastikan versi ini sama dengan versi XAMPP kamu
+
+    - name: Install Library Laravel
+      run: composer install --no-dev --optimize-autoloader
+
+    - name: Membuka gembok blokir folder vendor
+      run: sed -i '/^\/vendor/d' .gitignore
+
+    - name: Mengirim kode ke InfinityFree via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        server-dir: /htdocs/
