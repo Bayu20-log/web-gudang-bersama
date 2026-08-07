@@ -13,7 +13,7 @@ class ItemController extends Controller
     public function index(Request $request)
     {
         $query = Item::with(['kategori', 'satuan'])
-                     ->where('user_id', Auth::id()); // ✅ filter berdasarkan user
+                     ->where('user_id', Auth::id()); 
 
         if ($request->filled('search')) {
             $query->where('nama_barang', 'like', '%' . $request->search . '%');
@@ -27,8 +27,8 @@ class ItemController extends Controller
                        ->paginate(10)
                        ->withQueryString();
 
-        $kategoris = Kategori::where('user_id', Auth::id())->get(); // ✅ hanya kategori milik user
-
+        $kategoris = Kategori::where('user_id', Auth::id())->get(); 
+        
         return view('item.index', [
             'items' => $items,
             'kategoris' => $kategoris,
@@ -75,7 +75,7 @@ class ItemController extends Controller
         $item->stok_minimum= $request->stok_minimum;
         $item->harga_dasar = $request->harga_dasar;
         $item->deskripsi   = $request->deskripsi;
-        $item->user_id     = Auth::id(); // ✅ simpan user id
+        $item->user_id     = Auth::id(); 
 
         if ($request->hasFile('foto')) {
             $item->foto = $request->file('foto')->store('foto_barang', 'public');
@@ -88,7 +88,6 @@ class ItemController extends Controller
 
     public function edit(Item $item)
     {
-        // ✅ pastikan user hanya bisa edit item miliknya
         if ($item->user_id !== Auth::id()) {
             abort(403, 'Unauthorized');
         }
@@ -107,7 +106,6 @@ class ItemController extends Controller
         }
 
         $rules = [
-            //'nama_barang' => 'required|string|max:255|unique:items,nama_barang,' . $item->kode_barang . ',kode_barang',
             'id_kategori' => 'required|exists:kategoris,id',
             'id_satuan'   => 'required|exists:satuans,id',
             'stok_minimum'=> 'required|integer|min:0',
@@ -117,8 +115,6 @@ class ItemController extends Controller
         ];
 
         $messages = [
-            //'nama_barang.required' => 'Nama barang wajib diisi.',
-            'nama_barang.unique'   => 'Nama barang sudah digunakan.',
             'id_kategori.required' => 'Kategori wajib dipilih.',
             'id_satuan.required'   => 'Satuan wajib dipilih.',
             'stok_minimum.required'=> 'Stok minimum wajib diisi.',
@@ -150,18 +146,58 @@ class ItemController extends Controller
         if ($item->user_id !== Auth::id()) {
             abort(403, 'Unauthorized');
         }
-
         $item->delete();
         return redirect()->route('item.index')->with('success', 'Item berhasil dihapus.');
     }
 
+    // ==========================================
+    // PERBAIKAN MASALAH 5: TAMPILKAN STOK & RIWAYAT
+    // ==========================================
     public function show($kode_barang)
     {
         $item = Item::with(['kategori', 'satuan'])
                     ->where('kode_barang', $kode_barang)
-                    ->where('user_id', Auth::id()) // ✅ hanya data milik user
+                    ->where('user_id', Auth::id()) 
                     ->firstOrFail();
 
-        return view('item.show', compact('item'));
+        // Hitung Stok Saat Ini
+        $totalMasuk = \App\Models\BarangMasuk::where('kode_barang', $kode_barang)->where('user_id', Auth::id())->sum('jumlah');
+        $totalKeluar = \App\Models\BarangKeluar::where('kode_barang', $kode_barang)->where('user_id', Auth::id())->sum('jumlah_keluar');
+        $stokSaatIni = $totalMasuk - $totalKeluar;
+
+        // Ambil Riwayat Masuk
+        $masuk = \App\Models\BarangMasuk::with(['lokasi', 'user'])
+            ->where('kode_barang', $kode_barang)
+            ->where('user_id', Auth::id())
+            ->get()
+            ->map(function($m) {
+                return [
+                    'tanggal' => $m->tanggal_masuk,
+                    'jenis' => 'Masuk',
+                    'jumlah' => $m->jumlah,
+                    'lokasi' => $m->lokasi->nama_lokasi ?? '-',
+                    'user' => $m->user->name ?? $m->user->username ?? '-'
+                ];
+            });
+
+        // Ambil Riwayat Keluar
+        $keluar = \App\Models\BarangKeluar::with(['lokasi', 'user'])
+            ->where('kode_barang', $kode_barang)
+            ->where('user_id', Auth::id())
+            ->get()
+            ->map(function($k) {
+                return [
+                    'tanggal' => $k->tanggal_keluar,
+                    'jenis' => 'Keluar',
+                    'jumlah' => $k->jumlah_keluar,
+                    'lokasi' => $k->lokasi->nama_lokasi ?? '-',
+                    'user' => $k->user->name ?? $k->user->username ?? '-'
+                ];
+            });
+
+        // Gabungkan dan urutkan berdasarkan tanggal terbaru
+        $riwayat = $masuk->merge($keluar)->sortByDesc('tanggal')->values();
+
+        return view('item.show', compact('item', 'stokSaatIni', 'riwayat'));
     }
 }

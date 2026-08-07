@@ -14,9 +14,6 @@ use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Barryvdh\DomPDF\Facade\Pdf;
 
-
-
-
 class BarangMasukController extends Controller
 {
     public function index(Request $request)
@@ -24,9 +21,6 @@ class BarangMasukController extends Controller
         $user    = Auth::user();
         $search  = $request->input('search');
         $lokasiId = $request->input('lokasi');
-
-
-
 
         $barangMasuks = BarangMasuk::with(['item', 'pemasok', 'lokasi', 'kondisi', 'user'])
             ->where('user_id', $user->id)
@@ -36,39 +30,22 @@ class BarangMasukController extends Controller
                       ->orWhereHas('lokasi', fn($ql) => $ql->where('nama_lokasi', 'like', "%{$search}%"))
                       ->orWhereHas('kondisi', fn($qk) => $qk->where('nama_kondisi', 'like', "%{$search}%"))
                       ->orWhereHas('pemasok', fn($qp) => $qp->where('nama_pemasok', 'like', "%{$search}%"));
-                    // (Tidak mengubah logika lain; tetap seperti sebelumnya)
                 });
             })
             ->when($lokasiId, fn($q) => $q->where('id_lokasi', $lokasiId))
             ->latest()
             ->paginate(10);
-             // supaya pagination mempertahankan filter
 
-
-
-
-        // ✅ Hanya lokasi yang memang muncul pada data Barang Keluar (user ini)
         $lokasiIds = BarangMasuk::where('user_id', auth()->id())
             ->distinct()
             ->pluck('id_lokasi');
-
-
-
 
         $lokasis = Lokasi::whereIn('id', $lokasiIds)
             ->orderBy('nama_lokasi')
             ->get();
 
-
-
-
-
-
         return view('barangmasuk.index', compact('barangMasuks', 'lokasis'));
     }
-
-
-
 
     public function create()
     {
@@ -80,9 +57,6 @@ class BarangMasukController extends Controller
             'users' => User::all(),
         ]);
     }
-
-
-
 
     public function store(Request $request)
     {
@@ -99,14 +73,8 @@ class BarangMasukController extends Controller
             'catatan' => 'nullable|string|max:1000',
         ]);
 
-
-
-
         try {
             $total = $validated['jumlah'] * $validated['harga_satuan'];
-
-
-
 
             $barang = BarangMasuk::create([
                 'kode_barang' => $validated['kode_barang'],
@@ -122,42 +90,23 @@ class BarangMasukController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-
-
-
-            // (Bagian QR & lainnya tetap seperti punyamu; tidak diubah)
             $data = BarangMasuk::with(['item', 'pemasok', 'lokasi', 'kondisi', 'user'])->find($barang->id);
-
-
-
-
             $qrData = "Kode Barang: {$data->kode_barang}\n"
                     . "Nama Barang: {$data->item->nama_barang}\n"
                     . "Kondisi: {$data->kondisi->nama_kondisi}";
 
-
-
-
-            $qrPath = 'qrcodes/' . $barang->kode_barang . '.png';
-            $qrCode = QrCode::format('png')->size(300)->margin(2)->generate($qrData);
+            // PERBAIKAN IMAGICK: Gunakan format SVG
+            $qrPath = 'qrcodes/' . $barang->kode_barang . '.svg';
+            $qrCode = QrCode::format('svg')->size(300)->margin(2)->generate($qrData);
+            
             Storage::disk('public')->put($qrPath, $qrCode);
-
-
-
-
             $barang->update(['qr_code' => $qrPath]);
-
-
-
 
             return redirect()->route('barang-masuk.index')->with('success', 'Barang masuk berhasil ditambahkan beserta QR Code.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
         }
     }
-
-
-
 
     public function edit($id)
     {
@@ -169,9 +118,6 @@ class BarangMasukController extends Controller
             'kondisis' => Kondisi::where('user_id', Auth::id())->get(),
         ]);
     }
-
-
-
 
     public function update(Request $request, $id)
     {
@@ -187,13 +133,7 @@ class BarangMasukController extends Controller
             'catatan' => 'nullable|string',
         ]);
 
-
-
-
         $barang = BarangMasuk::findOrFail($id);
-
-
-
 
         $barang->update([
             'kode_barang' => $request->kode_barang,
@@ -211,20 +151,15 @@ class BarangMasukController extends Controller
         return redirect()->route('barang-masuk.index')->with('success', 'Data barang masuk berhasil diperbarui.');
     }
 
-
     public function destroy($id)
     {
         $barangMasuk = BarangMasuk::findOrFail($id);
-
-
-
-
+        
         if ($barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code)) {
             Storage::disk('public')->delete($barangMasuk->qr_code);
         }
 
         $barangMasuk->delete();
-
         return redirect()->route('barang-masuk.index')->with('success', 'Data barang masuk berhasil dihapus.');
     }
 
@@ -243,11 +178,12 @@ class BarangMasukController extends Controller
     public function cetakPDF($id)
     {
         $barangMasuk = BarangMasuk::with(['item', 'kondisi', 'user'])->findOrFail($id);
-
+        
         $qrBase64 = null;
         if ($barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code)) {
             $qrContent = Storage::disk('public')->get($barangMasuk->qr_code);
-            $qrBase64 = 'data:image/png;base64,' . base64_encode($qrContent);
+            // Sesuaikan base64 header untuk SVG
+            $qrBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrContent);
         }
 
         $pdf = Pdf::loadView('barangmasuk.qr_card_pdf', compact('barangMasuk', 'qrBase64'))
@@ -259,10 +195,7 @@ class BarangMasukController extends Controller
     public function cetakBeritaAcara($id)
     {
         $barangMasuk = BarangMasuk::with(['item', 'lokasi', 'kondisi', 'user'])->findOrFail($id);
-
-
-
-
+        
         $pdf = PDF::loadView('barangmasuk.berita_acara_pdf', [
             'barangMasuk' => $barangMasuk,
             'tanggal_lengkap' => now()->translatedFormat('d F Y'),
@@ -276,27 +209,20 @@ class BarangMasukController extends Controller
         return $pdf->stream('berita_acara_barang_masuk.pdf');
     }
 
-        // Fungsi Cetak QR Kecil
     public function cetakQRKecil($id)
     {
         $barangMasuk = BarangMasuk::with(['item'])->findOrFail($id);
-
-        // Convert QR Code ke base64
+        
         $qrBase64 = null;
         if ($barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code)) {
             $qrContent = Storage::disk('public')->get($barangMasuk->qr_code);
-            $qrBase64 = 'data:image/png;base64,' . base64_encode($qrContent);
+            // Sesuaikan base64 header untuk SVG
+            $qrBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrContent);
         }
 
         $pdf = Pdf::loadView('barangmasuk.qr_only_pdf', compact('barangMasuk', 'qrBase64'))
-                ->setPaper('A7', 'portrait'); // ukuran kecil
+                ->setPaper('A7', 'portrait'); 
 
         return $pdf->download('qr_kecil_' . $barangMasuk->kode_barang . '.pdf');
     }
-
-
-
-
-
-
 }
