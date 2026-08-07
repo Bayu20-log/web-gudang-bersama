@@ -17,24 +17,24 @@
 </style>
 <div class="container py-5">
     {{-- Kotak biru lembut --}}
-    <div class="rounded p-4 mb-5" style="background-color: #e6f0ff; color: #003366;">
+    <div class="rounded p-4 mb-5" style="background-color: #edd078; color: #070707;">
         <div class="row align-items-center">
             <div class="col-md-8">
-                <h6 class="fw-bold" style="color: #004c99;">Profil GudangKu</h6>
-                <h2 class="fw-bold">GudangKu</h2>
+                <h6 class="fw-bold" style="color: #003322;">Profil RAKSAKTI</h6>
+                <h2 class="fw-bold">RAKSAKTI</h2>
                 <p class="fst-italic">Kelola Stok Barang dengan Cerdas, Cepat, dan Akurat.</p>
                 <p>
-                    Gudangku adalah sistem informasi pergudangan berbasis web yang dirancang
+                    RAKSAKTI adalah sistem informasi pergudangan berbasis web yang dirancang
                     untuk memudahkan pengelolaan stok barang secara real-time, multi-user, dan
                     terstruktur. Tidak perlu instalasi tambahan, cukup buka browser dan login.
                 </p>
                 <!--Tombol -->
                 <div class="d-flex gap-3">
-                    <a href="{{ route('profil') }}" class="btn btn-outline-primary px-4 py-2">Selengkapnya</a>
+                    <a href="{{ route('profil') }}" class="btn btn-outline-success" style="color: #162f26">Selengkapnya</a>
                 </div>
-            </div>
+            </div>  
             <div class="col-md-4 text-center">
-                    <img src="{{ asset('images/gudangku 2.png') }}" 
+                    <img src="{{ asset('images/logo_or.png') }}" 
                         alt="Logo" 
                         class="img-fluid logo-gudangku">
                 </div>

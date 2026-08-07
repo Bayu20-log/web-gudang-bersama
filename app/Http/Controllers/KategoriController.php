@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+USE illuminate\Database\QueryException;
 
 class KategoriController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Kategori::query();
+        $query = Kategori::query()
+             ->where('user_id', Auth::id());
 
         if ($request->search) {
             $query->where('kategori', 'like', '%' . $request->search . '%')
@@ -41,7 +44,12 @@ class KategoriController extends Controller
             // sementara debug untuk pastikan request masuk
             // dd($request->all());
 
-            Kategori::create($request->only('kategori', 'deskripsi'));
+            Kategori::create([
+                'kategori'  => $request->kategori,
+                'deskripsi' => $request->deskripsi,
+                'user_id'   => Auth::id(),
+            ]);
+
 
             return redirect()->route('kategori.index')
                 ->with('success', 'Kategori berhasil ditambahkan.');
@@ -75,15 +83,29 @@ class KategoriController extends Controller
         }
     }
 
-    public function destroy(Kategori $kategori)
+    public function destroy(Kategori $Kategori)
     {
         try {
-            $kategori->delete();
+            // (Opsional tapi rapi) Cek dulu jika punya relasi items()
+            if (method_exists($Kategori, 'items') && $Kategori->items()->exists()) {
+                return back()->with('error', 'Tidak dapat menghapus data karena sudah digunakan untuk pencatatan item.');
+            }
 
-            return redirect()->route('kategori.index')
-                ->with('success', 'Kategori berhasil dihapus.');
-        } catch (\Exception $e) {
+            $Kategori->delete();
+
+            return redirect()->route('Kategori.index')->with('success', 'Kategori berhasil dihapus.');
+        } catch (QueryException $e) {
+            // Tangani pelanggaran FK: SQLSTATE 23000 / MySQL 1451 / Postgres 23503
+            $mysqlCode   = $e->errorInfo[1] ?? null;   // 1451
+            $sqlState    = $e->errorInfo[0] ?? null;   // 23000
+            $pgSqlCode   = $e->getCode();              // 23503 pada Postgres
+
+            if ($sqlState === '23000' || $mysqlCode == 1451 || $pgSqlCode == '23503') {
+                return back()->with('error', 'Tidak dapat menghapus data karena sudah digunakan untuk pencatatan item.');
+            }
+
+            // Error lain
+            report($e);
             return back()->with('error', 'Terjadi kesalahan saat menghapus data.');
-        }
-    }
+        }}
 }

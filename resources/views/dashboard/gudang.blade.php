@@ -8,7 +8,7 @@
     <h4 class="mt-5">Transaksi Hari Ini</h4>
     <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card border-0 shadow-sm" style="background-color: #2563eb; color: white;">
+            <div class="card border-0 shadow-sm" style="background-color: #edd078; color: #003322;">
                 <div class="card-body">
                     <h5 class="card-title">Barang Masuk</h5>
                     <p class="card-text fs-4 fw-bold">{{ $masukHariIni }}</p>
@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card border-0 shadow-sm" style="background-color: #2563eb; color: white;">
+            <div class="card border-0 shadow-sm" style="background-color: #edd078; color: #003322;">
                 <div class="card-body">
                     <h5 class="card-title">Barang Keluar</h5>
                     <p class="card-text fs-4 fw-bold">{{ $keluarHariIni }}</p>

@@ -22,8 +22,8 @@
     </style>
 </head>
 <body>
-    @if($qrPath)
-        <img src="{{ $qrPath }}" alt="QR Code">
+    @if($qrBase64)
+    <img src="{{ $qrBase64 }}" alt="QR Code" >
     @else
         <p>QR Code tidak tersedia</p>
     @endif

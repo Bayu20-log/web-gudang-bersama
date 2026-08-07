@@ -15,6 +15,15 @@ class Satuan extends Model
 
     protected $fillable = [
         'nama_satuan',
-       
+        'user_id'
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function items()
+    {
+        return $this->hasMany(Item::class, 'id_satuan');
+    }
+
 }

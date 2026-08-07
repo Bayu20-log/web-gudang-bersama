@@ -1,6 +1,6 @@
 <footer class="footer">
     <div class="container">
-        <p>© {{ date('Y') }} GudangKu. All rights reserved.</p>
+        <p>© {{ date('Y') }} RAKSAKTI. All rights reserved.</p>
     </div>
 </footer>
 

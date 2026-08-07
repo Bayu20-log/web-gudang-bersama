@@ -2,7 +2,7 @@
 
 
 @section('content')
-<div class="container">
+<div class="container"  style="margin-top: 50px;"><!-- turunin dikit dari navbar -->
     <h2>Form Barang Keluar</h2>
 
 
@@ -45,14 +45,14 @@
 
         <div class="mb-3">
             <label for="stok_tersedia">Stok Tersedia</label>
-            <input type="number" class="form-control" id="stok_tersedia" readonly>
+            <input type="number" class="form-control" id="stok_tersedia" readonly value="0">
         </div>
 
 
-        <!-- ✅ Harga Dasar otomatis -->
+        <!-- Harga Rata-Rata otomatis -->
         <div class="mb-3">
-            <label for="harga_dasar">Harga Dasar</label>
-            <input type="number" id="harga_dasar" class="form-control" readonly>
+            <label for="harga_dasar">Harga Rata-Rata (diambil dari Harga Beli)</label>
+            <input type="number" id="harga_dasar" class="form-control" readonly value="0">
         </div>
 
 
@@ -71,7 +71,7 @@
 
         <div class="mb-3">
             <label for="total_harga">Total Harga Jual</label>
-            <input type="number" class="form-control" id="total_harga" readonly>
+            <input type="number" class="form-control" id="total_harga" readonly value="0">
         </div>
 
 
@@ -106,16 +106,26 @@
 
 
 <script>
-function num(val){ if(val==null) return 0; const n=parseFloat(String(val).replace(/[^\d.-]/g,'')); return isNaN(n)?0:n; }
+// helper angka
+function num(val){
+  if(val==null) return 0;
+  const n = parseFloat(String(val).replace(/[^\d.-]/g,''));
+  return isNaN(n) ? 0 : n;
+}
+
+
+// Ambil harga dari response
 function pickHarga(obj){
   if(!obj || typeof obj!=='object') return 0;
-  if (obj.harga_dasar!=null) return num(obj.harga_dasar);
-  if (obj.harga!=null) return num(obj.harga);
-  if (obj.item && obj.item.harga_dasar!=null) return num(obj.item.harga_dasar);
+  if (obj.harga_dasar  != null) return num(obj.harga_dasar);   // dari API (kita isi = harga_satuan)
+  if (obj.harga        != null) return num(obj.harga);
+  if (obj.harga_satuan != null) return num(obj.harga_satuan);   // fallback ekstra
+  if (obj.item && obj.item.harga_dasar != null) return num(obj.item.harga_dasar);
   return 0;
 }
 
 
+// load opsi dropdown
 async function loadPilihanBarang() {
   const res = await fetch("{{ route('barang-keluar.pilihan-barang') }}");
   const data = await res.json();
@@ -128,15 +138,16 @@ async function loadPilihanBarang() {
     if (item.satuan)      opt.dataset.satuan = item.satuan;
     if (item.stok!=null)  opt.dataset.stok = item.stok;
     const harga = pickHarga(item);
-    // ✅ jangan pakai truthy check; simpan meski 0
-    if (item.harga_dasar!==undefined || item.harga!==undefined) opt.dataset.harga = harga;
+    if (item.harga_dasar!==undefined || item.harga!==undefined || item.harga_satuan!==undefined) {
+      opt.dataset.harga = harga; // simpan meski 0
+    }
     select.appendChild(opt);
   });
 }
 
 
+// ambil detail untuk isi stok/harga dst
 async function fetchDetail(kode,lokasi,kondisi){
-  // ✅ gunakan named route agar aman
   const DETAIL_URL = "{{ route('barang-keluar.detail-barang') }}";
   const url = `${DETAIL_URL}?kode_barang=${encodeURIComponent(kode)}&id_lokasi=${encodeURIComponent(lokasi)}&id_kondisi=${encodeURIComponent(kondisi)}`;
   const res = await fetch(url);
@@ -146,10 +157,7 @@ async function fetchDetail(kode,lokasi,kondisi){
   document.getElementById('nama_barang').value   = data.nama_barang ?? document.getElementById('nama_barang').value;
   document.getElementById('satuan').value        = data.satuan ?? document.getElementById('satuan').value;
   document.getElementById('stok_tersedia').value = num(data.stok ?? document.getElementById('stok_tersedia').value);
-
-
-  // ✅ set selalu (biar 0 pun tetap tampil 0)
-  document.getElementById('harga_dasar').value = pickHarga(data);
+  document.getElementById('harga_dasar').value   = pickHarga(data);
 }
 
 
@@ -161,7 +169,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const submitBtn     = document.getElementById('submitBtn');
 
 
-  loadPilihanBarang();
+  // setelah opsi dimuat, trigger sekali supaya field keisi
+  loadPilihanBarang().then(() => {
+    if (select.value) select.dispatchEvent(new Event('change'));
+  });
 
 
   async function onSelectChange(){
@@ -178,20 +189,20 @@ document.addEventListener('DOMContentLoaded', function () {
     if (opt){
       if (opt.dataset.nama)   document.getElementById('nama_barang').value = opt.dataset.nama;
       if (opt.dataset.satuan) document.getElementById('satuan').value      = opt.dataset.satuan;
-      if (opt.dataset.stok!=null)   document.getElementById('stok_tersedia').value = num(opt.dataset.stok);
-      // ✅ cek undefined, bukan truthy; biar "0" tetap di-set
+      if (opt.dataset.stok!=null) document.getElementById('stok_tersedia').value = num(opt.dataset.stok);
       if (opt.dataset.harga !== undefined) document.getElementById('harga_dasar').value = num(opt.dataset.harga);
     }
 
 
     await fetchDetail(kode,lokasi,kondisi);
+    updateTotal();
   }
-
-
   select.addEventListener('change', onSelectChange);
 
 
-  function updateTotal(){ totalHarga.value = num(jumlahKeluar.value) * num(hargaJual.value); }
+  function updateTotal(){
+    totalHarga.value = num(jumlahKeluar.value) * num(hargaJual.value);
+  }
 
 
   jumlahKeluar.addEventListener('input', function(){

@@ -6,14 +6,14 @@
     <div class="pt-2">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-3">
-                <li class="breadcrumb-item"><a href="{{ url('/') }}">Beranda</a></li>
+                <li class="breadcrumb-item" style="color: #79b687"><a href="{{ url('/') }}">Beranda</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Profil GudangKu</li>
             </ol>
         </nav>
     </div>
 
     <!-- Kotak konten biru lembut tanpa garis tepi -->
-    <div class="rounded p-4 shadow-sm bg-primary bg-opacity-10" data-aos="fade-up" data-aos-delay="200" >
+    <div class="rounded p-4 shadow-sm" style="background-color: #79b687;" data-aos="fade-up" data-aos-delay="200">
         <h2 class="text-center fw-bold mb-4">Profil GudangKu</h2>
         <p class="text-center fs-5 text-muted mb-4">
             Di era digital yang menuntut efisiensi dan kecepatan, pengelolaan gudang secara manual tidak lagi relevan. Gudangku hadir sebagai solusi sistem informasi pergudangan yang modern, sederhana, dan powerful untuk membantu Anda mengelola stok barang dengan lebih mudah, cepat, dan akurat.

@@ -21,9 +21,10 @@ return new class extends Migration
             $table->integer('jumlah_keluar');
             $table->string('penerima');
             $table->string('lokasi_tujuan');
-            $table->foreignId('id_kondisi')->constrained('kondisis')->onDelete('cascade');
+            $table->foreignId('id_kondisi')->constrained('kondisis')->restrictOnDelete();
             $table->text('catatan')->nullable();
             $table->timestamps();
+            
         });
               
     }

@@ -18,7 +18,7 @@
 
         <div class="card shadow-sm border-0">
             <div class="card-body p-4">
-                <h4 class="mb-4 fw-bold text-primary"><span style="color: #003322">Pro<span style="color: #f43afa">file</span></h4>
+                <h4 class="mb-4 fw-bold text-primary"><span style="color: #79b687">Pro<span style="color: #003322">file</span></h4>
 
 
                 <!-- FOTO, NAMA & ICON BELL -->

@@ -13,7 +13,7 @@
     </div>
 
     <!-- Kotak konten biru lembut tanpa garis tepi -->
-    <div class="rounded p-4 shadow-sm bg-primary bg-opacity-10" data-aos="fade-up" data-aos-delay="200">
+    <div class="rounded p-4 shadow-sm bg-opacity-10" style="background-color: #79b687;"  data-aos="fade-up" data-aos-delay="200">
         <h2 class="text-center fw-bold mb-4">Frequently Ask Questions</h2>
 
         <div class="container mt-4" x-data="{ open1: false, open2: false, open3: false, open4: false, open5: false, open6: false, open7: false, open8: false, open9: false }">

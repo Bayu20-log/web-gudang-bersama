@@ -9,6 +9,17 @@
                 <h4 class="mb-4 text-center">Detail Barang Keluar</h4>
 
 
+                @php
+                    // ambil harga_satuan terakhir dari Barang Masuk untuk kombinasi yang sama
+                    $hargaRata = \App\Models\BarangMasuk::where('kode_barang', $barangKeluar->kode_barang)
+                        ->where('id_lokasi', $barangKeluar->id_lokasi)
+                        ->where('id_kondisi', $barangKeluar->id_kondisi)
+                        ->orderByDesc('tanggal_masuk')
+                        ->orderByDesc('id')
+                        ->value('harga_satuan') ?? 0;
+                @endphp
+
+
                 <table class="table table-borderless mb-0">
                     <tr>
                         <th style="width: 40%;">Kode</th>
@@ -22,10 +33,9 @@
                         <th>Jumlah</th>
                         <td>: {{ $barangKeluar->jumlah_keluar }}</td>
                     </tr>
-                    <!-- ✅ Tambahan Harga Dasar -->
                     <tr>
-                        <th>Harga Dasar</th>
-                        <td>: Rp {{ number_format($barangKeluar->item->harga_dasar ?? 0, 0, ',', '.') }}</td>
+                        <th>Harga Rata-Rata</th>
+                        <td>: Rp {{ number_format($hargaRata, 0, ',', '.') }}</td>
                     </tr>
                     <tr>
                         <th>Harga Jual / Unit</th>

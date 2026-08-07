@@ -14,5 +14,21 @@ class Lokasi extends Model
     protected $fillable = [
         'nama_lokasi',
         'deskripsi',
+        'user_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    
+    public function barangMasuks()
+    {
+        return $this->hasMany(\App\Models\BarangMasuk::class, 'id_lokasi');
+    }
+
+    public function barangKeluars()
+    {
+        return $this->hasMany(\App\Models\BarangKeluar::class, 'id_lokasi');
+    }
 }
