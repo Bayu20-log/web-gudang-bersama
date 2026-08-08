@@ -18,7 +18,6 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <!-- PERBAIKAN: onsubmit diganti memanggil event SweetAlert2 -->
     <form id="formBarangMasuk" method="POST" action="{{ route('barang-masuk.store') }}" onsubmit="confirmSimpan(event)">
         @csrf
         <div class="row g-4">
@@ -138,7 +137,7 @@
 </div>
 
 <!-- ============================================== -->
-<!-- MODAL PEMASOK -->
+<!-- MODAL PEMASOK (3 INPUT WAJIB) -->
 <!-- ============================================== -->
 <div class="modal fade" id="modalPemasok" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -154,12 +153,12 @@
              <div id="error_pemasok" class="text-danger mt-1 fw-medium" style="display: none; font-size: 0.875em;"></div>
          </div>
          <div class="mb-3">
-             <label class="form-label fw-medium text-secondary">Nama PIC <span class="text-muted fw-normal">(Opsional)</span></label>
+             <label class="form-label fw-medium text-secondary">Nama PIC <span class="text-danger">*</span></label>
              <input type="text" id="input_pic_pemasok" class="form-control" placeholder="Nama penanggung jawab">
          </div>
          <div class="mb-2">
-             <label class="form-label fw-medium text-secondary">Nomor Telepon <span class="text-muted fw-normal">(Opsional)</span></label>
-             <input type="text" id="input_telp_pemasok" class="form-control" placeholder="08xxxxxxxx">
+             <label class="form-label fw-medium text-secondary">Email <span class="text-danger">*</span></label>
+             <input type="email" id="input_email_pemasok" class="form-control" placeholder="email@perusahaan.com">
          </div>
       </div>
       <div class="modal-footer border-0 pb-4 pe-4">
@@ -232,7 +231,6 @@
 <!-- SCRIPT PERHITUNGAN, SWEETALERT, & AJAX POST -->
 <!-- ============================================== -->
 <script>
-    // Perhitungan Total Harga
     function updateTotalHarga() {
         const jumlah = parseFloat(document.getElementById('jumlah').value) || 0;
         const harga = parseFloat(document.getElementById('harga_satuan').value) || 0;
@@ -244,32 +242,30 @@
         document.getElementById('harga_satuan').addEventListener('input', updateTotalHarga);
     });
 
-    // PERBAIKAN SWEETALERT UNTUK KONFIRMASI SIMPAN
     function confirmSimpan(event) {
-        event.preventDefault(); // Mencegah form langsung tersubmit
+        event.preventDefault();
 
         Swal.fire({
             title: 'Konfirmasi Penyimpanan',
             text: "Apakah Anda yakin ingin menyimpan data barang masuk ini?",
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#f97316', // Warna oranye sesuai tema
+            confirmButtonColor: '#f97316',
             cancelButtonColor: '#6c757d',
             confirmButtonText: '<i class="bi bi-save me-1"></i> Ya, Simpan!',
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Jika user klik "Ya", submit form secara manual
                 document.getElementById('formBarangMasuk').submit();
             }
         });
     }
 
-    // AJAX Simpan Pemasok
+    // AJAX Simpan Pemasok (Kirim 3 Parameter)
     async function simpanPemasok() {
         const inputNama = document.getElementById('input_nama_pemasok').value;
         const inputPic = document.getElementById('input_pic_pemasok').value;
-        const inputTelp = document.getElementById('input_telp_pemasok').value;
+        const inputEmail = document.getElementById('input_email_pemasok').value;
         const errorDiv = document.getElementById('error_pemasok');
         const btnSave = document.getElementById('btnSavePemasok');
 
@@ -284,7 +280,7 @@
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                body: JSON.stringify({ nama_pemasok: inputNama, nama_pic: inputPic, no_telepon: inputTelp })
+                body: JSON.stringify({ nama_pemasok: inputNama, nama_pic: inputPic, email: inputEmail })
             });
             const data = await response.json();
             if (response.ok) {
@@ -293,7 +289,7 @@
                 bootstrap.Modal.getInstance(document.getElementById('modalPemasok')).hide();
                 document.getElementById('input_nama_pemasok').value = '';
                 document.getElementById('input_pic_pemasok').value = '';
-                document.getElementById('input_telp_pemasok').value = '';
+                document.getElementById('input_email_pemasok').value = '';
             } else {
                 errorDiv.innerText = data.message || 'Gagal menyimpan data';
                 errorDiv.style.display = 'block';

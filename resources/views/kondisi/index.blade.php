@@ -1,202 +1,60 @@
 @extends('layouts.app')
-
 @section('content')
+
 <style>
-    body {
-        padding-top: 40px; /* Sesuaikan dengan tinggi navbar */
-    }
-    .container-laporan {
-        max-width: 1200px;
-        margin: auto;
-        padding: 30px 20px;
-        font-family: 'Segoe UI', sans-serif;
-    }
+    body { padding-top: 40px; }
+    .btn-orange { background-color: #f97316; color: #fff; border: none; transition: 0.3s; }
+    .btn-orange:hover { background-color: #ea580c; color: #fff; }
+    .btn-outline-dark { border: 1px solid #1e293b; color: #1e293b; transition: 0.3s; background: transparent; }
+    .btn-outline-dark:hover { background-color: #1e293b; color: #fff; }
 
-    .header {
-        margin-bottom: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
+    .container-laporan { max-width: 1200px; margin: auto; padding: 30px 20px; font-family: 'Segoe UI', sans-serif; }
+    .header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
 
-    .back-button, .btn-secondary {
-        padding: 8px 14px;
-        background-color: #e5e7eb;
-        color: #111827;
-        border-radius: 6px;
-        font-size: 14px;
-        text-decoration: none;
-        transition: background 0.2s ease;
-        border: none;
-        outline: none;
-    }
-    .back-button:hover, .btn-secondary:hover {
-        background-color: #d1d5db;
-    }
+    form.filter-form { background-color: #ffffff; border: none; border-radius: 12px; padding: 20px 25px; margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .filter-form .form-group { display: flex; flex-direction: column; min-width: 250px; flex-grow: 1; }
+    .filter-form label { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #374151;}
+    .filter-form input { padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: #f8fafc; transition: 0.3s; }
+    .filter-form input:focus { border-color: #f97316; outline: none; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1); }
+    
+    .table-wrapper { width: 100%; overflow-x: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: white; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 16px 20px; text-align: center; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    th { background-color: #1e293b !important; color: #ffffff !important; font-weight: 600; white-space: nowrap; border-bottom: 4px solid #f97316; letter-spacing: 0.5px; }
+    tr:hover { background-color: #f8fafc; }
 
-    form.filter-form {
-        background-color: #f9fafb;
-        border: 1px solid #d1d5db;
-        border-radius: 10px;
-        padding: 15px 20px;
-        margin-bottom: 25px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        align-items: flex-end;
-    }
-    .filter-form .form-group {
-        display: flex;
-        flex-direction: column;
-        min-width: 200px;
-    }
-    .filter-form input {
-        padding: 6px 10px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 14px;
-    }
-    .filter-form button {
-        height: 38px;
-        padding: 0 16px;
-        background-color: #3b82f6;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background 0.2s ease;
-    }
-    .filter-form button:hover {
-        background-color: #2563eb;
-    }
+    .btn-action { padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; border: none; transition: 0.2s; }
+    .btn-action:hover { opacity: 0.85; transform: translateY(-2px); }
 
-    /* Table */
-    .table-wrapper {
-        width: 100%;
-        overflow-x: auto;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        background: white;
-    }
-    th, td {
-        padding: 10px;
-        text-align: center;
-        border-bottom: 1px solid #ddd;
-        vertical-align: middle;
-    }
-    th {
-        background-color: #f3f4f6;
-        font-weight: 600;
-    }
-
-    /* Tombol Aksi */
-    .td-action {
-        display: flex;
-        gap: 6px;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: nowrap;
-    }
-    .td-action form {
-        display: inline;
-    }
-    .btn-action {
-        padding: 6px 10px;
-        border: none;
-        border-radius: 6px;
-        font-size: 13px;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        white-space: nowrap;
-    }
-    .btn-edit { background-color: #facc15; color: #1f2937; }
-    .btn-delete { background-color: #ef4444; color: white; }
-    .btn-edit:hover { background-color: #eab308; }
-    .btn-delete:hover { background-color: #dc2626; }
-
-    /* Mobile Responsive */
     @media(max-width: 768px) {
-        .header { 
-            flex-direction: column; 
-            align-items: flex-start; 
-        }
-        .filter-form { 
-            flex-direction: column; 
-        }
-        .filter-form .form-group { 
-            width: 100%; 
-        }
-        .filter-form button, .btn-secondary { 
-            width: 100%; 
-        }
-        /* Table jadi Card View */
-        table, thead, tbody, th, td, tr {
-            display: block;
-            width: 100%;
-        }
-        thead { display: none; }
-        tr {
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 12px;
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-        }
-        td {
-            border: none !important;
-            text-align: left;
-            padding: 12px 20px 12px 50%;
-            position: relative;
-        }
-        td:before {
-            position: absolute;
-            top: 8px;
-            left: 12px;
-            width: 35%;
-            white-space: nowrap;
-            font-weight: bold;
-            color: #333;
-        }
-        td:nth-of-type(1):before { content: "No"; }
-        td:nth-of-type(2):before { content: "Nama Kondisi"; }
-        td:nth-of-type(3):before { content: "Deskripsi"; }
-        td:nth-of-type(4):before { content: "Created At"; }
-        td:nth-of-type(5):before { content: "Updated At"; }
-        td:nth-of-type(6):before { content: "Aksi"; }
-
-        /* Tombol Aksi tetap sejajar di mobile */
-        .td-action {
-            flex-direction: row;
-            justify-content: flex-start; /* geser ke kiri */
-            align-items: center;
-            gap: 6px;
-        }
-
-        .td-action a,
-        .td-action button {
-            width: auto;
-        }
+        .header { flex-direction: column; align-items: flex-start; }
+        .filter-form { flex-direction: column; }
+        .filter-form .form-group, .btn-action-group { width: 100%; }
+        .btn-action-group { display: flex; gap: 10px; }
+        .btn-action-group button, .btn-action-group a { flex: 1; text-align: center; justify-content: center; }
         
+        table, thead, tbody, th, td, tr { display: block; width: 100%; }
+        thead { display: none; }
+        tr { margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background-color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        td { border: none !important; text-align: left; padding: 8px 0 8px 45%; position: relative; }
+        td:before { position: absolute; top: 8px; left: 0; width: 40%; white-space: nowrap; font-weight: 600; color: #4b5563; }
+        
+        td:nth-of-type(1):before { content: "No"; }
+        td:nth-of-type(2):before { content: "Kondisi"; }
+        td:nth-of-type(3):before { content: "Deskripsi"; }
+        td:nth-of-type(4):before { content: "Dibuat pada"; }
+        td:nth-of-type(5):before { content: "Diperbarui pada"; }
+        td:nth-of-type(6):before { content: "Aksi"; }
+        .td-action { justify-content: flex-start; flex-wrap: wrap; gap: 8px;}
     }
 </style>
 
-<div class="container-laporan">
+<div class="container-laporan mb-5">
     <div class="header">
-        <h4>Daftar Kondisi Barang</h4>
-        <a href="{{ route('kondisi.create') }}" class="btn btn-primary">+ Tambah Kondisi</a>
+        <h4 class="fw-bold" style="color: #1e293b;">Master Data &rsaquo; Daftar Kondisi</h4>
+        <a href="{{ route('kondisi.create') }}" class="btn btn-orange fw-bold px-4 py-2 shadow-sm">+ Tambah Kondisi</a>
     </div>
 
-    {{-- Flash message --}}
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
@@ -207,17 +65,17 @@
         <div class="alert alert-danger">{{ $errors->first() }}</div>
     @endif
 
-    {{-- Filter --}}
     <form method="GET" action="{{ route('kondisi.index') }}" class="filter-form">
         <div class="form-group">
-            <label for="search">Cari:</label>
-            <input type="text" name="search" id="search" placeholder="Cari nama kondisi, deskripsi" value="{{ request('search') }}">
+            <label for="search">Cari Kondisi</label>
+            <input type="text" name="search" id="search" placeholder="Ketik nama kondisi atau deskripsi..." value="{{ request('search') }}">
         </div>
-        <button type="submit">Filter</button>
-        <a href="{{ route('kondisi.index') }}" class="btn btn-secondary">Reset</a>
+        <div class="btn-action-group" style="display: flex; gap: 10px;">
+            <button type="submit" class="btn btn-orange fw-bold px-4">Filter</button>
+            <a href="{{ route('kondisi.index') }}" class="btn btn-outline-dark fw-bold px-4" style="display: inline-flex; align-items: center; justify-content: center;">Reset</a>
+        </div>
     </form>
 
-    {{-- Table --}}
     <div class="table-wrapper">
         <table>
             <thead>
@@ -225,38 +83,62 @@
                     <th>No</th>
                     <th>Nama Kondisi</th>
                     <th>Deskripsi</th>
-                    <th>Created at</th>
-                    <th>Updated at</th>
+                    <th>Dibuat pada</th>
+                    <th>Diperbarui pada</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($kondisis as $index => $kondisi)
                     <tr>
-                        <td>{{ $kondisis->firstItem() + $index }}</td>
-                        <td>{{ $kondisi->nama_kondisi }}</td>
+                        <td class="fw-medium text-secondary">{{ $kondisis->firstItem() + $index }}</td>
+                        <td class="fw-bold" style="color: #1e293b;">{{ $kondisi->nama_kondisi }}</td>
                         <td>{{ $kondisi->deskripsi ?? '-' }}</td>
-                        <td>{{ optional($kondisi->created_at)->format('d-m-Y H:i:s') }}</td>
-                        <td>{{ optional($kondisi->updated_at)->format('d-m-Y H:i:s') }}</td>
+                        <td>{{ optional($kondisi->created_at)->format('d-m-Y H:i') }}</td>
+                        <td>{{ optional($kondisi->updated_at)->format('d-m-Y H:i') }}</td>
                         <td class="td-action">
-                            <a href="{{ route('kondisi.edit', $kondisi->id) }}" class="btn-action btn-edit">Edit</a>
-                            <form action="{{ route('kondisi.destroy', $kondisi->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-action btn-delete">Hapus</button>
-                            </form>
+                            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                <a href="{{ route('kondisi.edit', $kondisi->id) }}" class="btn-action text-dark shadow-sm" style="background-color: #facc15;">
+                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                                </a>
+                                <form id="delete-form-{{ $kondisi->id }}" action="{{ route('kondisi.destroy', $kondisi->id) }}" method="POST" style="margin: 0;">
+                                    @csrf @method('DELETE')
+                                    <button type="button" class="btn-action text-white shadow-sm" style="background-color: #ef4444;" onclick="confirmDelete('{{ $kondisi->id }}')">
+                                        <i class="fa-solid fa-trash"></i> Hapus
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="6" class="text-center">Data belum tersedia.</td></tr>
+                    <tr><td colspan="6" class="text-center py-5 text-muted fw-medium"><i class="fa-solid fa-folder-open fs-2 mb-2 d-block text-light"></i>Data kondisi belum tersedia.</td></tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 
-    {{-- Pagination --}}
-    <div style="margin-top:20px; text-align:center;">
-        {{ $kondisis->links() }}
+    <div class="mt-4 d-flex justify-content-center">
+        {{ $kondisis->links('pagination::bootstrap-5') }}
     </div>
 </div>
+
+<script>
+    function confirmDelete(id) {
+        Swal.fire({
+            title: 'Hapus Kondisi?',
+            text: "Data kondisi ini akan dihapus secara permanen!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#1e293b',
+            confirmButtonText: '<i class="fa-solid fa-trash me-1"></i> Ya, hapus!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + id).submit();
+            }
+        });
+    }
+</script>
 @endsection

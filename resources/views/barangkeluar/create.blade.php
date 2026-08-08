@@ -17,7 +17,8 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <form action="{{ route('barang-keluar.store') }}" method="POST" id="barangKeluarForm">
+    <!-- PERBAIKAN: onsubmit diganti memanggil event SweetAlert2 -->
+    <form action="{{ route('barang-keluar.store') }}" method="POST" id="barangKeluarForm" onsubmit="confirmSimpan(event)">
         @csrf
         <div class="row g-4">
             
@@ -112,7 +113,7 @@
 </div>
 
 <!-- ============================================== -->
-<!-- SCRIPT PENGAMBILAN DATA STOK OTOMATIS -->
+<!-- SCRIPT PENGAMBILAN DATA STOK & KONFIRMASI -->
 <!-- ============================================== -->
 <script>
 // Helper membersihkan angka
@@ -165,6 +166,27 @@ async function fetchDetail(kode, lokasi, kondisi) {
   document.getElementById('satuan').value        = data.satuan ?? document.getElementById('satuan').value;
   document.getElementById('stok_tersedia').value = num(data.stok ?? document.getElementById('stok_tersedia').value);
   document.getElementById('harga_dasar').value   = pickHarga(data);
+}
+
+// PERBAIKAN: Fungsi SweetAlert2 untuk konfirmasi simpan
+function confirmSimpan(event) {
+    event.preventDefault(); // Mencegah form langsung tersubmit
+
+    Swal.fire({
+        title: 'Konfirmasi Pengeluaran',
+        text: "Apakah Anda yakin ingin mengeluarkan barang ini dari gudang?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#f97316', // Warna oranye sesuai tema
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="bi bi-box-arrow-up me-1"></i> Ya, Keluarkan!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Jika user klik "Ya", submit form secara manual
+            document.getElementById('barangKeluarForm').submit();
+        }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', function () {

@@ -41,12 +41,12 @@ class PemasokController extends Controller
     {
         $request->validate([
             'nama_pemasok'    => 'required|string|max:255|unique:pemasoks,nama_pemasok',
-            'email'           => 'nullable|string|email|max:255',
+            'email'           => 'required|string|email|max:255',
+            'nama_pic'        => 'required|string|max:255',
             'no_telepon'      => 'nullable|string|max:20',
             'alamat'          => 'nullable|string',
             'jenis'           => 'nullable|string|max:50',
             'bergabung_sejak' => 'nullable|date',
-            'nama_pic'        => 'nullable|string|max:255',
         ]);
 
         Pemasok::create([
@@ -64,17 +64,20 @@ class PemasokController extends Controller
     }
 
     // ==========================================
-    // FUNGSI BARU UNTUK AJAX QUICK-ADD
+    // FUNGSI AJAX: DISAMAKAN DENGAN MASTER DATA
     // ==========================================
     public function storeAjax(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'nama_pemasok' => 'required|string|max:255|unique:pemasoks,nama_pemasok',
-            'nama_pic'     => 'nullable|string|max:255',
-            'no_telepon'   => 'nullable|string|max:20',
+            'nama_pic'     => 'required|string|max:255',
+            'email'        => 'required|email|max:255',
         ], [
             'nama_pemasok.required' => 'Nama pemasok wajib diisi.',
             'nama_pemasok.unique'   => 'Pemasok ini sudah terdaftar.',
+            'nama_pic.required'     => 'Nama PIC wajib diisi.',
+            'email.required'        => 'Email wajib diisi.',
+            'email.email'           => 'Format email tidak valid.',
         ]);
 
         if ($validator->fails()) {
@@ -88,7 +91,7 @@ class PemasokController extends Controller
             $pemasok = Pemasok::create([
                 'nama_pemasok' => $request->nama_pemasok,
                 'nama_pic'     => $request->nama_pic,
-                'no_telepon'   => $request->no_telepon,
+                'email'        => $request->email,
                 'user_id'      => Auth::id(),
             ]);
 
@@ -113,12 +116,12 @@ class PemasokController extends Controller
     {
         $request->validate([
             'nama_pemasok'    => 'required|string|max:255|unique:pemasoks,nama_pemasok,' . $pemasok->id,
-            'email'           => 'nullable|string|email|max:255',
+            'email'           => 'required|string|email|max:255',
+            'nama_pic'        => 'required|string|max:255',
             'no_telepon'      => 'nullable|string|max:20',
             'alamat'          => 'nullable|string',
             'jenis'           => 'nullable|string|max:50',
             'bergabung_sejak' => 'nullable|date',
-            'nama_pic'        => 'nullable|string|max:255',
         ]);
 
         $pemasok->update($request->only([
