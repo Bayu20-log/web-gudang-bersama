@@ -16,6 +16,7 @@ use App\Http\Controllers\OmzetController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\DashboardGudangController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\StockNotificationController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -88,6 +89,10 @@ Route::middleware(['auth', 'auto.logout'])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/mark-read', [NotificationController::class, 'markRead'])->name('notifications.markRead');
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markSingleRead'])->name('notifications.markSingleRead');
+    });
+
+    Route::middleware(['auth', 'role:gudang'])->group(function () {
+    Route::get('/stock-notifications', [StockNotificationController::class, 'index'])->name('stock-notifications.index');
     });
 
 
