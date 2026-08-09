@@ -15,7 +15,7 @@
     </div>
 
     <!-- Kotak konten biru lembut tanpa garis tepi -->
-    <div class="rounded p-4 shadow-sm bg-primary bg-opacity-10" data-aos="fade-up" data-aos-delay="200">
+    <div class="rounded p-4 shadow-sm bg-opacity-10" style="background-color: #79b687;" data-aos="fade-up" data-aos-delay="200">
         <h2 class="text-center fw-bold mb-4">Kontak Kami</h2>
         <p class="text-center fs-5 text-muted mb-4">
             Hubungi kami untuk pertanyaan, dukungan, atau kerjasama lebih lanjut.

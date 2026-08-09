@@ -12,6 +12,19 @@ class Kondisi extends Model
 
 
     protected $fillable = [
-        'nama_kondisi','deskripsi'
+        'nama_kondisi','deskripsi','user_id',
     ];
+     public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function barangMasuks()
+    {
+        return $this->hasMany(\App\Models\BarangMasuk::class, 'id_kondisi');
+    }
+
+    public function barangKeluars()
+    {
+        return $this->hasMany(\App\Models\BarangKeluar::class, 'id_kondisi');
+    }
 }

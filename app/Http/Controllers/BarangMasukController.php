@@ -1,12 +1,6 @@
 <?php
 
-
-
-
 namespace App\Http\Controllers;
-
-
-
 
 use Illuminate\Http\Request;
 use App\Models\BarangMasuk;
@@ -79,11 +73,11 @@ class BarangMasukController extends Controller
     public function create()
     {
         return view('barangmasuk.create', [
-            'items' => Item::all(),
-            'pemasoks' => Pemasok::all(),
-            'lokasis' => Lokasi::all(),
-            'kondisis' => Kondisi::all(),
-            'users' => User::all()
+            'items' => Item::where('user_id', Auth::id())->get(),
+            'pemasoks' => Pemasok::where('user_id', Auth::id())->get(),
+            'lokasis' => Lokasi::where('user_id', Auth::id())->get(),
+            'kondisis' => Kondisi::where('user_id', Auth::id())->get(),
+            'users' => User::all(),
         ]);
     }
 
@@ -138,16 +132,8 @@ class BarangMasukController extends Controller
 
 
             $qrData = "Kode Barang: {$data->kode_barang}\n"
-                    . "Jumlah: {$data->jumlah}\n"
-                    . "Harga Satuan: {$data->harga_satuan}\n"
-                    . "Total Harga: {$data->total_harga}\n"
-                    . "Tanggal Masuk: {$data->tanggal_masuk}\n"
-                    . "Tanggal Kadaluarsa: {$data->tanggal_kadaluarsa}\n"
-                    . "Pemasok: {$data->pemasok->nama_pemasok}\n"
-                    . "Lokasi: {$data->lokasi->nama_lokasi}\n"
-                    . "Kondisi: {$data->kondisi->nama_kondisi}\n"
-                    . "Catatan: {$data->catatan}\n"
-                    . "Petugas: {$data->user->name}";
+                    . "Nama Barang: {$data->item->nama_barang}\n"
+                    . "Kondisi: {$data->kondisi->nama_kondisi}";
 
 
 
@@ -177,10 +163,10 @@ class BarangMasukController extends Controller
     {
         return view('barangmasuk.edit', [
             'barangmasuk' => BarangMasuk::findOrFail($id),
-            'items' => Item::all(),
-            'pemasoks' => Pemasok::all(),
-            'lokasis' => Lokasi::all(),
-            'kondisis' => Kondisi::all(),
+            'items' => Item::where('user_id', Auth::id())->get(),
+            'pemasoks' => Pemasok::where('user_id', Auth::id())->get(),
+            'lokasis' => Lokasi::where('user_id', Auth::id())->get(),
+            'kondisis' => Kondisi::where('user_id', Auth::id())->get(),
         ]);
     }
 
@@ -222,13 +208,8 @@ class BarangMasukController extends Controller
             'catatan' => $request->catatan,
         ]);
 
-
-
-
         return redirect()->route('barang-masuk.index')->with('success', 'Data barang masuk berhasil diperbarui.');
     }
-
-
 
 
     public function destroy($id)
@@ -242,19 +223,10 @@ class BarangMasukController extends Controller
             Storage::disk('public')->delete($barangMasuk->qr_code);
         }
 
-
-
-
         $barangMasuk->delete();
-
-
-
 
         return redirect()->route('barang-masuk.index')->with('success', 'Data barang masuk berhasil dihapus.');
     }
-
-
-
 
     public function show($id)
     {
@@ -262,43 +234,27 @@ class BarangMasukController extends Controller
         return view('barangmasuk.show', compact('barangMasuk'));
     }
 
-
-
-
     public function qrCard($id)
     {
         $barangMasuk = BarangMasuk::with(['item', 'pemasok', 'lokasi', 'kondisi', 'user'])->findOrFail($id);
         return view('barangmasuk.qr_card', compact('barangMasuk'));
     }
 
-
-
-
     public function cetakPDF($id)
     {
         $barangMasuk = BarangMasuk::with(['item', 'kondisi', 'user'])->findOrFail($id);
 
+        $qrBase64 = null;
+        if ($barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code)) {
+            $qrContent = Storage::disk('public')->get($barangMasuk->qr_code);
+            $qrBase64 = 'data:image/png;base64,' . base64_encode($qrContent);
+        }
 
-
-
-        $qrPath = $barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code)
-            ? public_path('storage/' . $barangMasuk->qr_code)
-            : null;
-
-
-
-
-        $pdf = Pdf::loadView('barangmasuk.qr_card_pdf', compact('barangMasuk', 'qrPath'))
+        $pdf = Pdf::loadView('barangmasuk.qr_card_pdf', compact('barangMasuk', 'qrBase64'))
                 ->setPaper('A4', 'portrait');
-
-
-
 
         return $pdf->download('detail_barang_masuk_' . $barangMasuk->kode_barang . '.pdf');
     }
-
-
-
 
     public function cetakBeritaAcara($id)
     {
@@ -317,40 +273,25 @@ class BarangMasukController extends Controller
             'lokasi' => $barangMasuk->lokasi->nama_lokasi ?? '-',
         ])->setPaper('A4', 'portrait');
 
-
-
-
         return $pdf->stream('berita_acara_barang_masuk.pdf');
     }
-
-
-
 
         // Fungsi Cetak QR Kecil
     public function cetakQRKecil($id)
     {
-        $barangMasuk = BarangMasuk::findOrFail($id);
+        $barangMasuk = BarangMasuk::with(['item'])->findOrFail($id);
 
+        // Convert QR Code ke base64
+        $qrBase64 = null;
+        if ($barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code)) {
+            $qrContent = Storage::disk('public')->get($barangMasuk->qr_code);
+            $qrBase64 = 'data:image/png;base64,' . base64_encode($qrContent);
+        }
 
-        // Ambil path QR yang sudah tersimpan
-        $qrPath = $barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code)
-            ? public_path('storage/' . $barangMasuk->qr_code)
-            : null;
+        $pdf = Pdf::loadView('barangmasuk.qr_only_pdf', compact('barangMasuk', 'qrBase64'))
+                ->setPaper('A7', 'portrait'); // ukuran kecil
 
-
-        // Ukuran A7: 74mm × 105mm dalam point (1mm ≈ 2.83465pt)
-        $a7Width  = 74 * 2.83465;
-        $a7Height = 105 * 2.83465;
-        $customPaper = array(0, 0, $a7Width, $a7Height);
-
-
-        $pdf = Pdf::loadView('barangmasuk.qr_only_pdf', [
-            'barangMasuk' => $barangMasuk,
-            'qrPath' => $qrPath
-        ])->setPaper($customPaper, 'portrait');
-
-
-        return $pdf->download('QR_' . $barangMasuk->kode_barang . '.pdf');
+        return $pdf->download('qr_kecil_' . $barangMasuk->kode_barang . '.pdf');
     }
 
 

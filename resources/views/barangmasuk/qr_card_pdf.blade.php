@@ -73,6 +73,31 @@
   <div class="label-container">
     <table class="layout">
       <tr>
+        <!-- Foto Barang di kiri -->
+        <td class="photo-col">
+          @if($barangMasuk->item->foto && Storage::disk('public')->exists($barangMasuk->item->foto))
+            <img class="photo-img" src="{{ public_path('storage/' . $barangMasuk->item->foto) }}" alt="Foto Barang">
+          @else
+            <em>Foto tidak tersedia</em>
+          @endif
+        </td>
+
+
+        <!-- Info di tengah -->
+        <td class="info-col">
+          <table class="info-table">
+            <tr><td class="label">Nama Barang</td><td>: {{ $barangMasuk->item->nama_barang ?? '-' }}</td></tr>
+            <tr><td class="label">Jumlah</td><td>: {{ $barangMasuk->jumlah }}</td></tr>
+            <!-- <tr><td class="label">Tanggal Masuk</td><td>: {{ \Carbon\Carbon::parse($barangMasuk->tanggal_masuk)->format('d-m-Y') }}</td></tr>-->
+            <!--<tr><td class="label">Kadaluarsa</td><td>: {{ \Carbon\Carbon::parse($barangMasuk->tanggal_kadaluarsa)->format('d-m-Y') ?? '-' }}</td></tr>-->
+            <tr><td class="label">Lokasi</td><td>: {{ $barangMasuk->lokasi->nama_lokasi ?? '-' }}</td></tr>
+            <tr><td class="label">Kondisi</td><td>: {{ $barangMasuk->kondisi->nama_kondisi ?? '-' }}</td></tr>
+            <tr><td class="label">Catatan</td><td>: {{ $barangMasuk->catatan ?? '-' }}</td></tr>
+          </table>
+        </td>
+
+
+        <!-- QR Code di kanan -->
         <td class="qr-col">
           @if($barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code))
             <img class="qr-img" src="{{ public_path('storage/' . $barangMasuk->qr_code) }}" alt="QR Code">
@@ -80,20 +105,9 @@
             <em>Tidak tersedia</em>
           @endif
         </td>
-        <td class="info-col">
-          <table class="info-table">
-            <tr><td class="label">Nama Barang</td><td>: {{ $barangMasuk->item->nama_barang ?? '-' }}</td></tr>
-            <tr><td class="label">Jumlah</td><td>: {{ $barangMasuk->jumlah }}</td></tr>
-            <tr><td class="label">Tanggal Masuk</td><td>: {{ \Carbon\Carbon::parse($barangMasuk->tanggal_masuk)->format('d-m-Y') }}</td></tr>
-            <tr><td class="label">Kadaluarsa</td><td>: {{ \Carbon\Carbon::parse($barangMasuk->tanggal_kadaluarsa)->format('d-m-Y') ?? '-' }}</td></tr>
-            <tr><td class="label">Pemasok</td><td>: {{ $barangMasuk->pemasok->nama_pemasok ?? '-' }}</td></tr>
-            <tr><td class="label">Lokasi</td><td>: {{ $barangMasuk->lokasi->nama_lokasi ?? '-' }}</td></tr>
-            <tr><td class="label">Kondisi</td><td>: {{ $barangMasuk->kondisi->nama_kondisi ?? '-' }}</td></tr>
-            <tr><td class="label">Catatan</td><td>: {{ $barangMasuk->catatan ?? '-' }}</td></tr>
-          </table>
-        </td>
       </tr>
     </table>
   </div>
 </body>
 </html>
+

@@ -193,6 +193,17 @@ td:before {
         <a href="{{ route('pemasok.create') }}" class="btn btn-primary">+ Tambah Pemasok</a>
     </div>
 
+    @if(session('success'))
+        <div class="alert alert-success" style="margin-bottom:20px; padding:10px; border-radius:6px; background:#d1fae5; color:#065f46;">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger" style="margin-bottom:20px; padding:10px; border-radius:6px; background:#fee2e2; color:#991b1b;">
+            {{ session('error') }}
+        </div>
+    @endif
     {{-- Filter --}}
     <form method="GET" action="{{ route('pemasok.index') }}" class="filter-form">
         <div class="form-group">

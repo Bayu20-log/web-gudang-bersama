@@ -21,11 +21,14 @@ class Kategori extends Model
 
 
 
-    protected $fillable = ['kategori', 'deskripsi'];
+    protected $fillable = ['kategori', 'deskripsi','user_id'];
     
-    public function items()
-{
-    return $this->hasMany(\App\Models\Item::class, 'id_kategori');
-}
-
+        public function items()
+    {
+        return $this->hasMany(\App\Models\Item::class, 'id_kategori');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

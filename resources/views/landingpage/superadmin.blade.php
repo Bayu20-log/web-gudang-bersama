@@ -13,7 +13,7 @@
     </div>
 
     <!-- Kotak konten biru lembut tanpa garis tepi -->
-    <div class="rounded p-4 shadow-sm bg-primary bg-opacity-10" data-aos="fade-up" data-aos-delay="200">
+    <div class="rounded p-4 shadow-sm bg-opacity-10" style="background-color: #79b687;" data-aos="fade-up" data-aos-delay="200">
         <div class="container py-5">
             <div class="text-center mb-5">
                 <h2 class="fw-bold" data-aos="fade-down">👑 Peran Superadmin</h2>

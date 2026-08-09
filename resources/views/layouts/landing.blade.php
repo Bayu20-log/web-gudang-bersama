@@ -92,6 +92,36 @@
             transform: translateY(-5px);
             transition: 0.3s;
         }
+        
+        .breadcrumb-item,
+        .breadcrumb-item a,
+        .breadcrumb-item.active {
+            color: #79b687 !important; /* hijau Bootstrap "success" */
+        }
+        .nav-pills .nav-link {
+        color: #ffffff !important;   /* teks hijau */
+        background-color: transparent !important; /* hapus background */
+        border-radius: 0 !important; /* biar rata */
+    }
+
+    /* Hover effect */
+    .nav-pills .nav-link:hover {
+        color: #1e7e34 !important; /* hijau tua pas hover */
+    }
+
+    /* Tab aktif: kasih underline */
+    .nav-pills .nav-link.active {
+        font-weight: bold; /* tebalkan biar beda */
+        border-bottom: 2px solid #18231b; /* underline hijau */
+        color: #ffffff !important; /* tetap hijau */
+        background-color: transparent !important;
+    }
+
+    
+
+    
+
+
 
         footer {
             background-color: #f1f3f5;
@@ -149,7 +179,7 @@
     <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top transition">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{{ url('/') }}">
-                <span style="color: #79b687">GUDANG</span><span style="color: #003322">KU</span>
+                <span style="color: #f1d787">RAK</span><span style="color: #030404">SAKTI</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>

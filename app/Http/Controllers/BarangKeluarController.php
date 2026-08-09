@@ -163,13 +163,15 @@ class BarangKeluarController extends Controller
         $kondisiId  = $request->id_kondisi;
 
 
-        $masuk = BarangMasuk::where('kode_barang', $kodeBarang)
+        $masuk = BarangMasuk::where('user_id', auth()->id())
+            ->where('kode_barang', $kodeBarang)
             ->where('id_lokasi', $lokasiId)
             ->where('id_kondisi', $kondisiId)
             ->sum('jumlah');
 
 
-        $keluar = BarangKeluar::where('kode_barang', $kodeBarang)
+        $keluar = BarangKeluar::where('user_id', auth()->id())
+            ->where('kode_barang', $kodeBarang)
             ->where('id_lokasi', $lokasiId)
             ->where('id_kondisi', $kondisiId)
             ->sum('jumlah_keluar');
@@ -181,111 +183,132 @@ class BarangKeluarController extends Controller
 
     /**
      * API: detail barang untuk pengisian otomatis di form
-     * -> mengembalikan juga 'harga_dasar'
+     * -> 'harga_dasar' diisi dari BarangMasuk.harga_satuan (transaksi masuk terbaru)
      */
     public function getDetailBarang(Request $request)
-    {
-        $kodeBarang = $request->kode_barang;
-        $idLokasi   = $request->id_lokasi;
-        $idKondisi  = $request->id_kondisi;
+{
+    $kodeBarang = $request->kode_barang;
+    $idLokasi   = $request->id_lokasi;
+    $idKondisi  = $request->id_kondisi;
+    $userId     = auth()->id();
 
+    $barangMasuk = BarangMasuk::with(['item.satuan', 'lokasi', 'kondisi'])
+        ->where('user_id', $userId)
+        ->where('kode_barang', $kodeBarang)
+        ->where('id_lokasi', $idLokasi)
+        ->where('id_kondisi', $idKondisi)
+        ->orderByDesc('tanggal_masuk')
+        ->orderByDesc('id')
+        ->first();
 
-        $barangMasuk = BarangMasuk::with(['item.satuan', 'lokasi', 'kondisi'])
-            ->where('kode_barang', $kodeBarang)
-            ->where('id_lokasi', $idLokasi)
-            ->where('id_kondisi', $idKondisi)
-            ->latest('tanggal_masuk')
-            ->first();
-
-
-        if (!$barangMasuk) {
-            return response()->json([
-                'stok'         => 0,
-                'lokasi'       => '-',
-                'kondisi'      => '-',
-                'nama_barang'  => '-',
-                'satuan'       => '-',
-                'id_lokasi'    => null,
-                'id_kondisi'   => null,
-                'harga_dasar'  => 0,
-            ]);
-        }
-
-
-        $masuk = BarangMasuk::where('kode_barang', $kodeBarang)
-            ->where('id_lokasi', $idLokasi)
-            ->where('id_kondisi', $idKondisi)
-            ->sum('jumlah');
-
-
-        $keluar = BarangKeluar::where('kode_barang', $kodeBarang)
-            ->where('id_lokasi', $idLokasi)
-            ->where('id_kondisi', $idKondisi)
-            ->sum('jumlah_keluar');
-
-
+    if (!$barangMasuk) {
         return response()->json([
-            'stok'         => $masuk - $keluar,
-            'lokasi'       => $barangMasuk->lokasi->nama_lokasi ?? '-',
-            'kondisi'      => $barangMasuk->kondisi->nama_kondisi ?? '-',
-            'nama_barang'  => $barangMasuk->item->nama_barang ?? '-',
-            'satuan'       => optional($barangMasuk->item->satuan)->nama_satuan ?? '-',
-            'id_lokasi'    => $idLokasi,
-            'id_kondisi'   => $idKondisi,
-            'harga_dasar'  => (int) ($barangMasuk->item->harga_dasar ?? 0),
+            'stok'         => 0,
+            'lokasi'       => '-',
+            'kondisi'      => '-',
+            'nama_barang'  => '-',
+            'satuan'       => '-',
+            'id_lokasi'    => null,
+            'id_kondisi'   => null,
+            'harga_dasar'  => 0,
         ]);
     }
 
+    // stok
+    $masuk = BarangMasuk::where('user_id', $userId)
+        ->where('kode_barang', $kodeBarang)
+        ->where('id_lokasi', $idLokasi)
+        ->where('id_kondisi', $idKondisi)
+        ->sum('jumlah');
+
+    $keluar = BarangKeluar::where('user_id', $userId)
+        ->where('kode_barang', $kodeBarang)
+        ->where('id_lokasi', $idLokasi)
+        ->where('id_kondisi', $idKondisi)
+        ->sum('jumlah_keluar');
+
+    // ❗ harga_dasar = RATA-RATA harga_satuan
+    $wac = (float) BarangMasuk::where('user_id', $userId)
+        ->where('kode_barang', $kodeBarang)
+        ->where('id_lokasi', $idLokasi)
+        ->where('id_kondisi', $idKondisi)
+        ->selectRaw('COALESCE(SUM(harga_satuan * jumlah) / NULLIF(SUM(jumlah), 0), 0) as wac')
+        ->value('wac');
+
+    return response()->json([
+        'stok'         => $masuk - $keluar,
+        'lokasi'       => $barangMasuk->lokasi->nama_lokasi ?? '-',
+        'kondisi'      => $barangMasuk->kondisi->nama_kondisi ?? '-',
+        'nama_barang'  => $barangMasuk->item->nama_barang ?? '-',
+        'satuan'       => optional($barangMasuk->item->satuan)->nama_satuan ?? '-',
+        'id_lokasi'    => $idLokasi,
+        'id_kondisi'   => $idKondisi,
+        'harga_dasar'  => (int) round($wac),
+    ]);
+}
+
+
 
     /**
-     * API: opsi barang unik untuk dropdown (sertakan harga_dasar)
+     * API: opsi barang unik untuk dropdown
+     * -> sertakan 'harga_dasar' dari BarangMasuk.harga_satuan terbaru per kombinasi
      */
     public function getPilihanBarangUnik()
-    {
-        $userId = auth()->id();
+{
+    $userId = auth()->id();
 
+    $grouped = BarangMasuk::with(['item', 'lokasi', 'kondisi'])
+        ->where('user_id', $userId)
+        ->get()
+        ->groupBy(fn($item) => $item->kode_barang . '|' . $item->id_lokasi . '|' . $item->id_kondisi)
+        ->map(function ($group) use ($userId) {
+            // ambil transaksi terbaru untuk ambil relasi/nama
+            $latest = $group->sortByDesc('tanggal_masuk')
+                            ->sortByDesc('id')
+                            ->first();
 
-        $grouped = BarangMasuk::with(['item', 'lokasi', 'kondisi'])
-            ->where('user_id', $userId)
-            ->get()
-            ->groupBy(fn($item) => $item->kode_barang . '|' . $item->id_lokasi . '|' . $item->id_kondisi)
-            ->map(function ($group) {
-                $latest = $group->sortByDesc('tanggal_masuk')->first();
+            $kode    = $latest->kode_barang;
+            $lokasi  = $latest->id_lokasi;
+            $kondisi = $latest->id_kondisi;
 
+            // stok
+            $masuk = $group->sum('jumlah');
+            $keluar = BarangKeluar::where('user_id', $userId)
+                ->where('kode_barang', $kode)
+                ->where('id_lokasi', $lokasi)
+                ->where('id_kondisi', $kondisi)
+                ->sum('jumlah_keluar');
 
-                $masuk = $group->sum('jumlah');
-                $keluar = BarangKeluar::where('kode_barang', $latest->kode_barang)
-                    ->where('id_lokasi', $latest->id_lokasi)
-                    ->where('id_kondisi', $latest->id_kondisi)
-                    ->sum('jumlah_keluar');
+            $stok = $masuk - $keluar;
+            if ($stok <= 0) return null;
 
+            // ❗ harga_dasar = RATA-RATA harga_satuan pada grup ini
+            $wac = (float) $group->avg('harga_satuan');
 
-                $stok = $masuk - $keluar;
-                if ($stok <= 0) return null;
+            return [
+                'kode'         => $kode,
+                'lokasi_id'    => $lokasi,
+                'kondisi_id'   => $kondisi,
+                'nama_barang'  => $latest->item->nama_barang ?? '-',
+                'lokasi'       => $latest->lokasi->nama_lokasi ?? '-',
+                'kondisi'      => $latest->kondisi->nama_kondisi ?? '-',
+                'stok'         => $stok,
+                'satuan'       => optional($latest->item->satuan)->nama_satuan ?? '-',
+                'harga_dasar'  => (int) round($wac),
+            ];
+        })
+        ->filter();
 
+    return response()->json(array_values($grouped->toArray()));
+}
 
-                return [
-                    'kode'         => $latest->kode_barang,
-                    'lokasi_id'    => $latest->id_lokasi,
-                    'kondisi_id'   => $latest->id_kondisi,
-                    'nama_barang'  => $latest->item->nama_barang ?? '-',
-                    'lokasi'       => $latest->lokasi->nama_lokasi ?? '-',
-                    'kondisi'      => $latest->kondisi->nama_kondisi ?? '-',
-                    'stok'         => $stok,
-                    'satuan'       => optional($latest->item->satuan)->nama_satuan ?? '-',
-                    'harga_dasar'  => (int) ($latest->item->harga_dasar ?? 0),
-                ];
-            })
-            ->filter();
-
-
-        return response()->json(array_values($grouped->toArray()));
-    }
 
 
     public function getLokasiByKode(Request $request)
     {
         $kode = $request->kode_barang;
+
+
         $lokasiList = BarangMasuk::with('lokasi')
             ->where('kode_barang', $kode)
             ->groupBy('id_lokasi')

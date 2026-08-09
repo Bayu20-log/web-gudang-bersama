@@ -6,13 +6,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Lokasi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 
 class LokasiController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Lokasi::query();
+        $query = Lokasi::query()
+            ->where('user_id', Auth::id());
 
 
         if ($request->search) {
@@ -46,7 +49,12 @@ class LokasiController extends Controller
 
 
         try {
-            Lokasi::create($request->only('nama_lokasi', 'deskripsi'));
+            Lokasi::create([
+                'nama_lokasi'  => $request->nama_lokasi,
+                'deskripsi' => $request->deskripsi,
+                'user_id'   => Auth::id(),
+            ]);
+
             return redirect()->route('lokasi.index')->with('success', 'Lokasi berhasil ditambahkan.');
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan saat menyimpan data.');
@@ -86,7 +94,7 @@ class LokasiController extends Controller
             $lokasi->delete();
             return redirect()->route('lokasi.index')->with('success', 'Lokasi berhasil dihapus.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Terjadi kesalahan saat menghapus data.');
+            return back()->with('error', 'Tidak dapat menghapus data karena sudah digunakan untuk pencatatan barang masuk/keluar.');
         }
     }
 }

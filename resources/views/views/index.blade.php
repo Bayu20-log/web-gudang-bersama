@@ -162,7 +162,7 @@
                     $sortDir = $sortDir ?? request('sort_dir', 'asc');
 
                     $columns = [
-                        'kode_barang' => 'Kode Barang',
+                        //'kode_barang' => 'Kode Barang',
                         'nama_barang' => 'Nama Barang',
                         'stok_akhir'  => 'Stok Barang',
                         
@@ -189,7 +189,7 @@
         <tbody>
             @forelse($data as $item)
                 <tr>
-                    <td>{{ $item->kode_barang }}</td>
+                    
                     <td>{{ $item->nama_barang }}</td>
                     <td>{{ $item->stok_akhir }}</td>
                     

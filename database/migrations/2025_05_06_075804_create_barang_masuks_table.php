@@ -23,14 +23,16 @@ return new class extends Migration
             $table->date('tanggal_kadaluarsa');
 
             // Relasi dengan tabel lain
-            $table->foreignId('id_pemasok')->constrained('pemasoks')->onDelete('cascade');
-            $table->foreignId('id_lokasi')->constrained('lokasis')->onDelete('cascade');
-            $table->foreignId('id_kondisi')->constrained('kondisis')->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('id_pemasok')->constrained('pemasoks')->restrictOnDelete();
+            $table->foreignId('id_lokasi')->constrained('lokasis')->restrictOnDelete();
+            $table->foreignId('id_kondisi')->constrained('kondisis')->restrictOnDelete();
+            $table->foreignId('user_id')->constrained('users')->restrictOnDelete();
 
             $table->text('catatan')->nullable();
             $table->string('qr_code')->nullable();
             $table->timestamps();
+                 // atau ->onDelete('restrict');
+
         });
     }
 
