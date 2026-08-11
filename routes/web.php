@@ -16,6 +16,7 @@ use App\Http\Controllers\OmzetController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\DashboardGudangController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PrediksiController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -130,6 +131,7 @@ Route::middleware(['auth', 'auto.logout'])->group(function () {
         Route::resource('kategori', KategoriController::class);
         Route::resource('aset', LaporanAsetController::class);
         Route::resource('omzet', OmzetController::class);
+        Route::resource('prediksi', PrediksiController::class);
     });
     //untuk view stok
     Route::middleware(['auth'])->group(function () {
@@ -169,6 +171,14 @@ Route::middleware(['auth', 'auto.logout'])->group(function () {
         Route::patch('/user/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('user.toggleStatus');
 
     
+    });
+
+        Route::middleware('auth')->group(function () {
+        Route::get('/prediksi', [PrediksiController::class, 'index'])->name('prediksi.index');
+        Route::get('/prediksi/create', [PrediksiController::class, 'create'])->name('prediksi.create');
+        Route::post('/prediksi', [PrediksiController::class, 'store'])->name('prediksi.store');
+        Route::get('/prediksi/{prediksi}', [PrediksiController::class, 'show'])->name('prediksi.show');
+        Route::get('/prediksi/{prediksi}/pdf', [PrediksiController::class, 'exportPdf'])->name('prediksi.pdf');
     });
 
     

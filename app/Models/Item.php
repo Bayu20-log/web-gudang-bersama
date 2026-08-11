@@ -30,6 +30,7 @@ class Item extends Model
         'id_satuan',
         'stok_minimum',
          'harga_dasar',
+         'user_id',
     ];
 
 

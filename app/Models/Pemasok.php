@@ -21,8 +21,21 @@ class Pemasok extends Model
         'jenis',
         'bergabung_sejak',
         'nama_pic',
+        'user_id',
     ];
-    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function barangMasuks()
+    {
+        return $this->hasMany(\App\Models\BarangMasuk::class, 'id_pemasok');
+    }
+
+    public function barangKeluars()
+    {
+        return $this->hasMany(\App\Models\BarangKeluar::class, 'id_pemasok');
+    }
 
 
     // Jika ingin otomatis cast ke tanggal

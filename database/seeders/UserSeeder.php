@@ -12,10 +12,22 @@ class UserSeeder extends Seeder
     {
         User::create([
             'name' => 'Admin',
-            'username' => 'admin111',
+            'username' => 'admin1',
             'email' => 'admin1@gmail.com',
             'password' => Hash::make('password123'),
             'role' => 'superadmin', 
+            'status'=> 'aktif',
+            'position' => 'admin',
+            'phone' => '081142389833',
+            'photo' => 'default.jpg',
+        ]);
+
+        User::create([
+            'name' => 'Gudang',
+            'username' => 'Rafly',
+            'email' => 'admin2@gmail.com',
+            'password' => Hash::make('password123'),
+            'role' => 'gudang', 
             'status'=> 'aktif',
             'position' => 'admin',
             'phone' => '081142389833',

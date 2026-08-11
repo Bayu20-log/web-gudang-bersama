@@ -32,7 +32,7 @@
     <style>
          body { padding-top: 40px; }
         .nav-link.active, .dropdown-item.active {
-            background-color: #003322 !important;
+            background-color: #272626 !important;
             color: #fff !important;
             font-weight: 600;
             border-radius: 0.375rem;
@@ -43,7 +43,7 @@
 
         .nav-link:hover:not(.active), .dropdown-item:hover:not(.active) {
             background-color: #f0f4ff;
-            color: #79b687;
+            color: #edd078;
         }
 
 
@@ -162,7 +162,7 @@
 
         <div class="container">
             <a class="navbar-brand fw-bold" href="{{ url('/') }}">
-                <span style="color: #79b687">GUDANG</span><span style="color: #003322">KU</span>
+                <span style="color: #edd078">RAK</span><span style="color: #020705">SAKTI</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -236,6 +236,15 @@
                                 </ul>
                             </li>
 
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle {{ in_array($routeName, ['laporan.stok', 'laporan.arus', 'omzet.index','aset.index']) ? 'active' : '' }}" href="#" id="laporanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Prediksi
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item {{ $routeName === 'prediksi.index' ? 'active' : '' }}" href="{{ route('prediksi.index') }}">Prediksi</a></li>
+                                </ul>
+                            </li>
+
 
 
 
@@ -253,7 +262,7 @@
                     <ul class="navbar-nav mb-2 mb-lg-0 d-flex align-items-center">
                         <li class="nav-item dropdown d-flex align-items-center me-3">
                             <a href="{{ route('profile.show') }}" class="me-2 fw-medium text-decoration-none">
-                                <span style="color: #79b687">Hi,</span> <span style="color: #003322"><strong>{{ Auth::user()->name }}</strong>,</span> <span style="color: #79b687">Anda berperan sebagai</span> <span style="color: #003322"><strong>{{ ucfirst(Auth::user()->role) }}</strong></span>
+                                <span style="color: #edd078">Hi,</span> <span style="color: #000000"><strong>{{ Auth::user()->name }}</strong>,</span> <span style="color: #edd078">Anda berperan sebagai</span> <span style="color: #000000"><strong>{{ ucfirst(Auth::user()->role) }}</strong></span>
                             </a>
                             <img
                                 src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : 'https://placehold.co/50x50' }}"

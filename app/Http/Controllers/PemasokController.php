@@ -6,14 +6,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Pemasok;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
+
 
 
 class PemasokController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Pemasok::query();
-
+        $query = Pemasok::query()
+            ->where('user_id', Auth::id()); // ✅ filter hanya data user login
 
         if ($request->search) {
             $search = $request->search;
@@ -55,15 +58,16 @@ class PemasokController extends Controller
         ]);
 
 
-        Pemasok::create($request->only([
-            'nama_pemasok',
-            'email',
-            'no_telepon',
-            'alamat',
-            'jenis',
-            'bergabung_sejak',
-            'nama_pic',
-        ]));
+        Pemasok::create([
+            'nama_pemasok'   => $request->nama_pemasok,
+            'email'          => $request->email,
+            'no_telepon'     => $request->no_telepon,
+            'alamat'         => $request->alamat,
+            'jenis'          => $request->jenis,
+            'bergabung_sejak'=> $request->bergabung_sejak,
+            'nama_pic'       => $request->nama_pic,
+            'user_id'        => Auth::id(),
+        ]);    
 
 
         return redirect()->route('pemasok.index')->with('success', 'Pemasok berhasil ditambahkan');
@@ -105,10 +109,27 @@ class PemasokController extends Controller
 
 
     public function destroy(Pemasok $pemasok)
-    {
+{
+    try {
+        if (method_exists($pemasok, 'items') && $pemasok->items()->exists()) {
+            return back()->with('error', 'Tidak dapat menghapus data karena sudah digunakan untuk pencatatan item.');
+        }
+
         $pemasok->delete();
 
-
         return redirect()->route('pemasok.index')->with('success', 'Pemasok berhasil dihapus.');
+    } catch (QueryException $e) {
+        $mysqlCode   = $e->errorInfo[1] ?? null;
+        $sqlState    = $e->errorInfo[0] ?? null;
+        $pgSqlCode   = $e->getCode();
+
+        if ($sqlState === '23000' || $mysqlCode == 1451 || $pgSqlCode == '23503') {
+            return back()->with('error', 'Tidak dapat menghapus data karena sudah digunakan untuk pencatatan barang masuk/keluar.');
+        }
+
+        report($e);
+        return back()->with('error', 'Terjadi kesalahan saat menghapus data.');
     }
+}
+
 }

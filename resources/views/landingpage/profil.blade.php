@@ -7,14 +7,14 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-3">
                 <li class="breadcrumb-item"><a href="{{ url('/') }}">Beranda</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Profil GudangKu</li>
+                <li class="breadcrumb-item active" aria-current="page">Profil RAKSAKTI</li>
             </ol>
         </nav>
     </div>
 
     <!-- Kotak konten biru lembut tanpa garis tepi -->
     <div class="rounded p-4 shadow-sm bg-primary bg-opacity-10" data-aos="fade-up" data-aos-delay="200" >
-        <h2 class="text-center fw-bold mb-4">Profil GudangKu</h2>
+        <h2 class="text-center fw-bold mb-4">Profil RAKSAKTI</h2>
         <p class="text-center fs-5 text-muted mb-4">
             Di era digital yang menuntut efisiensi dan kecepatan, pengelolaan gudang secara manual tidak lagi relevan. Gudangku hadir sebagai solusi sistem informasi pergudangan yang modern, sederhana, dan powerful untuk membantu Anda mengelola stok barang dengan lebih mudah, cepat, dan akurat.
         </p>
@@ -46,7 +46,7 @@
                     <i class="bi" :class="open2 ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
                 </div>
                 <div x-show="open2" x-transition class="mt-3 text-muted small">
-                    Karena berbasis web, GudangKu dapat diakses dari komputer kantor, laptop pribadi, hingga tablet dan smartphone — selama terhubung internet. Cocok untuk tim lapangan, gudang, dan manajemen di lokasi berbeda.
+                    Karena berbasis web, RAKSAKTI dapat diakses dari komputer kantor, laptop pribadi, hingga tablet dan smartphone — selama terhubung internet. Cocok untuk tim lapangan, gudang, dan manajemen di lokasi berbeda.
                 </div>
             </div>
 
@@ -135,8 +135,8 @@
             </div>
         </div>
     <BR>
-    <h4 class="text-center fw-bold mb-4">🚀 Saatnya Tinggalkan Sistem Manual. Beralih ke GudangKu Sekarang!</h4>
-    <p><i>Dengan <strong>GudangKu</strong>, Anda tidak hanya mengelola gudang. Anda sedang membangun sistem kerja yang lebih profesional, rapi, dan siap berkembang.</i></p>
+    <h4 class="text-center fw-bold mb-4">🚀 Saatnya Tinggalkan Sistem Manual. Beralih ke RAKSAKTI Sekarang!</h4>
+    <p><i>Dengan <strong>RAKSAKTI</strong>, Anda tidak hanya mengelola gudang. Anda sedang membangun sistem kerja yang lebih profesional, rapi, dan siap berkembang.</i></p>
 
     </div>
 </div>
