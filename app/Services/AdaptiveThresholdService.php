@@ -200,6 +200,17 @@ class AdaptiveThresholdService
             ->where('item_id', $kodeBarang)
             ->first();
 
+        // Kalau threshold belum pernah dihitung sama sekali (misal item ini
+        // stoknya sudah 0 sejak awal, sehingga classifyStatus() langsung
+        // return 'habis' tanpa sempat menghitung threshold), hitung dulu
+        // sekarang -- supaya adc_snapshot tidak pernah null.
+        if (!$threshold) {
+            $this->calculateAndSaveThreshold($kodeBarang);
+            $threshold = DB::table('stock_thresholds')
+                ->where('item_id', $kodeBarang)
+                ->first();
+        }
+
         $logId = DB::table('stock_status_logs')->insertGetId([
             'item_id'            => $kodeBarang,
             'previous_status'    => $previousStatus,

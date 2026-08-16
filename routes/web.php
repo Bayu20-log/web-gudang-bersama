@@ -90,9 +90,10 @@ Route::middleware(['auth', 'auto.logout'])->group(function () {
     Route::post('/notifications/mark-read', [NotificationController::class, 'markRead'])->name('notifications.markRead');
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markSingleRead'])->name('notifications.markSingleRead');
     });
-
+    
     Route::middleware(['auth', 'role:gudang'])->group(function () {
     Route::get('/stock-notifications', [StockNotificationController::class, 'index'])->name('stock-notifications.index');
+    Route::post('/stock-notifications/evaluate', [StockNotificationController::class, 'evaluate'])->name('stock-notifications.evaluate');
     });
 
 
