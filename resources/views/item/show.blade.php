@@ -27,7 +27,7 @@
 
 <div class="container mt-2 mb-5" style="max-width: 1000px;">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold mb-0" style="color: #374151;">Data Barang &rsaquo; Detail Barang</h3>
+        <h3 class="fw-bold mb-0" style="color: #374151;">Katalog &rsaquo; Detail Produk</h3>
         <a href="{{ route('item.index') }}" class="btn btn-outline-secondary px-4 fw-medium">Kembali</a>
     </div>
 
@@ -40,7 +40,7 @@
                     <img src="{{ asset('storage/' . $item->foto) }}" class="img-box shadow-sm">
                 @else
                     <div class="img-box d-flex align-items-center justify-content-center mx-auto">
-                        <span class="text-muted fw-medium" style="font-size:0.8rem;">Foto Barang</span>
+                        <span class="text-muted fw-medium" style="font-size:0.8rem;">Foto Produk</span>
                     </div>
                 @endif
             </div>
@@ -97,4 +97,5 @@
         </table>
     </div>
 </div>
+
 @endsection

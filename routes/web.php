@@ -39,6 +39,9 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'auto.logout'])->group(function () {
+    Route::get('/home', function () {
+    return view('home');
+    })->name('home');
     Route::get('/dashboard/superadmin', [App\Http\Controllers\UserController::class, 'dashboardSuperadmin'])->name('dashboard.superadmin');
     Route::get('/dashboard/gudang', [DashboardGudangController::class, 'index'])->name('dashboard.gudang');
     Route::get('/dashboard/viewer', function () {

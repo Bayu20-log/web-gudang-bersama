@@ -82,7 +82,11 @@ class ItemController extends Controller
         }
 
         $item->save();
-
+        
+        if ($request->redirect_to == 'barang-masuk') {
+            return redirect()->route('barang-masuk.create')->with('success', 'Produk berhasil ditambahkan dan sudah tersedia di pilihan.');
+        }
+        
         return redirect()->route('item.index')->with('success', 'Item berhasil ditambahkan.');
     }
 

@@ -123,8 +123,8 @@
                     @php $role = strtolower(Auth::user()->role); $routeName = Route::currentRouteName(); @endphp
                     
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-2 mt-3 mt-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link {{ $routeName === 'welcome' ? 'active' : '' }}" href="{{ route('welcome') }}">Home</a>
+                       <li class="nav-item">
+                            <a class="nav-link {{ $routeName === 'home' ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
                         </li>
                         
                         @if($role == 'superadmin')
@@ -147,7 +147,8 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle {{ in_array($routeName, ['item.index', 'item.create', 'barang-masuk.index', 'barang-keluar.index']) ? 'active' : '' }}" href="#" id="barangDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Barang</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item fw-medium {{ in_array($routeName, ['item.index', 'item.create']) ? 'active' : '' }}" href="{{ route('item.index') }}">Daftar Item</a></li>
+                                    <!-- PERUBAHAN: Daftar Item menjadi Daftar Produk -->
+                                    <li><a class="dropdown-item fw-medium {{ in_array($routeName, ['item.index', 'item.create']) ? 'active' : '' }}" href="{{ route('item.index') }}">Daftar Produk</a></li>
                                     <li><a class="dropdown-item fw-medium {{ $routeName === 'barang-masuk.index' ? 'active' : '' }}" href="{{ route('barang-masuk.index') }}">Barang Masuk</a></li>
                                     <li><a class="dropdown-item fw-medium {{ $routeName === 'barang-keluar.index' ? 'active' : '' }}" href="{{ route('barang-keluar.index') }}">Barang Keluar</a></li>
                                 </ul>
@@ -192,7 +193,7 @@
                             </ul>
                         </li>
 
-                        <!-- 3. Ikon Lonceng SVG (Langsung Mengarah ke Halaman Notifikasi) -->
+                        <!-- 3. Ikon Lonceng SVG -->
                         <li class="nav-item position-relative d-flex align-items-center ms-1">
                             <a href="{{ route('notifications.index') }}" class="nav-link p-0 text-decoration-none position-relative" title="Lihat Notifikasi">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bell-icon" viewBox="0 0 16 16">
@@ -212,7 +213,6 @@
                                 @endif
                             </a>
                         </li>
-
                     </ul>
                 @endauth
             </div>
@@ -225,7 +225,7 @@
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Modal Notifikasi Auto-Popup (Hanya muncul jika ada sesi pop-up) -->
+    <!-- Modal Notifikasi Auto-Popup -->
     @if(Auth::check() && session('show_notification_popup'))
         @php
             session()->forget('show_notification_popup');

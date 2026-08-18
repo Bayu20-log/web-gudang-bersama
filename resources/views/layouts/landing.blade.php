@@ -3,23 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GudangKu</title>
-
+    <title>RAKSAKTI</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-
     <!-- AOS Animate On Scroll -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
     <!-- AlpineJS -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-
     <!-- Custom Styles -->
     <style>
         body {
@@ -28,45 +22,59 @@
             scroll-behavior: smooth;
         }
 
-        .navbar-brand span {
-            color: #003322;
+        /* --- TEMA NAVBAR GELAP --- */
+        .navbar-custom {
+            background-color: #1a1e23 !important; /* Warna Hitam Gelap */
         }
-
-        .nav-link {
+        .navbar-custom .nav-link {
+            color: #d1d5db !important; /* Warna Abu-abu terang */
             position: relative;
             transition: color 0.3s;
+            font-weight: 500;
         }
-
-        .nav-link:hover {
-            color: #003322;
+        .navbar-custom .nav-link:hover {
+            color: #f97316 !important; /* Warna Oranye */
         }
-
-        .nav-link::after {
+        .navbar-custom .nav-link::after {
             content: '';
             position: absolute;
             left: 0;
             bottom: 0;
             width: 0;
             height: 2px;
-            background-color: #003322;
+            background-color: #f97316; /* Garis bawah Oranye */
             transition: width 0.3s;
         }
-
-        .nav-link:hover::after,
-        .nav-link.active::after {
+        .navbar-custom .nav-link:hover::after,
+        .navbar-custom .nav-link.active::after {
             width: 100%;
         }
+        #mainNavbar.scrolled {
+            background-color: #1a1e23 !important; /* Tetap gelap saat di-scroll */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease-in-out;
+        }
+        .dropdown-menu {
+            border-radius: 0.75rem;
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(0,0,0,0.05);
+            background-color: #ffffff;
+        }
+        .dropdown-item { transition: 0.2s; color: #374151; font-weight: 500; }
+        .dropdown-item:hover:not(.active) {
+            background-color: #fffaf5;
+            color: #f97316;
+        }
+        /* -------------------------- */
 
         .btn-animated {
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease;
         }
-
         .btn-animated:disabled .spinner-border {
             display: inline-block;
         }
-
         .btn-animated .spinner-border {
             display: none;
             position: absolute;
@@ -77,7 +85,6 @@
             margin-top: -0.5rem;
             margin-left: -0.5rem;
         }
-
         .parallax-section {
             background-image: url("{{ asset('images/bg-parallax.jpg') }}");
             background-size: cover;
@@ -87,7 +94,6 @@
             color: white;
             text-align: center;
         }
-
         .card:hover {
             transform: translateY(-5px);
             transition: 0.3s;
@@ -96,74 +102,47 @@
         .breadcrumb-item,
         .breadcrumb-item a,
         .breadcrumb-item.active {
-            color: #79b687 !important; /* hijau Bootstrap "success" */
+            color: #79b687 !important; 
         }
         .nav-pills .nav-link {
-        color: #ffffff !important;   /* teks hijau */
-        background-color: transparent !important; /* hapus background */
-        border-radius: 0 !important; /* biar rata */
-    }
-
-    /* Hover effect */
-    .nav-pills .nav-link:hover {
-        color: #1e7e34 !important; /* hijau tua pas hover */
-    }
-
-    /* Tab aktif: kasih underline */
-    .nav-pills .nav-link.active {
-        font-weight: bold; /* tebalkan biar beda */
-        border-bottom: 2px solid #18231b; /* underline hijau */
-        color: #ffffff !important; /* tetap hijau */
-        background-color: transparent !important;
-    }
-
-    
-
-    
-
-
-
+            color: #ffffff !important; 
+            background-color: transparent !important; 
+            border-radius: 0 !important; 
+        }
+        .nav-pills .nav-link:hover {
+            color: #1e7e34 !important; 
+        }
+        .nav-pills .nav-link.active {
+            font-weight: bold; 
+            border-bottom: 2px solid #18231b; 
+            color: #ffffff !important; 
+            background-color: transparent !important;
+        }
+        
         footer {
             background-color: #f1f3f5;
         }
-
         .cursor-pointer {
             cursor: pointer;
         }
-
-        #mainNavbar.scrolled {
-            background-color: #ffffff !important;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease-in-out;
-        }
-
         .transition {
             transition: all 0.3s ease-in-out;
         }
-
         .feature-box {
             border: none;
             background-color: #ffffff;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
         .feature-box:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
         }
-
         @media (min-width: 768px) {
-            .accordion-desktop {
-                display: none;
-            }
+            .accordion-desktop { display: none; }
         }
-
         @media (max-width: 767.98px) {
-            .card-grid-desktop {
-                display: none;
-            }
+            .card-grid-desktop { display: none; }
         }
-
         @media (min-width: 992px) {
             .navbar .dropdown:hover .dropdown-menu {
                 display: block;
@@ -171,20 +150,18 @@
             }
         }
     </style>
-
     @stack('styles')
 </head>
 <body>
-    <!-- Navbar -->
-    <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top transition">
+    <!-- Navbar (Menggunakan tema navbar-dark dan navbar-custom) -->
+    <nav id="mainNavbar" class="navbar navbar-expand-lg navbar-dark navbar-custom shadow-sm fixed-top transition">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{{ url('/') }}">
-                <span style="color: #f1d787">RAK</span><span style="color: #030404">SAKTI</span>
+                <span style="color: #f97316">RAK</span><span class="text-white">SAKTI</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
@@ -210,7 +187,7 @@
                         <a class="nav-link" href="{{ route('kontak') }}">Kontak Kami</a>
                     </li>
                 </ul>
-                <ul class="navbar-nav">
+                <ul class="navbar-nav align-items-lg-center">
                     @auth
                         @php
                             $role = Auth::user()->role;
@@ -221,20 +198,22 @@
                                 default => route('dashboard'), // fallback
                             };
                         @endphp
-                        <li class="nav-item me-3">
-                            <a class="nav-link" href="{{ $dashboardRoute }}">
-                                <i class="bi bi-person-circle"></i> Akun Saya
+                        <li class="nav-item">
+                            <!-- Tombol oranye khas tema gudang -->
+                            <a class="nav-link btn btn-warning text-dark fw-bold px-4 ms-lg-3 rounded-pill" href="{{ $dashboardRoute }}" style="background-color: #f97316; border-color: #f97316; color: white !important;">
+                                <i class="bi bi-person-circle me-1"></i> Akun Saya
                             </a>
                         </li>
                     @else
                         <li class="nav-item me-3">
                             <a class="nav-link" href="{{ route('login') }}">
-                                <i class="bi bi-person-circle"></i> Login
+                                <i class="bi bi-box-arrow-in-right"></i> Login
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">
-                                <i class="bi bi-person-plus"></i> Register
+                        <li class="nav-item mt-2 mt-lg-0">
+                            <!-- Tombol oranye pendaftaran -->
+                            <a class="nav-link btn px-4 rounded-pill" href="{{ route('register') }}" style="background-color: #f97316; color: white !important; font-weight: 600;">
+                                <i class="bi bi-person-plus-fill me-1"></i> Register
                             </a>
                         </li>
                     @endauth
@@ -251,7 +230,7 @@
     <!-- Footer -->
     <footer class="text-center py-4 mt-5 border-top">
         <div class="container">
-            <p class="mb-0">&copy; {{ date('Y') }} GudangKu. All rights reserved.</p>
+            <p class="mb-0 text-muted">&copy; {{ date('Y') }} GudangKu. All rights reserved.</p>
         </div>
     </footer>
 
@@ -283,7 +262,6 @@
             }
         });
     </script>
-
     @stack('scripts')
 </body>
 </html>

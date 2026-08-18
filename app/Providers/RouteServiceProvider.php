@@ -21,7 +21,7 @@ class RouteServiceProvider extends ServiceProvider
 
         return match ($role) {
             'superadmin' => route('dashboard.superadmin'),
-            'gudang'     => route('dashboard.gudang'),
+            'gudang'     => route('home'),
             'viewer'     => route('laporan.stok.viewer'), // langsung ke laporan
             default      => route('dashboard'),
         };
