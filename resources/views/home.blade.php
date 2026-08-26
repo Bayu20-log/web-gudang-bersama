@@ -12,15 +12,15 @@
     };
 @endphp
 
-<!-- CDN Bootstrap Icons (Memastikan ikon tidak blank) -->
+<!-- CDN Bootstrap Icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
 <style>
     body { padding-top: 40px; background-color: #f8fafc; }
     
-    /* Layout dinamis: Maksimal 1000px di Desktop agar membentang elegan */
+    /* Layout dinamis: Maksimal 900px di Desktop agar membentang elegan */
     .app-container {
-        max-width: 1000px;
+        max-width: 900px;
         margin: 0 auto;
         padding: 10px 15px 50px 15px;
     }
@@ -42,7 +42,7 @@
     .dashboard-banner:hover {
         transform: translateY(-4px);
         box-shadow: 0 15px 25px rgba(249, 115, 22, 0.3);
-        color: white; /* Memastikan teks tetap putih saat di-hover */
+        color: white;
     }
     
     /* Lingkaran dekorasi */
@@ -91,27 +91,32 @@
         transform: rotate(-10deg);
     }
 
-    /* Grid Akses Cepat */
-    .quick-access-wrapper {
+    /* KOTAK KATEGORI */
+    .category-wrapper {
         background: #ffffff;
         border-radius: 1.2rem;
-        padding: 30px 25px;
+        padding: 25px 20px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        margin-top: 25px;
+        margin-top: 20px;
+        border: 1px solid #f1f5f9;
     }
 
     .section-title {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 25px;
+        color: #334155;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        border-bottom: 2px solid #f8fafc;
+        padding-bottom: 10px;
     }
 
-    /* Desain Grid Mobile-First (3 Kolom) */
+    /* Desain Grid Membagi 4 Kolom di HP */
     .grid-container {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px 15px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px 10px;
     }
 
     .grid-item {
@@ -151,7 +156,7 @@
         font-size: 0.75rem;
         font-weight: 600;
         text-align: center;
-        line-height: 1.3;
+        line-height: 1.2;
     }
 
     /* Kustomisasi warna ikon */
@@ -163,17 +168,27 @@
     .icon-box.purple { color: #9333ea; }
     .icon-box.yellow { color: #ca8a04; }
 
+    /* --- RESPONSIVE UNTUK HP KECIL --- */
+    @media (max-width: 480px) {
+        .category-wrapper { padding: 20px 15px; }
+        .grid-container { gap: 15px 5px; }
+        .icon-box { width: 50px; height: 50px; font-size: 1.35rem; }
+        .icon-text { font-size: 0.7rem; }
+    }
+
     /* --- RESPONSIVE DESKTOP OVERRIDE --- */
     @media (min-width: 768px) {
-        .grid-container {
-            grid-template-columns: repeat(6, 1fr); /* Membentang 6 kolom di Desktop */
-            gap: 30px 20px;
-        }
         .dashboard-banner { padding: 40px 50px; }
         .banner-title { font-size: 1.7rem; }
         .banner-desc { font-size: 1rem; max-width: 70%; }
         .icon-box { width: 70px; height: 70px; font-size: 2rem; border-radius: 18px; }
         .icon-text { font-size: 0.85rem; }
+        
+        /* Ubah jadi 5 kolom di Desktop agar Master Data muat dalam 1 baris */
+        .grid-container {
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+        }
     }
 </style>
 
@@ -189,16 +204,15 @@
                 Pantau ringkasan transaksi hari ini, peringatan stok hampir habis, barang kadaluarsa, serta analitik data pergudangan secara lengkap.
             </p>
         </div>
-        <!-- Ikon Background Samar -->
         <i class="bi bi-bar-chart-fill banner-icon-bg"></i>
     </a>
 
-    <!-- Kotak Akses Cepat -->
-    <div class="quick-access-wrapper">
-        <div class="section-title">Akses Cepat</div>
-        
+    <!-- Kategori 1: TRANSAKSI & PRODUK -->
+    <div class="category-wrapper">
+        <div class="section-title">
+            <i class="bi bi-box-seam text-orange me-2 fs-5"></i> Transaksi & Produk
+        </div>
         <div class="grid-container">
-            <!-- Transaksi & Barang -->
             <a href="{{ route('barang-masuk.create') }}" class="grid-item">
                 <div class="icon-box green"><i class="bi bi-box-arrow-in-down"></i></div>
                 <span class="icon-text">Barang Masuk</span>
@@ -212,11 +226,18 @@
                 <span class="icon-text">Tambah Produk</span>
             </a>
             <a href="{{ route('item.index') }}" class="grid-item">
-                <div class="icon-box blue"><i class="bi bi-box-seam"></i></div>
+                <div class="icon-box blue"><i class="bi bi-boxes"></i></div>
                 <span class="icon-text">Daftar Produk</span>
             </a>
+        </div>
+    </div>
 
-            <!-- Master Data -->
+    <!-- Kategori 2: MASTER DATA -->
+    <div class="category-wrapper">
+        <div class="section-title">
+            <i class="bi bi-database-fill text-blue me-2 fs-5"></i> Master Data
+        </div>
+        <div class="grid-container">
             <a href="{{ route('pemasok.index') }}" class="grid-item">
                 <div class="icon-box"><i class="bi bi-truck"></i></div>
                 <span class="icon-text">Pemasok</span>
@@ -233,8 +254,19 @@
                 <div class="icon-box"><i class="bi bi-rulers"></i></div>
                 <span class="icon-text">Satuan</span>
             </a>
+            <a href="{{ route('kondisi.index') }}" class="grid-item">
+                <div class="icon-box"><i class="bi bi-clipboard2-check"></i></div>
+                <span class="icon-text">Kondisi</span>
+            </a>
+        </div>
+    </div>
 
-            <!-- Laporan & Fitur Ekstra -->
+    <!-- Kategori 3: LAPORAN -->
+    <div class="category-wrapper">
+        <div class="section-title">
+            <i class="bi bi-file-earmark-bar-graph-fill text-teal me-2 fs-5"></i> Laporan
+        </div>
+        <div class="grid-container">
             <a href="{{ route('laporan') }}" class="grid-item">
                 <div class="icon-box teal"><i class="bi bi-pie-chart"></i></div>
                 <span class="icon-text">Laporan Stok</span>
@@ -243,8 +275,23 @@
                 <div class="icon-box teal"><i class="bi bi-graph-up-arrow"></i></div>
                 <span class="icon-text">Arus Barang</span>
             </a>
-            
-            <!-- Fitur Tambahan -->
+            <a href="{{ route('aset.index') }}" class="grid-item">
+                <div class="icon-box teal"><i class="bi bi-building"></i></div>
+                <span class="icon-text">Laporan Aset</span>
+            </a>
+            <a href="{{ route('omzet.index') }}" class="grid-item">
+                <div class="icon-box teal"><i class="bi bi-cash-coin"></i></div>
+                <span class="icon-text">Omzet Penjualan</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Kategori 4: FITUR TAMBAHAN -->
+    <div class="category-wrapper">
+        <div class="section-title">
+            <i class="bi bi-grid-fill text-purple me-2 fs-5"></i> Fitur Tambahan
+        </div>
+        <div class="grid-container">
             <a href="{{ route('notifications.index') ?? '#' }}" class="grid-item">
                 <div class="icon-box yellow"><i class="bi bi-bell"></i></div>
                 <span class="icon-text">Notifikasi</span>
@@ -255,6 +302,7 @@
             </a>
         </div>
     </div>
+
 </div>
 
 @endsection

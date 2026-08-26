@@ -24,7 +24,19 @@
     th { background-color: #1e293b !important; color: #ffffff !important; font-weight: 600; white-space: nowrap; border-bottom: 4px solid #f97316; letter-spacing: 0.5px; }
     tr:hover { background-color: #f8fafc; }
 
-    .btn-action { padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; border: none; transition: 0.2s; }
+    .btn-action { 
+        width: 36px; 
+        height: 36px; 
+        border-radius: 8px; 
+        font-size: 14px; 
+        cursor: pointer; 
+        text-decoration: none; 
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
+        border: none; 
+        transition: 0.2s; 
+    }
     .btn-action:hover { opacity: 0.85; transform: translateY(-2px); }
 
     .img-thumbnail-custom { width: 55px; height: 55px; object-fit: cover; border-radius: 8px; border: 2px solid #e2e8f0; cursor: pointer; transition: 0.3s; background: #fff;}
@@ -57,8 +69,16 @@
 <div class="container-laporan mb-5">
     <div class="header">
         <h4 class="fw-bold" style="color: #1e293b;">Katalog &rsaquo; Daftar Produk</h4>
+        <!-- Tombol tambah tetap teks agar mencolok -->
         <a href="{{ route('item.create') }}" class="btn btn-orange fw-bold px-4 py-2 shadow-sm">+ Tambah Produk</a>
     </div>
+
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
 
     <form method="GET" action="{{ route('item.index') }}" class="filter-form">
         <div class="form-group">
@@ -113,23 +133,23 @@
                         </td>
                         <td class="td-action">
                             <div class="d-flex flex-wrap gap-2 justify-content-center">
-                                <a href="{{ route('item.show', $item->kode_barang) }}" class="btn-action text-white shadow-sm" style="background-color: #3b82f6;">
-                                    <i class="fa-solid fa-eye"></i> Lihat
+                                <a href="{{ route('item.show', $item->kode_barang) }}" class="btn-action text-white shadow-sm" style="background-color: #3b82f6;" title="Lihat Detail Produk">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/><path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/></svg>
                                 </a>
-                                <a href="{{ route('item.edit', $item->kode_barang) }}" class="btn-action text-dark shadow-sm" style="background-color: #facc15;">
-                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                                <a href="{{ route('item.edit', $item->kode_barang) }}" class="btn-action text-dark shadow-sm" style="background-color: #facc15;" title="Edit Produk">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/></svg>
                                 </a>
                                 <form id="delete-form-{{ $item->kode_barang }}" action="{{ route('item.destroy', $item->kode_barang) }}" method="POST" style="margin: 0;">
                                     @csrf @method('DELETE')
-                                    <button type="button" class="btn-action text-white shadow-sm" style="background-color: #ef4444;" onclick="confirmDelete('{{ $item->kode_barang }}')">
-                                        <i class="fa-solid fa-trash"></i> Hapus
+                                    <button type="button" class="btn-action text-white shadow-sm" style="background-color: #ef4444;" title="Hapus Produk" onclick="confirmDelete('{{ $item->kode_barang }}')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/></svg>
                                     </button>
                                 </form>
                             </div>
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="7" class="text-center py-5 text-muted fw-medium"><i class="fa-solid fa-folder-open fs-2 mb-2 d-block text-light"></i>Data produk belum tersedia.</td></tr>
+                    <tr><td colspan="7" class="text-center py-5 text-muted fw-medium"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="mb-2" style="color: #cbd5e1;" viewBox="0 0 16 16"><path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"/></svg><br>Data produk belum tersedia.</td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -170,7 +190,7 @@
             showCancelButton: true,
             confirmButtonColor: '#ef4444',
             cancelButtonColor: '#1e293b',
-            confirmButtonText: '<i class="fa-solid fa-trash me-1"></i> Ya, hapus!',
+            confirmButtonText: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/></svg> Ya, hapus!',
             cancelButtonText: 'Batal',
             reverseButtons: true
         }).then((result) => {
