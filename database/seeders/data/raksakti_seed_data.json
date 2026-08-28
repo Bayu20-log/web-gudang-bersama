@@ -7,6 +7,7 @@
   ],
   "satuans": [
     "Pcs",
+    "pcs",
     "Gram",
     "Ml"
   ],
@@ -346,209 +347,18 @@
       "harga_dasar": 10000
     }
   ],
+
   "logs": [
     {
       "tanggal": "2026-02-01",
-      "nama_barang": "Cup 12oz",
-      "masuk": 200,
-      "keluar": 119
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Chocolate Powder 12oz",
-      "masuk": 26,
-      "keluar": 13
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Redvelvet Powder 12oz",
-      "masuk": 15,
-      "keluar": 6
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Charcoal Powder 12oz",
-      "masuk": 15,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Matcha Powder 12oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Peach Tea Powder 12oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Lemon Tea Powder 12oz",
-      "masuk": 10,
-      "keluar": 3
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Lychee Tea Powder 12oz",
-      "masuk": 20,
-      "keluar": 11
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Chocolate Powder 16oz",
-      "masuk": 5,
-      "keluar": 5
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Redvelvet Powder 16oz",
-      "masuk": 10,
-      "keluar": 1
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Charcoal Powder 16oz",
-      "masuk": 10,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Matcha Powder 16oz",
-      "masuk": 10,
-      "keluar": 10
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Peach Tea Powder 16oz",
-      "masuk": 10,
-      "keluar": 1
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Lemon Tea Powder 16oz",
-      "masuk": 10,
-      "keluar": 1
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Lychee Tea Powder 16oz",
-      "masuk": 10,
-      "keluar": 8
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Elderflower",
-      "masuk": 0,
-      "keluar": 60
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Green Apple",
-      "masuk": 0,
-      "keluar": 33
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Yuzu Orange",
-      "masuk": 0,
-      "keluar": 129
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Cranberry Juice",
-      "masuk": 956,
-      "keluar": 546
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Wild Berry",
-      "masuk": 0,
-      "keluar": 191
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Vanilla",
-      "masuk": 0,
-      "keluar": 121
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Walnut Brownie",
-      "masuk": 0,
-      "keluar": 158
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Creamcheese",
-      "masuk": 0,
-      "keluar": 492
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Cremebrulee",
-      "masuk": 0,
-      "keluar": 328
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Pandan",
-      "masuk": 0,
-      "keluar": 145
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Salted Caramel",
-      "masuk": 917,
-      "keluar": 438
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Roasted Hazelnut",
-      "masuk": 0,
-      "keluar": 203
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Butterscotch",
-      "masuk": 0,
-      "keluar": 213
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Buah Lemon",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Lychee Buah / Kaleng",
-      "masuk": 20,
-      "keluar": 19
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Tebs",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Zoda",
-      "masuk": 2,
-      "keluar": 3
-    },
-    {
-      "tanggal": "2026-02-01",
-      "nama_barang": "Dry Lemon",
-      "masuk": 0,
-      "keluar": 0
+      "nama_barang": "Air Mineral 600ml",
+      "masuk": 32,
+      "keluar": 27
     },
     {
       "tanggal": "2026-02-01",
       "nama_barang": "Aren",
-      "masuk": 1,
+      "masuk": 2,
       "keluar": 2
     },
     {
@@ -559,45 +369,219 @@
     },
     {
       "tanggal": "2026-02-01",
-      "nama_barang": "Susu UHT",
-      "masuk": 22,
-      "keluar": 24
+      "nama_barang": "Butterscotch",
+      "masuk": 887,
+      "keluar": 213
     },
     {
       "tanggal": "2026-02-01",
-      "nama_barang": "Susu Evaporasi FN",
-      "masuk": 19,
-      "keluar": 18
+      "nama_barang": "Charcoal Powder 12oz",
+      "masuk": 20,
+      "keluar": 0
     },
     {
       "tanggal": "2026-02-01",
-      "nama_barang": "Air Mineral 600ml",
-      "masuk": 24,
-      "keluar": 27
+      "nama_barang": "Charcoal Powder 16oz",
+      "masuk": 10,
+      "keluar": 0
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Chocolate Powder 12oz",
+      "masuk": 31,
+      "keluar": 13
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Chocolate Powder 16oz",
+      "masuk": 5,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Cranberry Juice",
+      "masuk": 1511,
+      "keluar": 546
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Creamcheese",
+      "masuk": 1204,
+      "keluar": 492
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Cremebrulee",
+      "masuk": 1111,
+      "keluar": 328
     },
     {
       "tanggal": "2026-02-01",
       "nama_barang": "Cremer",
-      "masuk": 2,
+      "masuk": 3,
       "keluar": 2
     },
     {
-      "tanggal": "2026-02-02",
+      "tanggal": "2026-02-01",
       "nama_barang": "Cup 12oz",
-      "masuk": 100,
-      "keluar": 152
+      "masuk": 219,
+      "keluar": 119
     },
     {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Chocolate Powder 12oz",
-      "masuk": 15,
+      "tanggal": "2026-02-01",
+      "nama_barang": "Elderflower",
+      "masuk": 883,
+      "keluar": 60
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Green Apple",
+      "masuk": 723,
+      "keluar": 33
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Lemon Tea Powder 12oz",
+      "masuk": 16,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Lemon Tea Powder 16oz",
+      "masuk": 10,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Lychee Buah / Kaleng",
+      "masuk": 20,
       "keluar": 19
     },
     {
-      "tanggal": "2026-02-02",
+      "tanggal": "2026-02-01",
+      "nama_barang": "Lychee Tea Powder 12oz",
+      "masuk": 20,
+      "keluar": 11
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Lychee Tea Powder 16oz",
+      "masuk": 10,
+      "keluar": 8
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Matcha Powder 16oz",
+      "masuk": 10,
+      "keluar": 10
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Pandan",
+      "masuk": 429,
+      "keluar": 145
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Peach Tea Powder 12oz",
+      "masuk": 15,
+      "keluar": 0
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Peach Tea Powder 16oz",
+      "masuk": 10,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-01",
       "nama_barang": "Redvelvet Powder 12oz",
-      "masuk": 0,
+      "masuk": 17,
       "keluar": 6
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Redvelvet Powder 16oz",
+      "masuk": 10,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Roasted Hazelnut",
+      "masuk": 281,
+      "keluar": 203
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Salted Caramel",
+      "masuk": 992,
+      "keluar": 438
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Susu Evaporasi FN",
+      "masuk": 22,
+      "keluar": 18
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Susu UHT",
+      "masuk": 26,
+      "keluar": 24
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Vanilla",
+      "masuk": 1091,
+      "keluar": 121
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Walnut Brownie",
+      "masuk": 951,
+      "keluar": 158
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Wild Berry",
+      "masuk": 486,
+      "keluar": 191
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Yuzu Orange",
+      "masuk": 893,
+      "keluar": 129
+    },
+    {
+      "tanggal": "2026-02-01",
+      "nama_barang": "Zoda",
+      "masuk": 5,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-02",
+      "nama_barang": "Air Mineral 600ml",
+      "masuk": 24,
+      "keluar": 17
+    },
+    {
+      "tanggal": "2026-02-02",
+      "nama_barang": "Aren",
+      "masuk": 3,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-02",
+      "nama_barang": "Beans",
+      "masuk": 1500,
+      "keluar": 1500
+    },
+    {
+      "tanggal": "2026-02-02",
+      "nama_barang": "Butterscotch",
+      "masuk": 0,
+      "keluar": 182
     },
     {
       "tanggal": "2026-02-02",
@@ -607,111 +591,15 @@
     },
     {
       "tanggal": "2026-02-02",
-      "nama_barang": "Matcha Powder 12oz",
-      "masuk": 10,
-      "keluar": 10
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Peach Tea Powder 12oz",
-      "masuk": 0,
-      "keluar": 3
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Lemon Tea Powder 12oz",
-      "masuk": 0,
-      "keluar": 2
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Lychee Tea Powder 12oz",
+      "nama_barang": "Chocolate Powder 12oz",
       "masuk": 15,
-      "keluar": 8
+      "keluar": 19
     },
     {
       "tanggal": "2026-02-02",
       "nama_barang": "Chocolate Powder 16oz",
       "masuk": 11,
       "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Redvelvet Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Charcoal Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Matcha Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Peach Tea Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Lemon Tea Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Lychee Tea Powder 16oz",
-      "masuk": 15,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Elderflower",
-      "masuk": 0,
-      "keluar": 26
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Green Apple",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Yuzu Orange",
-      "masuk": 0,
-      "keluar": 49
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Cranberry Juice",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Wild Berry",
-      "masuk": 0,
-      "keluar": 58
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Vanilla",
-      "masuk": 0,
-      "keluar": 114
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Walnut Brownie",
-      "masuk": 0,
-      "keluar": 109
     },
     {
       "tanggal": "2026-02-02",
@@ -727,33 +615,27 @@
     },
     {
       "tanggal": "2026-02-02",
-      "nama_barang": "Pandan",
-      "masuk": 0,
-      "keluar": 118
+      "nama_barang": "Cremer",
+      "masuk": 2,
+      "keluar": 1
     },
     {
       "tanggal": "2026-02-02",
-      "nama_barang": "Salted Caramel",
-      "masuk": 0,
+      "nama_barang": "Cup 12oz",
+      "masuk": 100,
       "keluar": 152
     },
     {
       "tanggal": "2026-02-02",
-      "nama_barang": "Roasted Hazelnut",
-      "masuk": 902,
-      "keluar": 150
+      "nama_barang": "Elderflower",
+      "masuk": 0,
+      "keluar": 26
     },
     {
       "tanggal": "2026-02-02",
-      "nama_barang": "Butterscotch",
+      "nama_barang": "Lemon Tea Powder 12oz",
       "masuk": 0,
-      "keluar": 182
-    },
-    {
-      "tanggal": "2026-02-02",
-      "nama_barang": "Buah Lemon",
-      "masuk": 0,
-      "keluar": 0
+      "keluar": 2
     },
     {
       "tanggal": "2026-02-02",
@@ -763,39 +645,51 @@
     },
     {
       "tanggal": "2026-02-02",
-      "nama_barang": "Tebs",
-      "masuk": 0,
+      "nama_barang": "Lychee Tea Powder 12oz",
+      "masuk": 15,
+      "keluar": 8
+    },
+    {
+      "tanggal": "2026-02-02",
+      "nama_barang": "Lychee Tea Powder 16oz",
+      "masuk": 15,
       "keluar": 0
     },
     {
       "tanggal": "2026-02-02",
-      "nama_barang": "Zoda",
-      "masuk": 0,
-      "keluar": 0
+      "nama_barang": "Matcha Powder 12oz",
+      "masuk": 10,
+      "keluar": 10
     },
     {
       "tanggal": "2026-02-02",
-      "nama_barang": "Dry Lemon",
+      "nama_barang": "Pandan",
       "masuk": 0,
-      "keluar": 0
+      "keluar": 118
     },
     {
       "tanggal": "2026-02-02",
-      "nama_barang": "Aren",
-      "masuk": 3,
+      "nama_barang": "Peach Tea Powder 12oz",
+      "masuk": 0,
       "keluar": 3
     },
     {
       "tanggal": "2026-02-02",
-      "nama_barang": "Beans",
-      "masuk": 1500,
-      "keluar": 1500
+      "nama_barang": "Redvelvet Powder 12oz",
+      "masuk": 0,
+      "keluar": 6
     },
     {
       "tanggal": "2026-02-02",
-      "nama_barang": "Susu UHT",
-      "masuk": 16,
-      "keluar": 10
+      "nama_barang": "Roasted Hazelnut",
+      "masuk": 902,
+      "keluar": 150
+    },
+    {
+      "tanggal": "2026-02-02",
+      "nama_barang": "Salted Caramel",
+      "masuk": 0,
+      "keluar": 152
     },
     {
       "tanggal": "2026-02-02",
@@ -805,33 +699,63 @@
     },
     {
       "tanggal": "2026-02-02",
-      "nama_barang": "Air Mineral 600ml",
-      "masuk": 24,
-      "keluar": 17
+      "nama_barang": "Susu UHT",
+      "masuk": 16,
+      "keluar": 10
     },
     {
       "tanggal": "2026-02-02",
-      "nama_barang": "Cremer",
+      "nama_barang": "Vanilla",
+      "masuk": 0,
+      "keluar": 114
+    },
+    {
+      "tanggal": "2026-02-02",
+      "nama_barang": "Walnut Brownie",
+      "masuk": 0,
+      "keluar": 109
+    },
+    {
+      "tanggal": "2026-02-02",
+      "nama_barang": "Wild Berry",
+      "masuk": 0,
+      "keluar": 58
+    },
+    {
+      "tanggal": "2026-02-02",
+      "nama_barang": "Yuzu Orange",
+      "masuk": 0,
+      "keluar": 49
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Air Mineral 600ml",
+      "masuk": 18,
+      "keluar": 0
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Aren",
       "masuk": 2,
+      "keluar": 0
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Beans",
+      "masuk": 1500,
+      "keluar": 1500
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Buah Lemon",
+      "masuk": 0,
       "keluar": 1
     },
     {
       "tanggal": "2026-02-03",
-      "nama_barang": "Cup 12oz",
-      "masuk": 100,
-      "keluar": 95
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Chocolate Powder 12oz",
-      "masuk": 20,
-      "keluar": 11
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Redvelvet Powder 12oz",
-      "masuk": 11,
-      "keluar": 6
+      "nama_barang": "Butterscotch",
+      "masuk": 0,
+      "keluar": 221
     },
     {
       "tanggal": "2026-02-03",
@@ -841,27 +765,15 @@
     },
     {
       "tanggal": "2026-02-03",
-      "nama_barang": "Matcha Powder 12oz",
-      "masuk": 15,
-      "keluar": 15
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Peach Tea Powder 12oz",
-      "masuk": 0,
-      "keluar": 1
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Lemon Tea Powder 12oz",
-      "masuk": 0,
-      "keluar": 1
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Lychee Tea Powder 12oz",
+      "nama_barang": "Charcoal Powder 16oz",
       "masuk": 0,
       "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Chocolate Powder 12oz",
+      "masuk": 20,
+      "keluar": 11
     },
     {
       "tanggal": "2026-02-03",
@@ -871,81 +783,9 @@
     },
     {
       "tanggal": "2026-02-03",
-      "nama_barang": "Redvelvet Powder 16oz",
-      "masuk": 0,
-      "keluar": 1
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Charcoal Powder 16oz",
-      "masuk": 0,
-      "keluar": 2
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Matcha Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Peach Tea Powder 16oz",
-      "masuk": 0,
-      "keluar": 1
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Lemon Tea Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Lychee Tea Powder 16oz",
-      "masuk": 0,
-      "keluar": 5
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Elderflower",
-      "masuk": 0,
-      "keluar": 25
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Green Apple",
-      "masuk": 0,
-      "keluar": 10
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Yuzu Orange",
-      "masuk": 0,
-      "keluar": 71
-    },
-    {
-      "tanggal": "2026-02-03",
       "nama_barang": "Cranberry Juice",
       "masuk": 0,
       "keluar": 192
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Wild Berry",
-      "masuk": 915,
-      "keluar": 103
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Vanilla",
-      "masuk": 0,
-      "keluar": 40
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Walnut Brownie",
-      "masuk": 0,
-      "keluar": 38
     },
     {
       "tanggal": "2026-02-03",
@@ -961,31 +801,43 @@
     },
     {
       "tanggal": "2026-02-03",
-      "nama_barang": "Pandan",
-      "masuk": 928,
-      "keluar": 50
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Salted Caramel",
+      "nama_barang": "Cremer",
       "masuk": 0,
-      "keluar": 206
+      "keluar": 2
     },
     {
       "tanggal": "2026-02-03",
-      "nama_barang": "Roasted Hazelnut",
+      "nama_barang": "Cup 12oz",
+      "masuk": 100,
+      "keluar": 95
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Cup 16oz",
+      "masuk": 150,
+      "keluar": 23
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Dry Lemon",
       "masuk": 0,
-      "keluar": 39
+      "keluar": 1
     },
     {
       "tanggal": "2026-02-03",
-      "nama_barang": "Butterscotch",
+      "nama_barang": "Elderflower",
       "masuk": 0,
-      "keluar": 221
+      "keluar": 25
     },
     {
       "tanggal": "2026-02-03",
-      "nama_barang": "Buah Lemon",
+      "nama_barang": "Green Apple",
+      "masuk": 0,
+      "keluar": 10
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Lemon Tea Powder 12oz",
       "masuk": 0,
       "keluar": 1
     },
@@ -997,39 +849,63 @@
     },
     {
       "tanggal": "2026-02-03",
-      "nama_barang": "Tebs",
+      "nama_barang": "Lychee Tea Powder 12oz",
       "masuk": 0,
-      "keluar": 0
+      "keluar": 2
     },
     {
       "tanggal": "2026-02-03",
-      "nama_barang": "Zoda",
+      "nama_barang": "Lychee Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Matcha Powder 12oz",
+      "masuk": 15,
+      "keluar": 15
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Pandan",
+      "masuk": 928,
+      "keluar": 50
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Peach Tea Powder 12oz",
       "masuk": 0,
       "keluar": 1
     },
     {
       "tanggal": "2026-02-03",
-      "nama_barang": "Dry Lemon",
+      "nama_barang": "Peach Tea Powder 16oz",
       "masuk": 0,
       "keluar": 1
     },
     {
       "tanggal": "2026-02-03",
-      "nama_barang": "Aren",
-      "masuk": 2,
-      "keluar": 0
+      "nama_barang": "Redvelvet Powder 12oz",
+      "masuk": 11,
+      "keluar": 6
     },
     {
       "tanggal": "2026-02-03",
-      "nama_barang": "Beans",
-      "masuk": 1500,
-      "keluar": 1500
+      "nama_barang": "Redvelvet Powder 16oz",
+      "masuk": 0,
+      "keluar": 1
     },
     {
       "tanggal": "2026-02-03",
-      "nama_barang": "Susu UHT",
-      "masuk": 12,
-      "keluar": 11
+      "nama_barang": "Roasted Hazelnut",
+      "masuk": 0,
+      "keluar": 39
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Salted Caramel",
+      "masuk": 0,
+      "keluar": 206
     },
     {
       "tanggal": "2026-02-03",
@@ -1039,39 +915,63 @@
     },
     {
       "tanggal": "2026-02-03",
+      "nama_barang": "Susu UHT",
+      "masuk": 12,
+      "keluar": 11
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Vanilla",
+      "masuk": 0,
+      "keluar": 40
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Walnut Brownie",
+      "masuk": 0,
+      "keluar": 38
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Wild Berry",
+      "masuk": 915,
+      "keluar": 103
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Yuzu Orange",
+      "masuk": 0,
+      "keluar": 71
+    },
+    {
+      "tanggal": "2026-02-03",
+      "nama_barang": "Zoda",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-04",
       "nama_barang": "Air Mineral 600ml",
-      "masuk": 18,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Cremer",
       "masuk": 0,
-      "keluar": 2
-    },
-    {
-      "tanggal": "2026-02-03",
-      "nama_barang": "Cup 16oz",
-      "masuk": 150,
-      "keluar": 23
+      "keluar": 24
     },
     {
       "tanggal": "2026-02-04",
-      "nama_barang": "Cup 12oz",
-      "masuk": 100,
-      "keluar": 153
+      "nama_barang": "Aren",
+      "masuk": 0,
+      "keluar": 1
     },
     {
       "tanggal": "2026-02-04",
-      "nama_barang": "Chocolate Powder 12oz",
-      "masuk": 0,
-      "keluar": 10
+      "nama_barang": "Beans",
+      "masuk": 1500,
+      "keluar": 1000
     },
     {
       "tanggal": "2026-02-04",
-      "nama_barang": "Redvelvet Powder 12oz",
-      "masuk": 0,
-      "keluar": 10
+      "nama_barang": "Butterscotch",
+      "masuk": 920,
+      "keluar": 296
     },
     {
       "tanggal": "2026-02-04",
@@ -1081,111 +981,21 @@
     },
     {
       "tanggal": "2026-02-04",
-      "nama_barang": "Matcha Powder 12oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Peach Tea Powder 12oz",
-      "masuk": 0,
-      "keluar": 2
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Lemon Tea Powder 12oz",
-      "masuk": 2,
-      "keluar": 1
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Lychee Tea Powder 12oz",
-      "masuk": 0,
-      "keluar": 8
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Chocolate Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Redvelvet Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-04",
       "nama_barang": "Charcoal Powder 16oz",
       "masuk": 0,
       "keluar": 2
     },
     {
       "tanggal": "2026-02-04",
-      "nama_barang": "Matcha Powder 16oz",
+      "nama_barang": "Chocolate Powder 12oz",
       "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Peach Tea Powder 16oz",
-      "masuk": 0,
-      "keluar": 1
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Lemon Tea Powder 16oz",
-      "masuk": 0,
-      "keluar": 2
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Lychee Tea Powder 16oz",
-      "masuk": 0,
-      "keluar": 3
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Elderflower",
-      "masuk": 0,
-      "keluar": 74
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Green Apple",
-      "masuk": 0,
-      "keluar": 41
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Yuzu Orange",
-      "masuk": 0,
-      "keluar": 140
+      "keluar": 10
     },
     {
       "tanggal": "2026-02-04",
       "nama_barang": "Cranberry Juice",
       "masuk": 0,
       "keluar": 508
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Wild Berry",
-      "masuk": 0,
-      "keluar": 274
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Vanilla",
-      "masuk": 0,
-      "keluar": 15
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Walnut Brownie",
-      "masuk": 0,
-      "keluar": 62
     },
     {
       "tanggal": "2026-02-04",
@@ -1201,33 +1011,51 @@
     },
     {
       "tanggal": "2026-02-04",
-      "nama_barang": "Pandan",
-      "masuk": 0,
-      "keluar": 159
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Salted Caramel",
-      "masuk": 51,
+      "nama_barang": "Cremer",
+      "masuk": 1,
       "keluar": 0
     },
     {
       "tanggal": "2026-02-04",
-      "nama_barang": "Roasted Hazelnut",
-      "masuk": 0,
-      "keluar": 163
+      "nama_barang": "Cup 12oz",
+      "masuk": 100,
+      "keluar": 153
     },
     {
       "tanggal": "2026-02-04",
-      "nama_barang": "Butterscotch",
-      "masuk": 920,
-      "keluar": 296
+      "nama_barang": "Cup 16oz",
+      "masuk": 0,
+      "keluar": 47
     },
     {
       "tanggal": "2026-02-04",
-      "nama_barang": "Buah Lemon",
-      "masuk": 0,
+      "nama_barang": "Dry Lemon",
+      "masuk": 1,
       "keluar": 0
+    },
+    {
+      "tanggal": "2026-02-04",
+      "nama_barang": "Elderflower",
+      "masuk": 0,
+      "keluar": 74
+    },
+    {
+      "tanggal": "2026-02-04",
+      "nama_barang": "Green Apple",
+      "masuk": 0,
+      "keluar": 41
+    },
+    {
+      "tanggal": "2026-02-04",
+      "nama_barang": "Lemon Tea Powder 12oz",
+      "masuk": 2,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-04",
+      "nama_barang": "Lemon Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 2
     },
     {
       "tanggal": "2026-02-04",
@@ -1237,39 +1065,51 @@
     },
     {
       "tanggal": "2026-02-04",
-      "nama_barang": "Tebs",
+      "nama_barang": "Lychee Tea Powder 12oz",
       "masuk": 0,
-      "keluar": 0
+      "keluar": 8
     },
     {
       "tanggal": "2026-02-04",
-      "nama_barang": "Zoda",
-      "masuk": 3,
+      "nama_barang": "Lychee Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-04",
+      "nama_barang": "Pandan",
+      "masuk": 0,
+      "keluar": 159
+    },
+    {
+      "tanggal": "2026-02-04",
+      "nama_barang": "Peach Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-04",
+      "nama_barang": "Peach Tea Powder 16oz",
+      "masuk": 0,
       "keluar": 1
     },
     {
       "tanggal": "2026-02-04",
-      "nama_barang": "Dry Lemon",
-      "masuk": 1,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Aren",
+      "nama_barang": "Redvelvet Powder 12oz",
       "masuk": 0,
-      "keluar": 1
+      "keluar": 10
     },
     {
       "tanggal": "2026-02-04",
-      "nama_barang": "Beans",
-      "masuk": 1500,
-      "keluar": 1000
+      "nama_barang": "Roasted Hazelnut",
+      "masuk": 0,
+      "keluar": 163
     },
     {
       "tanggal": "2026-02-04",
-      "nama_barang": "Susu UHT",
-      "masuk": 5,
-      "keluar": 13
+      "nama_barang": "Salted Caramel",
+      "masuk": 51,
+      "keluar": 0
     },
     {
       "tanggal": "2026-02-04",
@@ -1279,219 +1119,45 @@
     },
     {
       "tanggal": "2026-02-04",
-      "nama_barang": "Air Mineral 600ml",
-      "masuk": 0,
-      "keluar": 24
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Cremer",
-      "masuk": 1,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-04",
-      "nama_barang": "Cup 16oz",
-      "masuk": 0,
-      "keluar": 47
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Cup 12oz",
-      "masuk": 200,
-      "keluar": 121
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Chocolate Powder 12oz",
-      "masuk": 10,
-      "keluar": 9
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Redvelvet Powder 12oz",
-      "masuk": 20,
-      "keluar": 6
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Charcoal Powder 12oz",
-      "masuk": 9,
-      "keluar": 1
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Matcha Powder 12oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Peach Tea Powder 12oz",
-      "masuk": 0,
-      "keluar": 1
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Lemon Tea Powder 12oz",
-      "masuk": 0,
-      "keluar": 1
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Lychee Tea Powder 12oz",
-      "masuk": 10,
-      "keluar": 14
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Chocolate Powder 16oz",
-      "masuk": 0,
-      "keluar": 5
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Redvelvet Powder 16oz",
-      "masuk": 0,
-      "keluar": 5
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Charcoal Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Matcha Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Peach Tea Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Lemon Tea Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Lychee Tea Powder 16oz",
+      "nama_barang": "Susu UHT",
       "masuk": 5,
-      "keluar": 2
+      "keluar": 13
     },
     {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Elderflower",
-      "masuk": 0,
-      "keluar": 36
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Green Apple",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Yuzu Orange",
-      "masuk": 0,
-      "keluar": 107
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Cranberry Juice",
-      "masuk": 957,
-      "keluar": 97
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Wild Berry",
-      "masuk": 0,
-      "keluar": 137
-    },
-    {
-      "tanggal": "2026-02-05",
+      "tanggal": "2026-02-04",
       "nama_barang": "Vanilla",
       "masuk": 0,
-      "keluar": 97
+      "keluar": 15
     },
     {
-      "tanggal": "2026-02-05",
+      "tanggal": "2026-02-04",
       "nama_barang": "Walnut Brownie",
       "masuk": 0,
-      "keluar": 79
+      "keluar": 62
     },
     {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Creamcheese",
-      "masuk": 971,
-      "keluar": 262
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Cremebrulee",
-      "masuk": 907,
-      "keluar": 455
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Pandan",
+      "tanggal": "2026-02-04",
+      "nama_barang": "Wild Berry",
       "masuk": 0,
-      "keluar": 90
+      "keluar": 274
     },
     {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Salted Caramel",
-      "masuk": 919,
-      "keluar": 279
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Roasted Hazelnut",
+      "tanggal": "2026-02-04",
+      "nama_barang": "Yuzu Orange",
       "masuk": 0,
       "keluar": 140
     },
     {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Butterscotch",
-      "masuk": 0,
-      "keluar": 167
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Buah Lemon",
-      "masuk": 2,
+      "tanggal": "2026-02-04",
+      "nama_barang": "Zoda",
+      "masuk": 3,
       "keluar": 1
     },
     {
       "tanggal": "2026-02-05",
-      "nama_barang": "Lychee Buah / Kaleng",
-      "masuk": 10,
-      "keluar": 6
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Tebs",
-      "masuk": 5,
-      "keluar": 6
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Zoda",
-      "masuk": 5,
-      "keluar": 4
-    },
-    {
-      "tanggal": "2026-02-05",
-      "nama_barang": "Dry Lemon",
-      "masuk": 0,
-      "keluar": 0
+      "nama_barang": "Air Mineral 600ml",
+      "masuk": 24,
+      "keluar": 10
     },
     {
       "tanggal": "2026-02-05",
@@ -1507,21 +1173,51 @@
     },
     {
       "tanggal": "2026-02-05",
-      "nama_barang": "Susu UHT",
-      "masuk": 19,
-      "keluar": 16
+      "nama_barang": "Buah Lemon",
+      "masuk": 2,
+      "keluar": 1
     },
     {
       "tanggal": "2026-02-05",
-      "nama_barang": "Susu Evaporasi FN",
-      "masuk": 22,
-      "keluar": 19
+      "nama_barang": "Butterscotch",
+      "masuk": 0,
+      "keluar": 167
     },
     {
       "tanggal": "2026-02-05",
-      "nama_barang": "Air Mineral 600ml",
-      "masuk": 24,
-      "keluar": 10
+      "nama_barang": "Charcoal Powder 12oz",
+      "masuk": 9,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-05",
+      "nama_barang": "Chocolate Powder 12oz",
+      "masuk": 10,
+      "keluar": 9
+    },
+    {
+      "tanggal": "2026-02-05",
+      "nama_barang": "Chocolate Powder 16oz",
+      "masuk": 0,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-05",
+      "nama_barang": "Cranberry Juice",
+      "masuk": 957,
+      "keluar": 97
+    },
+    {
+      "tanggal": "2026-02-05",
+      "nama_barang": "Creamcheese",
+      "masuk": 971,
+      "keluar": 262
+    },
+    {
+      "tanggal": "2026-02-05",
+      "nama_barang": "Cremebrulee",
+      "masuk": 907,
+      "keluar": 455
     },
     {
       "tanggal": "2026-02-05",
@@ -1531,207 +1227,129 @@
     },
     {
       "tanggal": "2026-02-05",
+      "nama_barang": "Cup 12oz",
+      "masuk": 200,
+      "keluar": 121
+    },
+    {
+      "tanggal": "2026-02-05",
       "nama_barang": "Cup 16oz",
       "masuk": 0,
       "keluar": 31
     },
     {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Cup 12oz",
-      "masuk": 50,
-      "keluar": 95
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Chocolate Powder 12oz",
-      "masuk": 5,
-      "keluar": 19
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Redvelvet Powder 12oz",
+      "tanggal": "2026-02-05",
+      "nama_barang": "Elderflower",
       "masuk": 0,
+      "keluar": 36
+    },
+    {
+      "tanggal": "2026-02-05",
+      "nama_barang": "Lemon Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-05",
+      "nama_barang": "Lychee Buah / Kaleng",
+      "masuk": 10,
       "keluar": 6
     },
     {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Charcoal Powder 12oz",
-      "masuk": 0,
-      "keluar": 2
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Matcha Powder 12oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Peach Tea Powder 12oz",
-      "masuk": 0,
-      "keluar": 3
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Lemon Tea Powder 12oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-06",
+      "tanggal": "2026-02-05",
       "nama_barang": "Lychee Tea Powder 12oz",
       "masuk": 10,
+      "keluar": 14
+    },
+    {
+      "tanggal": "2026-02-05",
+      "nama_barang": "Lychee Tea Powder 16oz",
+      "masuk": 5,
       "keluar": 2
     },
     {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Chocolate Powder 16oz",
-      "masuk": 5,
-      "keluar": 3
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Redvelvet Powder 16oz",
-      "masuk": 10,
-      "keluar": 4
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Charcoal Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Matcha Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Peach Tea Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Lemon Tea Powder 16oz",
-      "masuk": 0,
-      "keluar": 1
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Lychee Tea Powder 16oz",
-      "masuk": 0,
-      "keluar": 1
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Elderflower",
-      "masuk": 0,
-      "keluar": 20
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Green Apple",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Yuzu Orange",
-      "masuk": 1300,
-      "keluar": 91
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Cranberry Juice",
-      "masuk": 0,
-      "keluar": 196
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Wild Berry",
-      "masuk": 0,
-      "keluar": 74
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Vanilla",
-      "masuk": 0,
-      "keluar": 109
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Walnut Brownie",
-      "masuk": 908,
-      "keluar": 31
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Creamcheese",
-      "masuk": 0,
-      "keluar": 650
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Cremebrulee",
-      "masuk": 0,
-      "keluar": 808
-    },
-    {
-      "tanggal": "2026-02-06",
+      "tanggal": "2026-02-05",
       "nama_barang": "Pandan",
       "masuk": 0,
-      "keluar": 73
+      "keluar": 90
     },
     {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Salted Caramel",
+      "tanggal": "2026-02-05",
+      "nama_barang": "Peach Tea Powder 12oz",
       "masuk": 0,
-      "keluar": 469
+      "keluar": 1
     },
     {
-      "tanggal": "2026-02-06",
+      "tanggal": "2026-02-05",
+      "nama_barang": "Redvelvet Powder 12oz",
+      "masuk": 20,
+      "keluar": 6
+    },
+    {
+      "tanggal": "2026-02-05",
+      "nama_barang": "Redvelvet Powder 16oz",
+      "masuk": 0,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-05",
       "nama_barang": "Roasted Hazelnut",
-      "masuk": 920,
-      "keluar": 70
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Butterscotch",
       "masuk": 0,
-      "keluar": 371
+      "keluar": 140
     },
     {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Buah Lemon",
-      "masuk": 3,
-      "keluar": 0
+      "tanggal": "2026-02-05",
+      "nama_barang": "Salted Caramel",
+      "masuk": 919,
+      "keluar": 279
     },
     {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Lychee Buah / Kaleng",
-      "masuk": 0,
-      "keluar": 3
+      "tanggal": "2026-02-05",
+      "nama_barang": "Susu Evaporasi FN",
+      "masuk": 22,
+      "keluar": 19
     },
     {
-      "tanggal": "2026-02-06",
+      "tanggal": "2026-02-05",
+      "nama_barang": "Susu UHT",
+      "masuk": 19,
+      "keluar": 16
+    },
+    {
+      "tanggal": "2026-02-05",
       "nama_barang": "Tebs",
-      "masuk": 0,
-      "keluar": 0
+      "masuk": 5,
+      "keluar": 6
     },
     {
-      "tanggal": "2026-02-06",
+      "tanggal": "2026-02-05",
+      "nama_barang": "Vanilla",
+      "masuk": 0,
+      "keluar": 97
+    },
+    {
+      "tanggal": "2026-02-05",
+      "nama_barang": "Walnut Brownie",
+      "masuk": 0,
+      "keluar": 79
+    },
+    {
+      "tanggal": "2026-02-05",
+      "nama_barang": "Wild Berry",
+      "masuk": 0,
+      "keluar": 137
+    },
+    {
+      "tanggal": "2026-02-05",
+      "nama_barang": "Yuzu Orange",
+      "masuk": 0,
+      "keluar": 107
+    },
+    {
+      "tanggal": "2026-02-05",
       "nama_barang": "Zoda",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Dry Lemon",
-      "masuk": 0,
-      "keluar": 0
+      "masuk": 5,
+      "keluar": 4
     },
     {
       "tanggal": "2026-02-06",
@@ -1747,9 +1365,123 @@
     },
     {
       "tanggal": "2026-02-06",
-      "nama_barang": "Susu UHT",
+      "nama_barang": "Buah Lemon",
+      "masuk": 3,
+      "keluar": 0
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Butterscotch",
+      "masuk": 0,
+      "keluar": 371
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Charcoal Powder 12oz",
+      "masuk": 0,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Chocolate Powder 12oz",
+      "masuk": 5,
+      "keluar": 19
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Chocolate Powder 16oz",
+      "masuk": 5,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Cranberry Juice",
+      "masuk": 0,
+      "keluar": 196
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Creamcheese",
+      "masuk": 0,
+      "keluar": 650
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Cremebrulee",
+      "masuk": 0,
+      "keluar": 808
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Cup 12oz",
+      "masuk": 50,
+      "keluar": 95
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Elderflower",
+      "masuk": 0,
+      "keluar": 20
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Lemon Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Lychee Buah / Kaleng",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Lychee Tea Powder 12oz",
       "masuk": 10,
-      "keluar": 11
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Lychee Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Pandan",
+      "masuk": 0,
+      "keluar": 73
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Peach Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Redvelvet Powder 12oz",
+      "masuk": 0,
+      "keluar": 6
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Redvelvet Powder 16oz",
+      "masuk": 10,
+      "keluar": 4
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Roasted Hazelnut",
+      "masuk": 920,
+      "keluar": 70
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Salted Caramel",
+      "masuk": 0,
+      "keluar": 469
     },
     {
       "tanggal": "2026-02-06",
@@ -1759,219 +1491,39 @@
     },
     {
       "tanggal": "2026-02-06",
-      "nama_barang": "Air Mineral 600ml",
-      "masuk": 0,
-      "keluar": 0
+      "nama_barang": "Susu UHT",
+      "masuk": 10,
+      "keluar": 11
     },
     {
       "tanggal": "2026-02-06",
-      "nama_barang": "Cremer",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-06",
-      "nama_barang": "Cup 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Cup 12oz",
-      "masuk": 200,
-      "keluar": 129
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Chocolate Powder 12oz",
-      "masuk": 15,
-      "keluar": 15
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Redvelvet Powder 12oz",
-      "masuk": 10,
-      "keluar": 4
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Charcoal Powder 12oz",
-      "masuk": 10,
-      "keluar": 2
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Matcha Powder 12oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Peach Tea Powder 12oz",
-      "masuk": 10,
-      "keluar": 3
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Lemon Tea Powder 12oz",
-      "masuk": 0,
-      "keluar": 3
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Lychee Tea Powder 12oz",
-      "masuk": 10,
-      "keluar": 7
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Chocolate Powder 16oz",
-      "masuk": 0,
-      "keluar": 12
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Redvelvet Powder 16oz",
-      "masuk": 0,
-      "keluar": 5
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Charcoal Powder 16oz",
-      "masuk": 0,
-      "keluar": 3
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Matcha Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Peach Tea Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Lemon Tea Powder 16oz",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Lychee Tea Powder 16oz",
-      "masuk": 0,
-      "keluar": 1
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Elderflower",
-      "masuk": 0,
-      "keluar": 55
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Green Apple",
-      "masuk": 0,
-      "keluar": 35
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Yuzu Orange",
-      "masuk": 0,
-      "keluar": 167
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Cranberry Juice",
-      "masuk": 0,
-      "keluar": 929
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Wild Berry",
-      "masuk": 0,
-      "keluar": 233
-    },
-    {
-      "tanggal": "2026-02-07",
       "nama_barang": "Vanilla",
       "masuk": 0,
-      "keluar": 146
+      "keluar": 109
     },
     {
-      "tanggal": "2026-02-07",
+      "tanggal": "2026-02-06",
       "nama_barang": "Walnut Brownie",
+      "masuk": 908,
+      "keluar": 31
+    },
+    {
+      "tanggal": "2026-02-06",
+      "nama_barang": "Wild Berry",
       "masuk": 0,
       "keluar": 74
     },
     {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Creamcheese",
-      "masuk": 0,
-      "keluar": 758
+      "tanggal": "2026-02-06",
+      "nama_barang": "Yuzu Orange",
+      "masuk": 1300,
+      "keluar": 91
     },
     {
       "tanggal": "2026-02-07",
-      "nama_barang": "Cremebrulee",
-      "masuk": 921,
-      "keluar": 700
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Pandan",
-      "masuk": 0,
-      "keluar": 78
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Salted Caramel",
-      "masuk": 912,
-      "keluar": 606
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Roasted Hazelnut",
-      "masuk": 0,
-      "keluar": 190
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Butterscotch",
-      "masuk": 907,
-      "keluar": 916
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Buah Lemon",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Lychee Buah / Kaleng",
-      "masuk": 10,
-      "keluar": 8
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Tebs",
-      "masuk": 0,
-      "keluar": 0
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Zoda",
-      "masuk": 0,
-      "keluar": 4
-    },
-    {
-      "tanggal": "2026-02-07",
-      "nama_barang": "Dry Lemon",
-      "masuk": 0,
-      "keluar": 0
+      "nama_barang": "Air Mineral 600ml",
+      "masuk": 4,
+      "keluar": 24
     },
     {
       "tanggal": "2026-02-07",
@@ -1987,21 +1539,51 @@
     },
     {
       "tanggal": "2026-02-07",
-      "nama_barang": "Susu UHT",
-      "masuk": 22,
-      "keluar": 25
+      "nama_barang": "Butterscotch",
+      "masuk": 907,
+      "keluar": 916
     },
     {
       "tanggal": "2026-02-07",
-      "nama_barang": "Susu Evaporasi FN",
-      "masuk": 18,
-      "keluar": 19
+      "nama_barang": "Charcoal Powder 12oz",
+      "masuk": 10,
+      "keluar": 2
     },
     {
       "tanggal": "2026-02-07",
-      "nama_barang": "Air Mineral 600ml",
-      "masuk": 4,
-      "keluar": 24
+      "nama_barang": "Charcoal Powder 16oz",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Chocolate Powder 12oz",
+      "masuk": 15,
+      "keluar": 15
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Chocolate Powder 16oz",
+      "masuk": 0,
+      "keluar": 12
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Cranberry Juice",
+      "masuk": 0,
+      "keluar": 929
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Creamcheese",
+      "masuk": 0,
+      "keluar": 758
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Cremebrulee",
+      "masuk": 921,
+      "keluar": 700
     },
     {
       "tanggal": "2026-02-07",
@@ -2011,9 +1593,2031 @@
     },
     {
       "tanggal": "2026-02-07",
+      "nama_barang": "Cup 12oz",
+      "masuk": 200,
+      "keluar": 129
+    },
+    {
+      "tanggal": "2026-02-07",
       "nama_barang": "Cup 16oz",
       "masuk": 0,
       "keluar": 67
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Elderflower",
+      "masuk": 0,
+      "keluar": 55
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Green Apple",
+      "masuk": 0,
+      "keluar": 35
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Lemon Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Lychee Buah / Kaleng",
+      "masuk": 10,
+      "keluar": 8
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Lychee Tea Powder 12oz",
+      "masuk": 10,
+      "keluar": 7
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Lychee Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Pandan",
+      "masuk": 0,
+      "keluar": 78
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Peach Tea Powder 12oz",
+      "masuk": 10,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Redvelvet Powder 12oz",
+      "masuk": 10,
+      "keluar": 4
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Redvelvet Powder 16oz",
+      "masuk": 0,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Roasted Hazelnut",
+      "masuk": 0,
+      "keluar": 190
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Salted Caramel",
+      "masuk": 912,
+      "keluar": 606
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Susu Evaporasi FN",
+      "masuk": 18,
+      "keluar": 19
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Susu UHT",
+      "masuk": 22,
+      "keluar": 25
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Vanilla",
+      "masuk": 0,
+      "keluar": 146
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Walnut Brownie",
+      "masuk": 0,
+      "keluar": 74
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Wild Berry",
+      "masuk": 0,
+      "keluar": 233
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Yuzu Orange",
+      "masuk": 0,
+      "keluar": 167
+    },
+    {
+      "tanggal": "2026-02-07",
+      "nama_barang": "Zoda",
+      "masuk": 0,
+      "keluar": 4
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Air Mineral 600ml",
+      "masuk": 48,
+      "keluar": 24
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Aren",
+      "masuk": 2,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Beans",
+      "masuk": 2500,
+      "keluar": 2500
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Butterscotch",
+      "masuk": 910,
+      "keluar": 391
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Charcoal Powder 12oz",
+      "masuk": 0,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Charcoal Powder 16oz",
+      "masuk": 15,
+      "keluar": 0
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Chocolate Powder 12oz",
+      "masuk": 6,
+      "keluar": 6
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Chocolate Powder 16oz",
+      "masuk": 13,
+      "keluar": 7
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Cranberry Juice",
+      "masuk": 959,
+      "keluar": 628
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Creamcheese",
+      "masuk": 971,
+      "keluar": 169
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Cremebrulee",
+      "masuk": 919,
+      "keluar": 613
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Cremer",
+      "masuk": 2,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Cup 12oz",
+      "masuk": 150,
+      "keluar": 171
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Cup 16oz",
+      "masuk": 150,
+      "keluar": 51
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Elderflower",
+      "masuk": 0,
+      "keluar": 31
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Green Apple",
+      "masuk": 0,
+      "keluar": 43
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Lemon Tea Powder 12oz",
+      "masuk": 10,
+      "keluar": 0
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Lemon Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Lychee Buah / Kaleng",
+      "masuk": 10,
+      "keluar": 10
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Lychee Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 6
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Lychee Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Matcha Powder 12oz",
+      "masuk": 25,
+      "keluar": 24
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Matcha Powder 16oz",
+      "masuk": 30,
+      "keluar": 8
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Pandan",
+      "masuk": 0,
+      "keluar": 75
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Peach Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Peach Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Redvelvet Powder 12oz",
+      "masuk": 0,
+      "keluar": 7
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Redvelvet Powder 16oz",
+      "masuk": 15,
+      "keluar": 0
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Roasted Hazelnut",
+      "masuk": 0,
+      "keluar": 80
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Salted Caramel",
+      "masuk": 0,
+      "keluar": 194
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Susu Evaporasi FN",
+      "masuk": 18,
+      "keluar": 13
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Susu UHT",
+      "masuk": 24,
+      "keluar": 16
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Tebs",
+      "masuk": 3,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Vanilla",
+      "masuk": 922,
+      "keluar": 115
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Walnut Brownie",
+      "masuk": 0,
+      "keluar": 18
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Wild Berry",
+      "masuk": 917,
+      "keluar": 133
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Yuzu Orange",
+      "masuk": 0,
+      "keluar": 74
+    },
+    {
+      "tanggal": "2026-02-08",
+      "nama_barang": "Zoda",
+      "masuk": 5,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Air Mineral 600ml",
+      "masuk": 0,
+      "keluar": 24
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Aren",
+      "masuk": 2,
+      "keluar": 0
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Beans",
+      "masuk": 500,
+      "keluar": 500
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Butterscotch",
+      "masuk": 0,
+      "keluar": 306
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Charcoal Powder 12oz",
+      "masuk": 0,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Charcoal Powder 16oz",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Chocolate Powder 12oz",
+      "masuk": 10,
+      "keluar": 8
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Chocolate Powder 16oz",
+      "masuk": 10,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Cranberry Juice",
+      "masuk": 957,
+      "keluar": 635
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Creamcheese",
+      "masuk": 971,
+      "keluar": 305
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Cremebrulee",
+      "masuk": 0,
+      "keluar": 457
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Cremer",
+      "masuk": 1,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Cup 12oz",
+      "masuk": 67,
+      "keluar": 69
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Cup 16oz",
+      "masuk": 50,
+      "keluar": 48
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Elderflower",
+      "masuk": 0,
+      "keluar": 96
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Green Apple",
+      "masuk": 0,
+      "keluar": 31
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Lemon Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Lemon Tea Powder 16oz",
+      "masuk": 4,
+      "keluar": 0
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Lychee Buah / Kaleng",
+      "masuk": 10,
+      "keluar": 8
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Lychee Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Lychee Tea Powder 16oz",
+      "masuk": 10,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Matcha Powder 12oz",
+      "masuk": 20,
+      "keluar": 9
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Matcha Powder 16oz",
+      "masuk": 15,
+      "keluar": 6
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Pandan",
+      "masuk": 0,
+      "keluar": 85
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Peach Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Peach Tea Powder 16oz",
+      "masuk": 5,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Redvelvet Powder 12oz",
+      "masuk": 9,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Roasted Hazelnut",
+      "masuk": 0,
+      "keluar": 40
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Salted Caramel",
+      "masuk": 915,
+      "keluar": 568
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Susu Evaporasi FN",
+      "masuk": 9,
+      "keluar": 12
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Susu UHT",
+      "masuk": 12,
+      "keluar": 13
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Walnut Brownie",
+      "masuk": 0,
+      "keluar": 80
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Wild Berry",
+      "masuk": 0,
+      "keluar": 284
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Yuzu Orange",
+      "masuk": 0,
+      "keluar": 228
+    },
+    {
+      "tanggal": "2026-02-09",
+      "nama_barang": "Zoda",
+      "masuk": 4,
+      "keluar": 7
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Air Mineral 600ml",
+      "masuk": 24,
+      "keluar": 13
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Aren",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Beans",
+      "masuk": 1500,
+      "keluar": 2000
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Buah Lemon",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Butterscotch",
+      "masuk": 0,
+      "keluar": 173
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Charcoal Powder 12oz",
+      "masuk": 0,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Charcoal Powder 16oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Chocolate Powder 12oz",
+      "masuk": 20,
+      "keluar": 10
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Chocolate Powder 16oz",
+      "masuk": 0,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Cranberry Juice",
+      "masuk": 0,
+      "keluar": 525
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Creamcheese",
+      "masuk": 0,
+      "keluar": 371
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Cremebrulee",
+      "masuk": 0,
+      "keluar": 790
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Cremer",
+      "masuk": 2,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Cup 12oz",
+      "masuk": 50,
+      "keluar": 116
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Cup 16oz",
+      "masuk": 0,
+      "keluar": 45
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Elderflower",
+      "masuk": 0,
+      "keluar": 18
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Green Apple",
+      "masuk": 0,
+      "keluar": 22
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Lemon Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Lemon Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Lychee Buah / Kaleng",
+      "masuk": 0,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Lychee Tea Powder 12oz",
+      "masuk": 10,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Lychee Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Matcha Powder 12oz",
+      "masuk": 10,
+      "keluar": 16
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Matcha Powder 16oz",
+      "masuk": 0,
+      "keluar": 9
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Pandan",
+      "masuk": 0,
+      "keluar": 66
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Peach Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Peach Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Redvelvet Powder 12oz",
+      "masuk": 0,
+      "keluar": 6
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Redvelvet Powder 16oz",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Roasted Hazelnut",
+      "masuk": 0,
+      "keluar": 38
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Salted Caramel",
+      "masuk": 0,
+      "keluar": 376
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Susu Evaporasi FN",
+      "masuk": 17,
+      "keluar": 17
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Susu UHT",
+      "masuk": 14,
+      "keluar": 16
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Vanilla",
+      "masuk": 0,
+      "keluar": 23
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Walnut Brownie",
+      "masuk": 0,
+      "keluar": 73
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Wild Berry",
+      "masuk": 0,
+      "keluar": 101
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Yuzu Orange",
+      "masuk": 0,
+      "keluar": 66
+    },
+    {
+      "tanggal": "2026-02-10",
+      "nama_barang": "Zoda",
+      "masuk": 5,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Air Mineral 600ml",
+      "masuk": 24,
+      "keluar": 24
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Aren",
+      "masuk": 1,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Beans",
+      "masuk": 1500,
+      "keluar": 1000
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Butterscotch",
+      "masuk": 911,
+      "keluar": 344
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Charcoal Powder 12oz",
+      "masuk": 0,
+      "keluar": 4
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Chocolate Powder 12oz",
+      "masuk": 0,
+      "keluar": 10
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Chocolate Powder 16oz",
+      "masuk": 0,
+      "keluar": 4
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Cranberry Juice",
+      "masuk": 956,
+      "keluar": 817
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Creamcheese",
+      "masuk": 975,
+      "keluar": 408
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Cremebrulee",
+      "masuk": 917,
+      "keluar": 414
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Cremer",
+      "masuk": 1,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Cup 12oz",
+      "masuk": 150,
+      "keluar": 120
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Cup 16oz",
+      "masuk": 50,
+      "keluar": 41
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Elderflower",
+      "masuk": 0,
+      "keluar": 17
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Green Apple",
+      "masuk": 0,
+      "keluar": 31
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Lychee Buah / Kaleng",
+      "masuk": 13,
+      "keluar": 9
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Lychee Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Lychee Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Matcha Powder 12oz",
+      "masuk": 10,
+      "keluar": 16
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Matcha Powder 16oz",
+      "masuk": 0,
+      "keluar": 7
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Pandan",
+      "masuk": 0,
+      "keluar": 30
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Peach Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Redvelvet Powder 12oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Redvelvet Powder 16oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Roasted Hazelnut",
+      "masuk": 0,
+      "keluar": 72
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Salted Caramel",
+      "masuk": 917,
+      "keluar": 441
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Susu Evaporasi FN",
+      "masuk": 18,
+      "keluar": 18
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Susu UHT",
+      "masuk": 13,
+      "keluar": 15
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Vanilla",
+      "masuk": 0,
+      "keluar": 134
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Walnut Brownie",
+      "masuk": 0,
+      "keluar": 104
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Wild Berry",
+      "masuk": 0,
+      "keluar": 118
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Yuzu Orange",
+      "masuk": 0,
+      "keluar": 94
+    },
+    {
+      "tanggal": "2026-02-11",
+      "nama_barang": "Zoda",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Air Mineral 600ml",
+      "masuk": 24,
+      "keluar": 27
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Aren",
+      "masuk": 2,
+      "keluar": 0
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Beans",
+      "masuk": 1000,
+      "keluar": 1500
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Butterscotch",
+      "masuk": 0,
+      "keluar": 281
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Charcoal Powder 12oz",
+      "masuk": 5,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Charcoal Powder 16oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Chocolate Powder 12oz",
+      "masuk": 20,
+      "keluar": 10
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Cranberry Juice",
+      "masuk": 2007,
+      "keluar": 633
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Creamcheese",
+      "masuk": 0,
+      "keluar": 438
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Cremebrulee",
+      "masuk": 919,
+      "keluar": 379
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Cremer",
+      "masuk": 1,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Cup 12oz",
+      "masuk": 100,
+      "keluar": 99
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Cup 16oz",
+      "masuk": 0,
+      "keluar": 36
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Elderflower",
+      "masuk": 0,
+      "keluar": 16
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Green Apple",
+      "masuk": 0,
+      "keluar": 32
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Lemon Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Lychee Buah / Kaleng",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Lychee Tea Powder 12oz",
+      "masuk": 5,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Matcha Powder 12oz",
+      "masuk": 20,
+      "keluar": 11
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Matcha Powder 16oz",
+      "masuk": 0,
+      "keluar": 7
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Pandan",
+      "masuk": 0,
+      "keluar": 115
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Redvelvet Powder 12oz",
+      "masuk": 15,
+      "keluar": 0
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Redvelvet Powder 16oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Roasted Hazelnut",
+      "masuk": 0,
+      "keluar": 120
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Salted Caramel",
+      "masuk": 0,
+      "keluar": 223
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Susu Evaporasi FN",
+      "masuk": 18,
+      "keluar": 14
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Susu UHT",
+      "masuk": 19,
+      "keluar": 16
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Vanilla",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Walnut Brownie",
+      "masuk": 0,
+      "keluar": 47
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Wild Berry",
+      "masuk": 0,
+      "keluar": 109
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Yuzu Orange",
+      "masuk": 0,
+      "keluar": 68
+    },
+    {
+      "tanggal": "2026-02-12",
+      "nama_barang": "Zoda",
+      "masuk": 2,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Air Mineral 600ml",
+      "masuk": 24,
+      "keluar": 25
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Aren",
+      "masuk": 4,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Beans",
+      "masuk": 2000,
+      "keluar": 2000
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Butterscotch",
+      "masuk": 0,
+      "keluar": 339
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Charcoal Powder 12oz",
+      "masuk": 0,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Chocolate Powder 12oz",
+      "masuk": 10,
+      "keluar": 14
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Chocolate Powder 16oz",
+      "masuk": 0,
+      "keluar": 4
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Cranberry Juice",
+      "masuk": 0,
+      "keluar": 326
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Creamcheese",
+      "masuk": 952,
+      "keluar": 1714
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Cremebrulee",
+      "masuk": 0,
+      "keluar": 588
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Cremer",
+      "masuk": 1,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Cup 12oz",
+      "masuk": 200,
+      "keluar": 140
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Cup 16oz",
+      "masuk": 25,
+      "keluar": 39
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Elderflower",
+      "masuk": 0,
+      "keluar": 19
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Green Apple",
+      "masuk": 0,
+      "keluar": 10
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Lemon Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Lemon Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 4
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Lychee Buah / Kaleng",
+      "masuk": 9,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Lychee Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 4
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Lychee Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Matcha Powder 12oz",
+      "masuk": 10,
+      "keluar": 15
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Matcha Powder 16oz",
+      "masuk": 10,
+      "keluar": 8
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Pandan",
+      "masuk": 0,
+      "keluar": 111
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Peach Tea Powder 12oz",
+      "masuk": 10,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Peach Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Redvelvet Powder 12oz",
+      "masuk": 0,
+      "keluar": 8
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Redvelvet Powder 16oz",
+      "masuk": 0,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Roasted Hazelnut",
+      "masuk": 0,
+      "keluar": 69
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Salted Caramel",
+      "masuk": 917,
+      "keluar": 394
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Susu Evaporasi FN",
+      "masuk": 9,
+      "keluar": 15
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Susu UHT",
+      "masuk": 26,
+      "keluar": 32
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Tebs",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Walnut Brownie",
+      "masuk": 0,
+      "keluar": 23
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Wild Berry",
+      "masuk": 0,
+      "keluar": 80
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Yuzu Orange",
+      "masuk": 0,
+      "keluar": 55
+    },
+    {
+      "tanggal": "2026-02-13",
+      "nama_barang": "Zoda",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Air Mineral 600ml",
+      "masuk": 24,
+      "keluar": 23
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Aren",
+      "masuk": 1,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Beans",
+      "masuk": 2000,
+      "keluar": 1000
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Buah Lemon",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Butterscotch",
+      "masuk": 910,
+      "keluar": 520
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Charcoal Powder 12oz",
+      "masuk": 10,
+      "keluar": 4
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Chocolate Powder 12oz",
+      "masuk": 15,
+      "keluar": 14
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Chocolate Powder 16oz",
+      "masuk": 10,
+      "keluar": 6
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Cranberry Juice",
+      "masuk": 0,
+      "keluar": 322
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Creamcheese",
+      "masuk": 971,
+      "keluar": 529
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Cremebrulee",
+      "masuk": 0,
+      "keluar": 410
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Cremer",
+      "masuk": 4,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Cup 12oz",
+      "masuk": 100,
+      "keluar": 156
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Cup 16oz",
+      "masuk": 50,
+      "keluar": 38
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Elderflower",
+      "masuk": 0,
+      "keluar": 60
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Green Apple",
+      "masuk": 0,
+      "keluar": 13
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Lemon Tea Powder 12oz",
+      "masuk": 5,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Lychee Buah / Kaleng",
+      "masuk": 0,
+      "keluar": 7
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Lychee Tea Powder 12oz",
+      "masuk": 5,
+      "keluar": 8
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Matcha Powder 12oz",
+      "masuk": 15,
+      "keluar": 12
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Matcha Powder 16oz",
+      "masuk": 10,
+      "keluar": 6
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Pandan",
+      "masuk": 0,
+      "keluar": 91
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Peach Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 4
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Peach Tea Powder 16oz",
+      "masuk": 3,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Redvelvet Powder 12oz",
+      "masuk": 0,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Roasted Hazelnut",
+      "masuk": 0,
+      "keluar": 166
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Salted Caramel",
+      "masuk": 0,
+      "keluar": 451
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Susu Evaporasi FN",
+      "masuk": 21,
+      "keluar": 18
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Susu UHT",
+      "masuk": 20,
+      "keluar": 18
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Tebs",
+      "masuk": 3,
+      "keluar": 0
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Vanilla",
+      "masuk": 0,
+      "keluar": 82
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Walnut Brownie",
+      "masuk": 0,
+      "keluar": 83
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Wild Berry",
+      "masuk": 0,
+      "keluar": 169
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Yuzu Orange",
+      "masuk": 0,
+      "keluar": 116
+    },
+    {
+      "tanggal": "2026-02-14",
+      "nama_barang": "Zoda",
+      "masuk": 6,
+      "keluar": 4
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Air Mineral 600ml",
+      "masuk": 24,
+      "keluar": 21
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Aren",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Beans",
+      "masuk": 1000,
+      "keluar": 2000
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Butterscotch",
+      "masuk": 0,
+      "keluar": 492
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Charcoal Powder 12oz",
+      "masuk": 0,
+      "keluar": 4
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Charcoal Powder 16oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Chocolate Powder 12oz",
+      "masuk": 10,
+      "keluar": 15
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Chocolate Powder 16oz",
+      "masuk": 0,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Cranberry Juice",
+      "masuk": 0,
+      "keluar": 213
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Creamcheese",
+      "masuk": 0,
+      "keluar": 548
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Cremebrulee",
+      "masuk": 917,
+      "keluar": 802
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Cup 12oz",
+      "masuk": 150,
+      "keluar": 144
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Cup 16oz",
+      "masuk": 50,
+      "keluar": 54
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Dry Lemon",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Elderflower",
+      "masuk": 0,
+      "keluar": 68
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Green Apple",
+      "masuk": 0,
+      "keluar": 22
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Lemon Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Lemon Tea Powder 16oz",
+      "masuk": 10,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Lychee Buah / Kaleng",
+      "masuk": 10,
+      "keluar": 4
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Lychee Tea Powder 12oz",
+      "masuk": 10,
+      "keluar": 4
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Matcha Powder 12oz",
+      "masuk": 1,
+      "keluar": 8
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Matcha Powder 16oz",
+      "masuk": 0,
+      "keluar": 7
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Pandan",
+      "masuk": 929,
+      "keluar": 53
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Peach Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Peach Tea Powder 16oz",
+      "masuk": 5,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Redvelvet Powder 12oz",
+      "masuk": 10,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Redvelvet Powder 16oz",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Roasted Hazelnut",
+      "masuk": 0,
+      "keluar": 194
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Salted Caramel",
+      "masuk": 0,
+      "keluar": 348
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Susu Evaporasi FN",
+      "masuk": 18,
+      "keluar": 21
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Susu UHT",
+      "masuk": 20,
+      "keluar": 19
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Vanilla",
+      "masuk": 0,
+      "keluar": 46
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Walnut Brownie",
+      "masuk": 0,
+      "keluar": 61
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Wild Berry",
+      "masuk": 0,
+      "keluar": 165
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Yuzu Orange",
+      "masuk": 0,
+      "keluar": 116
+    },
+    {
+      "tanggal": "2026-02-15",
+      "nama_barang": "Zoda",
+      "masuk": 0,
+      "keluar": 5
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Aren",
+      "masuk": 2,
+      "keluar": 0
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Beans",
+      "masuk": 1500,
+      "keluar": 1500
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Butterscotch",
+      "masuk": 913,
+      "keluar": 354
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Charcoal Powder 12oz",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Charcoal Powder 16oz",
+      "masuk": 0,
+      "keluar": 2
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Chocolate Powder 12oz",
+      "masuk": 10,
+      "keluar": 10
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Chocolate Powder 16oz",
+      "masuk": 10,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Cranberry Juice",
+      "masuk": 0,
+      "keluar": 319
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Creamcheese",
+      "masuk": 939,
+      "keluar": 383
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Cremebrulee",
+      "masuk": 919,
+      "keluar": 406
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Cup 12oz",
+      "masuk": 150,
+      "keluar": 99
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Dry Lemon",
+      "masuk": 1,
+      "keluar": 0
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Elderflower",
+      "masuk": 0,
+      "keluar": 34
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Green Apple",
+      "masuk": 0,
+      "keluar": 9
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Lemon Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 4
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Lychee Buah / Kaleng",
+      "masuk": 10,
+      "keluar": 16
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Lychee Tea Powder 12oz",
+      "masuk": 5,
+      "keluar": 9
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Lychee Tea Powder 16oz",
+      "masuk": 5,
+      "keluar": 7
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Matcha Powder 12oz",
+      "masuk": 15,
+      "keluar": 7
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Matcha Powder 16oz",
+      "masuk": 15,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Pandan",
+      "masuk": 0,
+      "keluar": 57
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Peach Tea Powder 12oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Peach Tea Powder 16oz",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Redvelvet Powder 12oz",
+      "masuk": 0,
+      "keluar": 3
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Roasted Hazelnut",
+      "masuk": 0,
+      "keluar": 55
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Salted Caramel",
+      "masuk": 917,
+      "keluar": 210
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Susu Evaporasi FN",
+      "masuk": 18,
+      "keluar": 12
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Susu UHT",
+      "masuk": 16,
+      "keluar": 14
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Tebs",
+      "masuk": 0,
+      "keluar": 1
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Vanilla",
+      "masuk": 0,
+      "keluar": 47
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Walnut Brownie",
+      "masuk": 0,
+      "keluar": 81
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Wild Berry",
+      "masuk": 918,
+      "keluar": 164
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Yuzu Orange",
+      "masuk": 0,
+      "keluar": 117
+    },
+    {
+      "tanggal": "2026-02-16",
+      "nama_barang": "Zoda",
+      "masuk": 6,
+      "keluar": 4
     }
   ]
 }

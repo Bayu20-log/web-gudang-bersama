@@ -508,4 +508,118 @@ class ForecastingService
             'bounds' => $bounds,
         ];
     }
+
+    // ================== CHART UNTUK PDF (GD, karena dompdf tidak reliable render SVG) ==================
+
+    /**
+     * Render kurva actual vs prediksi sebagai gambar PNG (base64, tanpa prefix data:image/png;base64,)
+     * memakai ekstensi GD bawaan PHP. Dipakai khusus untuk export PDF, karena dompdf tidak menjalankan
+     * JavaScript (jadi Chart.js tidak bisa dipakai) dan dukungan inline SVG dompdf tidak konsisten.
+     *
+     * Membutuhkan ekstensi GD aktif di php.ini (`extension=gd`, sudah default di XAMPP tapi kadang
+     * belum di-uncomment). Kalau GD tidak aktif, method ini akan melempar Error.
+     */
+    public function renderForecastChartImage($historicalSeries, $forecastValues, int $width = 700, int $height = 260): string
+    {
+        if (!function_exists('imagecreatetruecolor')) {
+            throw new \RuntimeException('Ekstensi GD tidak aktif di server ini. Aktifkan extension=gd di php.ini.');
+        }
+
+        $histY = collect($historicalSeries)->pluck('y')->map(fn($v) => (float) $v)->values()->all();
+        $foreY = collect($forecastValues)->pluck('predicted_requirement')->map(fn($v) => (float) $v)->values()->all();
+        $foreLower = collect($forecastValues)->pluck('lower_bound')->map(fn($v) => (float) $v)->values()->all();
+        $foreUpper = collect($forecastValues)->pluck('upper_bound')->map(fn($v) => (float) $v)->values()->all();
+
+        $allY = array_merge($histY, $foreY, $foreLower, $foreUpper);
+        $minY = min(0, empty($allY) ? 0 : min($allY));
+        $maxY = empty($allY) ? 1 : max($allY);
+        if ($maxY <= $minY) {
+            $maxY = $minY + 1;
+        }
+
+        $padL = 55; $padR = 20; $padT = 20; $padB = 30;
+        $plotW = $width - $padL - $padR;
+        $plotH = $height - $padT - $padB;
+
+        $totalPoints = count($histY) + count($foreY);
+        $stepX = $totalPoints > 1 ? $plotW / ($totalPoints - 1) : 0;
+
+        $toPixelY = function ($val) use ($minY, $maxY, $padT, $plotH) {
+            if ($maxY == $minY) return (int) round($padT + $plotH);
+            return (int) round($padT + $plotH - (($val - $minY) / ($maxY - $minY)) * $plotH);
+        };
+
+        $im = imagecreatetruecolor($width, $height);
+        $white = imagecolorallocate($im, 255, 255, 255);
+        $axisColor = imagecolorallocate($im, 203, 213, 225);
+        $blue = imagecolorallocate($im, 37, 99, 235);
+        $orange = imagecolorallocate($im, 245, 158, 11);
+        $bandColor = imagecolorallocate($im, 253, 230, 138);
+        $textColor = imagecolorallocate($im, 100, 116, 139);
+
+        imagefill($im, 0, 0, $white);
+
+        // Titik koordinat historis
+        $histCoords = [];
+        foreach ($histY as $i => $v) {
+            $x = (int) round($padL + $i * $stepX);
+            $histCoords[] = [$x, $toPixelY($v)];
+        }
+
+        // Titik koordinat prediksi (nyambung dari titik historis terakhir)
+        $foreCoords = [];
+        $upperCoords = [];
+        $lowerCoords = [];
+        $startIdx = count($histY) - 1;
+        if (!empty($histCoords)) {
+            $foreCoords[] = end($histCoords);
+        }
+        foreach ($foreY as $i => $v) {
+            $idx = $startIdx + 1 + $i;
+            $x = (int) round($padL + $idx * $stepX);
+            $foreCoords[] = [$x, $toPixelY($v)];
+            $upperCoords[] = [$x, $toPixelY($foreUpper[$i])];
+            $lowerCoords[] = [$x, $toPixelY($foreLower[$i])];
+        }
+
+        // Area rentang batas bawah-atas (digambar duluan biar ketutup garis)
+        if (!empty($upperCoords)) {
+            $bandPoints = [];
+            foreach ($upperCoords as $c) { $bandPoints[] = $c[0]; $bandPoints[] = $c[1]; }
+            foreach (array_reverse($lowerCoords) as $c) { $bandPoints[] = $c[0]; $bandPoints[] = $c[1]; }
+            imagefilledpolygon($im, $bandPoints, count($bandPoints) / 2, $bandColor);
+        }
+
+        // Sumbu
+        imageline($im, $padL, $padT, $padL, $padT + $plotH, $axisColor);
+        imageline($im, $padL, $padT + $plotH, $padL + $plotW, $padT + $plotH, $axisColor);
+
+        // Garis actual (historis)
+        for ($i = 0; $i < count($histCoords) - 1; $i++) {
+            imageline($im, $histCoords[$i][0], $histCoords[$i][1], $histCoords[$i + 1][0], $histCoords[$i + 1][1], $blue);
+        }
+        foreach ($histCoords as $c) {
+            imagefilledellipse($im, $c[0], $c[1], 4, 4, $blue);
+        }
+
+        // Garis prediksi
+        for ($i = 0; $i < count($foreCoords) - 1; $i++) {
+            imageline($im, $foreCoords[$i][0], $foreCoords[$i][1], $foreCoords[$i + 1][0], $foreCoords[$i + 1][1], $orange);
+        }
+        foreach ($foreCoords as $idx2 => $c) {
+            if ($idx2 === 0) continue; // titik pertama cuma sambungan dari historis, bukan titik prediksi
+            imagefilledellipse($im, $c[0], $c[1], 4, 4, $orange);
+        }
+
+        // Label sumbu Y (nilai maksimum & minimum)
+        imagestring($im, 2, 2, $padT - 6, number_format($maxY, 0), $textColor);
+        imagestring($im, 2, 2, $padT + $plotH - 6, number_format($minY, 0), $textColor);
+
+        ob_start();
+        imagepng($im);
+        $imageData = ob_get_clean();
+        imagedestroy($im);
+
+        return base64_encode($imageData);
+    }
 }

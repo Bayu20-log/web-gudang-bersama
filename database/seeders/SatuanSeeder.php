@@ -11,7 +11,7 @@ class SatuanSeeder extends Seeder
 
     public function run(): void
     {
-        $satuans = ['Gram', 'Ml'];
+        $satuans = ['Gram', 'Ml', "Pcs"];
 
         foreach ($satuans as $nama) {
             Satuan::create([
