@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\BarangKeluar;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Mail\StockNotificationMail;
+use Illuminate\Support\Facades\Mail;
 
 class AdaptiveThresholdService
 {
@@ -405,27 +407,16 @@ class AdaptiveThresholdService
         return $sent;
     }
 
-    /**
-     * Mencatat pengiriman notifikasi ke channel in-app (selalu),
-     * dan ke channel email (kecuali pemilik barang menonaktifkan
-     * email_notifications_enabled -- default aktif/opt-out).
-     *
-     * CATATAN: pengiriman email di sini bersifat SIMULASI -- hanya
-     * dicatat ke notification_deliveries, belum benar-benar mengirim
-     * lewat SMTP. Integrasi SMTP asli adalah pengembangan lanjutan.
-     *
-     * @param  int  $notificationId
-     * @param  string  $kodeBarang
-     * @return array  daftar channel yang tercatat terkirim
-     */
     public function deliverNotification(int $notificationId, string $kodeBarang): array
     {
         $channelsDelivered = [];
 
-        // In-app selalu terkirim, tanpa syarat.
+        // In-app selalu berhasil, tanpa syarat -- tidak ada mekanisme
+        // "gagal" untuk channel ini karena cuma catat ke database sendiri.
         DB::table('notification_deliveries')->insert([
             'notification_id' => $notificationId,
             'channel'         => 'in_app',
+            'status'          => 'sent',
             'delivered_at'    => now(),
             'created_at'      => now(),
             'updated_at'      => now(),
@@ -436,15 +427,52 @@ class AdaptiveThresholdService
         $item = DB::table('items')->where('kode_barang', $kodeBarang)->first();
         $user = $item ? DB::table('users')->where('id', $item->user_id)->first() : null;
 
-        if ($user && $user->email_notifications_enabled) {
-            DB::table('notification_deliveries')->insert([
+        if ($user && $user->email_notifications_enabled && $user->email) {
+            // Catat dulu sebagai 'pending' SEBELUM benar-benar mengirim.
+            $deliveryId = DB::table('notification_deliveries')->insertGetId([
                 'notification_id' => $notificationId,
                 'channel'         => 'email',
-                'delivered_at'    => now(),
+                'status'          => 'pending',
+                'delivered_at'    => null,
                 'created_at'      => now(),
                 'updated_at'      => now(),
             ]);
-            $channelsDelivered[] = 'email';
+
+            try {
+                $notification = DB::table('stock_notifications')->where('id', $notificationId)->first();
+                $threshold    = DB::table('stock_thresholds')->where('item_id', $kodeBarang)->first();
+
+                Mail::to($user->email)->send(new StockNotificationMail(
+                    namaBarang: $item->nama_barang,
+                    kodeBarang: $kodeBarang,
+                    level: $notification->level,
+                    type: $notification->type,
+                    title: $notification->title,
+                    pesanNotifikasi: $notification->message,
+                    stokAktual: $this->getCurrentStock($kodeBarang),
+                    lowThreshold: $threshold->low_threshold ?? null,
+                    criticalThreshold: $threshold->critical_threshold ?? null,
+                ));
+
+                DB::table('notification_deliveries')
+                    ->where('id', $deliveryId)
+                    ->update([
+                        'status'       => 'sent',
+                        'delivered_at' => now(),
+                        'updated_at'   => now(),
+                    ]);
+
+                $channelsDelivered[] = 'email';
+            } catch (\Throwable $e) {
+                DB::table('notification_deliveries')
+                    ->where('id', $deliveryId)
+                    ->update([
+                        'status'         => 'failed',
+                        'failure_reason' => $e->getMessage(),
+                        'updated_at'     => now(),
+                    ]);
+                // Tidak throw ulang -- lihat catatan di docblock method ini.
+            }
         }
 
         return $channelsDelivered;

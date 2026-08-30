@@ -15,18 +15,13 @@ class StockNotificationController extends Controller
         $this->service = $service;
     }
 
-    /**
-     * Menampilkan daftar status stok semua item + riwayat notifikasi.
-     */
     public function index()
     {
-        // Ambil semua item milik user yang sedang login, beserta info kategori/satuan
         $items = DB::table('items')
             ->where('user_id', auth()->id())
             ->orderBy('nama_barang')
             ->get();
 
-        // Untuk setiap item, hitung status stok terkini + threshold-nya
         $itemStatuses = $items->map(function ($item) {
             $stok = $this->service->getCurrentStock((string) $item->kode_barang);
             $status = $this->service->classifyStatus((string) $item->kode_barang);
@@ -35,16 +30,16 @@ class StockNotificationController extends Controller
                 ->first();
 
             return (object) [
-                'kode_barang'       => $item->kode_barang,
-                'nama_barang'       => $item->nama_barang,
-                'stok'              => $stok,
-                'status'            => $status,
-                'low_threshold'     => $threshold->low_threshold ?? null,
+                'kode_barang'        => $item->kode_barang,
+                'nama_barang'        => $item->nama_barang,
+                'stok'               => $stok,
+                'status'             => $status,
+                'adc'                => $threshold->adc ?? null,
+                'low_threshold'      => $threshold->low_threshold ?? null,
                 'critical_threshold' => $threshold->critical_threshold ?? null,
             ];
         });
 
-        // Ambil riwayat notifikasi terbaru (20 terakhir), gabung dengan nama barang
         $notifications = DB::table('stock_notifications')
             ->join('items', 'items.kode_barang', '=', 'stock_notifications.item_id')
             ->where('items.user_id', auth()->id())
@@ -59,10 +54,6 @@ class StockNotificationController extends Controller
         ]);
     }
 
-    /**
-     * Trigger evaluasi status stok untuk semua item milik user yang login.
-     * Ini simulasi apa yang nantinya dijalankan otomatis oleh scheduler harian.
-     */
     public function evaluate(Request $request)
     {
         $items = DB::table('items')

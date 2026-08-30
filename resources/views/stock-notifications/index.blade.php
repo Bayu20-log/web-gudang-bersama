@@ -8,7 +8,6 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    {{-- Tombol trigger evaluasi manual --}}
     <div class="card mb-4">
         <div class="card-body d-flex justify-content-between align-items-center">
             <p class="mb-0 text-muted">
@@ -23,7 +22,6 @@
         </div>
     </div>
 
-    {{-- Legenda warna status --}}
     <div class="mb-3">
         <span class="badge bg-success me-2">Aman</span>
         <span class="badge bg-warning text-dark me-2">Rendah</span>
@@ -31,7 +29,6 @@
         <span class="badge bg-danger ms-2">Habis</span>
     </div>
 
-    {{-- Tabel status stok per item --}}
     <div class="card mb-4">
         <div class="card-body p-0">
             <table class="table table-hover mb-0">
@@ -39,6 +36,7 @@
                     <tr>
                         <th>Barang</th>
                         <th>Stok</th>
+                        <th>ADC</th>
                         <th>Threshold Rendah</th>
                         <th>Threshold Kritis</th>
                         <th>Status</th>
@@ -60,6 +58,7 @@
                         <tr>
                             <td>{{ $item->nama_barang }}</td>
                             <td>{{ $item->stok }}</td>
+                            <td>{{ $item->adc ?? '-' }}</td>
                             <td>{{ $item->low_threshold ?? '-' }}</td>
                             <td>{{ $item->critical_threshold ?? '-' }}</td>
                             <td>
@@ -71,7 +70,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-3">Belum ada data barang.</td>
+                            <td colspan="6" class="text-center text-muted py-3">Belum ada data barang.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -79,7 +78,6 @@
         </div>
     </div>
 
-    {{-- Panel riwayat notifikasi --}}
     <div class="card">
         <div class="card-body">
             <h5 class="card-title mb-3">Riwayat Notifikasi Terbaru</h5>
