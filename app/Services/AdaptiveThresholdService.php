@@ -125,17 +125,6 @@ class AdaptiveThresholdService
         return $totalMasuk - $totalKeluar;
     }
 
-    /**
-     * Menentukan status stok satu item (Aman/Rendah/Kritis/Habis)
-     * dengan membandingkan stok aktual terhadap Threshold Rendah & Kritis
-     * yang tersimpan di stock_thresholds.
-     *
-     * Catatan: method ini TIDAK menghitung ulang threshold. Pastikan
-     * calculateAndSaveThreshold() sudah pernah dipanggil untuk item ini.
-     *
-     * @param  string  $kodeBarang
-     * @return string  'Aman' | 'Rendah' | 'Kritis' | 'Habis'
-     */
     public function classifyStatus(string $kodeBarang): string
     {
         $stokAktual = $this->getCurrentStock($kodeBarang);
@@ -155,6 +144,19 @@ class AdaptiveThresholdService
             $threshold = DB::table('stock_thresholds')
                 ->where('item_id', $kodeBarang)
                 ->first();
+        }
+
+        // EDGE CASE: item belum pernah punya transaksi barang keluar sama
+        // sekali, sehingga ADC = 0 dan kedua threshold ikut jadi 0. Kalau
+        // dibiarkan, stok berapa pun (selama > 0) akan lolos sebagai "aman"
+        // karena stok pasti > 0 (threshold rendah). Ini FALSE POSITIVE --
+        // sistem sebenarnya belum tahu kebutuhan harian barang ini, jadi
+        // TIDAK BOLEH mengklaim "aman". Default ke 'rendah' sebagai status
+        // waspada (bukan 'kritis', karena kita juga belum tahu barang ini
+        // benar-benar kritis atau tidak -- 'rendah' cukup untuk memicu
+        // perhatian tanpa membuat klaim berlebihan).
+        if ((float) $threshold->adc === 0.0) {
+            return 'rendah';
         }
 
         if ($stokAktual > $threshold->low_threshold) {
