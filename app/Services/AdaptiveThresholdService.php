@@ -106,6 +106,58 @@ class AdaptiveThresholdService
     }
 
     /**
+     * Mengembalikan rincian perhitungan ADC dan Threshold untuk satu item,
+     * dipakai untuk menampilkan penjelasan "data apa -> diproses bagaimana
+     * -> menghasilkan threshold berapa" di halaman monitoring (live demo).
+     *
+     * Method ini READ-ONLY (tidak mengubah/menyimpan data apa pun), jadi
+     * aman dipanggil berulang kali termasuk setiap kali halaman dibuka.
+     *
+     * @param  string  $kodeBarang
+     * @return array
+     */
+    public function getThresholdBreakdown(string $kodeBarang): array
+    {
+        $today = Carbon::now();
+        $observationStart = $today->copy()->subDays(self::MAX_OBSERVATION_DAYS);
+
+        $totalOutflow = BarangKeluar::where('kode_barang', $kodeBarang)
+            ->where('tanggal_keluar', '>=', $observationStart)
+            ->sum('jumlah_keluar');
+
+        $firstTransaction = BarangKeluar::where('kode_barang', $kodeBarang)
+            ->orderBy('tanggal_keluar', 'asc')
+            ->value('tanggal_keluar');
+
+        if ($firstTransaction === null) {
+            $validDays = 0;
+        } else {
+            $firstTransactionDate = Carbon::parse($firstTransaction);
+            $daysSinceFirstTransaction = $firstTransactionDate->diffInDays($today) + 1;
+            $validDays = min(self::MAX_OBSERVATION_DAYS, max(1, $daysSinceFirstTransaction));
+        }
+
+        $threshold = DB::table('stock_thresholds')->where('item_id', $kodeBarang)->first();
+
+        $adc               = $threshold->adc ?? 0;
+        $safetyStockDays   = $threshold->safety_stock_days ?? 1;
+        $leadTimeDays      = $threshold->lead_time_days ?? 3;
+        $responseTimeDays  = $threshold->response_time_days ?? 1;
+
+        return [
+            'total_outflow'      => $totalOutflow,
+            'valid_days'         => $validDays,
+            'adc'                => $adc,
+            'lead_time_days'     => $leadTimeDays,
+            'safety_stock_days'  => $safetyStockDays,
+            'response_time_days' => $responseTimeDays,
+            'safety_stock'       => round($adc * $safetyStockDays, 2),
+            'low_threshold'      => $threshold->low_threshold ?? 0,
+            'critical_threshold' => $threshold->critical_threshold ?? 0,
+        ];
+    }
+
+    /**
      * Menghitung stok aktual satu item:
      * total barang masuk - total barang keluar (sepanjang riwayat, bukan cuma 30 hari).
      *
@@ -146,15 +198,6 @@ class AdaptiveThresholdService
                 ->first();
         }
 
-        // EDGE CASE: item belum pernah punya transaksi barang keluar sama
-        // sekali, sehingga ADC = 0 dan kedua threshold ikut jadi 0. Kalau
-        // dibiarkan, stok berapa pun (selama > 0) akan lolos sebagai "aman"
-        // karena stok pasti > 0 (threshold rendah). Ini FALSE POSITIVE --
-        // sistem sebenarnya belum tahu kebutuhan harian barang ini, jadi
-        // TIDAK BOLEH mengklaim "aman". Default ke 'rendah' sebagai status
-        // waspada (bukan 'kritis', karena kita juga belum tahu barang ini
-        // benar-benar kritis atau tidak -- 'rendah' cukup untuk memicu
-        // perhatian tanpa membuat klaim berlebihan).
         if ((float) $threshold->adc === 0.0) {
             return 'rendah';
         }

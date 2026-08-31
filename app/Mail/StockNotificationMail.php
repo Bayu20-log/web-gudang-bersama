@@ -41,8 +41,10 @@ class StockNotificationMail extends Mailable
      */
     public function envelope(): Envelope
     {
+        $subject = str_replace('item #' . $this->kodeBarang, $this->namaBarang, $this->title);
+
         return new Envelope(
-            subject: $this->title,
+            subject: $subject,
         );
     }
 

@@ -22,11 +22,16 @@
         </div>
     </div>
 
-    <div class="mb-3">
-        <span class="badge bg-success me-2">Aman</span>
-        <span class="badge bg-warning text-dark me-2">Rendah</span>
-        <span class="badge" style="background-color:#fd7e14;" >Kritis</span>
-        <span class="badge bg-danger ms-2">Habis</span>
+    <div class="mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <span class="badge bg-success me-2">Aman</span>
+            <span class="badge bg-warning text-dark me-2">Rendah</span>
+            <span class="badge" style="background-color:#fd7e14;" >Kritis</span>
+            <span class="badge bg-danger ms-2">Habis</span>
+        </div>
+        <small class="text-muted">
+            💡 Klik <strong>"Lihat Perhitungan"</strong> pada barang untuk melihat rincian rumus ADC dan Threshold
+        </small>
     </div>
 
     <div class="card mb-4">
@@ -40,6 +45,7 @@
                         <th>Threshold Rendah</th>
                         <th>Threshold Kritis</th>
                         <th>Status</th>
+                        <th>Detail</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,10 +73,71 @@
                                     {{ ucfirst($item->status) }}
                                 </span>
                             </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-secondary" type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#detail-{{ $item->kode_barang }}"
+                                    aria-expanded="false">
+                                    Lihat Perhitungan
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapse" id="detail-{{ $item->kode_barang }}">
+                            <td colspan="7" class="bg-light">
+                                @php $b = $item->breakdown; @endphp
+                                <div class="p-3 small">
+                                    <div class="mb-3">
+                                        <strong>1. Menghitung ADC (rata-rata barang keluar per hari)</strong>
+                                        <div class="mt-1">
+                                            Total barang keluar 30 hari terakhir:
+                                            <strong>{{ $b['total_outflow'] }} unit</strong>
+                                        </div>
+                                        <div>
+                                            Dibagi jumlah hari valid (sejak transaksi pertama, maks. 30 hari):
+                                            <strong>{{ $b['valid_days'] }} hari</strong>
+                                        </div>
+                                        <div class="mt-1 p-2 bg-white border rounded d-inline-block">
+                                            ADC = {{ $b['total_outflow'] }} ÷ {{ $b['valid_days'] }}
+                                            = <strong>{{ $b['adc'] }} unit/hari</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <strong>2. Menghitung Threshold Rendah</strong>
+                                        <div class="mt-1">
+                                            Safety Stock = ADC &times; Hari Buffer
+                                            = {{ $b['adc'] }} &times; {{ $b['safety_stock_days'] }}
+                                            = <strong>{{ $b['safety_stock'] }}</strong>
+                                        </div>
+                                        <div class="mt-1 p-2 bg-white border rounded d-inline-block">
+                                            Threshold Rendah = (ADC &times; Lead Time) + Safety Stock
+                                            = ({{ $b['adc'] }} &times; {{ $b['lead_time_days'] }}) + {{ $b['safety_stock'] }}
+                                            = <strong>{{ $b['low_threshold'] }}</strong>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <strong>3. Menghitung Threshold Kritis</strong>
+                                        <div class="mt-1 p-2 bg-white border rounded d-inline-block">
+                                            Threshold Kritis = ADC &times; Waktu Respons
+                                            = {{ $b['adc'] }} &times; {{ $b['response_time_days'] }}
+                                            = <strong>{{ $b['critical_threshold'] }}</strong>
+                                        </div>
+                                    </div>
+
+                                    @if ((float) $b['adc'] === 0.0)
+                                        <div class="mt-3 alert alert-warning py-2 px-3 mb-0 small">
+                                            ADC = 0 karena barang ini belum pernah ada transaksi keluar.
+                                            Sistem otomatis menganggap status minimal <strong>Rendah</strong>
+                                            (bukan Aman) untuk kondisi ini.
+                                        </div>
+                                    @endif
+                                </div>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-3">Belum ada data barang.</td>
+                            <td colspan="7" class="text-center text-muted py-3">Belum ada data barang.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -91,9 +158,13 @@
             @forelse ($notifications as $notif)
                 <div class="border-start border-4 {{ $levelBorder[$notif->level] ?? 'border-secondary' }} ps-3 py-2 mb-2">
                     <div class="d-flex justify-content-between">
+                        @php
+                            $displayTitle = str_replace('item #' . $notif->item_id, $notif->nama_barang, $notif->title);
+                            $displayMessage = str_replace('item #' . $notif->item_id, $notif->nama_barang, $notif->message);
+                        @endphp
                         <div>
-                            <div class="fw-semibold">{{ $notif->title }}</div>
-                            <div class="text-muted small">{{ $notif->message }}</div>
+                            <div class="fw-semibold">{{ $displayTitle }}</div>
+                            <div class="text-muted small">{{ $displayMessage }}</div>
                         </div>
                         <span class="text-muted small text-nowrap ms-2">
                             {{ \Carbon\Carbon::parse($notif->created_at)->diffForHumans() }}

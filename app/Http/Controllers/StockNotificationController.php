@@ -28,6 +28,7 @@ class StockNotificationController extends Controller
             $threshold = DB::table('stock_thresholds')
                 ->where('item_id', $item->kode_barang)
                 ->first();
+            $breakdown = $this->service->getThresholdBreakdown((string) $item->kode_barang);
 
             return (object) [
                 'kode_barang'        => $item->kode_barang,
@@ -37,6 +38,7 @@ class StockNotificationController extends Controller
                 'adc'                => $threshold->adc ?? null,
                 'low_threshold'      => $threshold->low_threshold ?? null,
                 'critical_threshold' => $threshold->critical_threshold ?? null,
+                'breakdown'          => $breakdown,
             ];
         });
 
