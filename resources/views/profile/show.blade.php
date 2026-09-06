@@ -123,6 +123,14 @@
                         <label class="form-label">Telepon <span class="text-muted fw-normal">(Opsional)</span></label>
                         <input name="phone" type="text" class="form-control" value="{{ old('phone', $user->phone) }}" placeholder="08xxxxxxxx">
                     </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Nama Toko <span class="text-danger">*</span></label>
+                        <input name="nama_toko" type="text" class="form-control" value="{{ old('nama_toko', $user->nama_toko) }}" required>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">Alamat Toko <span class="text-danger">*</span></label>
+                        <textarea name="alamat_toko" class="form-control" rows="3" required>{{ old('alamat_toko', $user->alamat_toko) }}</textarea>
+                    </div>
                     <div class="col-md-12">
                         <label class="form-label">Posisi / Jabatan <span class="text-muted fw-normal">(Opsional)</span></label>
                         <input name="position" type="text" class="form-control" value="{{ old('position', $user->position) }}" placeholder="Contoh: Staff Gudang">

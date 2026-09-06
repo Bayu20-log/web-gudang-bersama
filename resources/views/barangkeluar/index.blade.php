@@ -50,19 +50,25 @@
         td { border: none !important; text-align: left; padding: 8px 0 8px 45%; position: relative; }
         td:before { position: absolute; top: 8px; left: 0; width: 40%; white-space: nowrap; font-weight: 600; color: #4b5563; }
         
-        td:nth-of-type(1):before  { content: "Kode Barang"; }
+        /* Sembunyikan kolom yang tidak perlu */
+        td:nth-of-type(1), 
+        td:nth-of-type(3), 
+        td:nth-of-type(4), 
+        td:nth-of-type(6), 
+        td:nth-of-type(7), 
+        td:nth-of-type(9), 
+        td:nth-of-type(10), 
+        td:nth-of-type(11), 
+        td:nth-of-type(12) 
+        {
+            display: none !important;
+        }
+
+        /* Tampilkan kolom utama */
         td:nth-of-type(2):before  { content: "Nama Barang"; }
-        td:nth-of-type(3):before  { content: "Lokasi"; }
-        td:nth-of-type(4):before  { content: "Kondisi"; }
-        td:nth-of-type(5):before  { content: "Jml Keluar"; }
-        td:nth-of-type(6):before  { content: "Harga Jual"; }
-        td:nth-of-type(7):before  { content: "Total Harga"; }
+        td:nth-of-type(5):before  { content: "Jumlah Keluar"; }
         td:nth-of-type(8):before  { content: "Catatan"; }
-        td:nth-of-type(9):before  { content: "Penerima"; }
-        td:nth-of-type(10):before { content: "User"; }
-        td:nth-of-type(11):before { content: "Tujuan"; }
-        td:nth-of-type(12):before { content: "Tgl Keluar"; }
-        td:nth-of-type(13):before { content: "Aksi"; }
+        td:nth-of-type(13):before { content: "Aksi"; } 
         
         .td-action { justify-content: flex-start; flex-wrap: wrap; gap: 8px;}
     }

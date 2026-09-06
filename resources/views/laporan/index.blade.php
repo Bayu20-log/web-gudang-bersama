@@ -26,6 +26,10 @@
     th a { color: #ffffff; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
     th a:hover { color: #f97316; }
     tr:hover { background-color: #f8fafc; }
+    .bg-stok-akhir { 
+        background-color: #22c55e !important;
+        color: #ffffff !important; 
+    }
 
     @media(max-width: 768px) {
         .header { flex-direction: column; align-items: flex-start; }
@@ -98,11 +102,11 @@
     {{-- Export Buttons --}}
     @if ($role === 'gudang')
         <div class="d-flex flex-wrap gap-2 mb-3">
-            <a href="{{ route('laporan.pdf', request()->query()) }}" target="_blank" class="btn btn-outline-danger fw-bold shadow-sm">
-                <i class="fa-solid fa-file-pdf me-1"></i> Cetak PDF
+            <a href="{{ route('laporan.pdf', request()->query()) }}" target="_blank" class="btn btn-danger fw-bold shadow-sm px-3" title="Cetak PDF">
+                <i class="fa-solid fa-file-pdf me-1"></i> PDF
             </a>
-            <a href="{{ route('laporan.excel', request()->query()) }}" class="btn btn-outline-success fw-bold shadow-sm">
-                <i class="fa-solid fa-file-excel me-1"></i> Export Excel
+            <a href="{{ route('laporan.excel', request()->query()) }}" class="btn btn-success fw-bold shadow-sm px-3" title="Export Excel">
+                <i class="fa-solid fa-file-excel me-1"></i> Excel
             </a>
         </div>
     @endif
@@ -148,7 +152,7 @@
                         <td>Rp {{ number_format($item['harga_dasar'], 0, ',', '.') }}</td>
                         <td class="text-success fw-bold">+{{ $item['total_masuk'] }}</td>
                         <td class="text-danger fw-bold">-{{ $item['total_keluar'] }}</td>
-                        <td><span class="badge bg-primary px-3 py-2 rounded-pill fs-6">{{ $item['stok_akhir'] }}</span></td>
+                        <td><span class="badge bg-stok-akhir px-3 py-2 rounded-pill fs-6">{{ $item['stok_akhir'] }}</span></td>
                         <td>{{ is_array($item['lokasi']) ? ($item['lokasi']['nama_lokasi'] ?? '-') : $item['lokasi'] }}</td>
                         <td>{{ $item['username'] }}</td>
                     </tr>

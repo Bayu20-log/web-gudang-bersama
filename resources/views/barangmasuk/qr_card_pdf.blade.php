@@ -36,7 +36,7 @@
   <div class="label-box">
     <div class="label-header">
         <div class="header-left">
-            <h1>RAK<span>SAKTI</span></h1>
+            <h1>{{ Auth::check() ? strtoupper(Auth::user()->nama_toko) : 'NAMA TOKO' }}</h1>
         </div>
         <div class="header-right">
             LABEL INVENTARIS

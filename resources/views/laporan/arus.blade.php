@@ -1,6 +1,6 @@
 @extends('layouts.app')
-@section('content')
 
+@section('content')
 <style>
     body { padding-top: 40px; }
     .btn-orange { background-color: #f97316; color: #fff; border: none; transition: 0.3s; }
@@ -8,9 +8,13 @@
     .btn-outline-dark { border: 1px solid #1e293b; color: #1e293b; transition: 0.3s; background: transparent; font-weight: 600;}
     .btn-outline-dark:hover { background-color: #1e293b; color: #fff; }
     
+    /* Warna Hijau yang lebih cerah */
+    .bg-green-bright { background-color: #22c55e !important; color: #ffffff !important; }
+    .text-green-bright { color: #22c55e !important; }
+
     .container-laporan { max-width: 1200px; margin: auto; padding: 30px 20px; font-family: 'Segoe UI', sans-serif; }
     .header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-
+    
     /* TEMA FILTER */
     form.filter-form { background-color: #ffffff; border: none; border-radius: 12px; padding: 20px 25px; margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
     .filter-form .form-group { display: flex; flex-direction: column; min-width: 200px; flex-grow: 1; }
@@ -41,15 +45,21 @@
         td { border: none !important; text-align: left; padding: 8px 0 8px 45%; position: relative; }
         td:before { position: absolute; top: 8px; left: 0; width: 40%; white-space: nowrap; font-weight: 600; color: #4b5563; }
         
-        td:nth-of-type(1):before { content: "Kode Barang"; }
+        /* --- SEMBUNYIKAN KOLOM YANG TIDAK PERLU DI HP --- */
+        td:nth-of-type(1), /* Kode Barang */
+        td:nth-of-type(3), /* Harga Dasar */
+        td:nth-of-type(8), /* Lokasi */
+        td:nth-of-type(9)  /* Pihak */
+        {
+            display: none !important;
+        }
+
+        /* --- TAMPILKAN HANYA NAMA, TANGGAL, MASUK/KELUAR & TOTAL --- */
         td:nth-of-type(2):before { content: "Nama Barang"; }
-        td:nth-of-type(3):before { content: "Harga Dasar"; }
         td:nth-of-type(4):before { content: "Tgl Transaksi"; }
         td:nth-of-type(5):before { content: "Jml Masuk"; }
         td:nth-of-type(6):before { content: "Jml Keluar"; }
         td:nth-of-type(7):before { content: "Total Barang"; }
-        td:nth-of-type(8):before { content: "Lokasi"; }
-        td:nth-of-type(9):before { content: "Pihak"; }
     }
 </style>
 
@@ -84,13 +94,13 @@
         </div>
     </form>
 
-    {{-- Export Buttons --}}
+    {{-- Export Buttons (Diubah jadi tombol solid & ditambah teks agar tetap terlihat jika ikon error) --}}
     <div class="d-flex flex-wrap gap-2 mb-3">
-        <a href="{{ route('laporan.arus.pdf', request()->query()) }}" target="_blank" class="btn btn-outline-danger fw-bold shadow-sm">
-            <i class="fa-solid fa-file-pdf me-1"></i> Cetak PDF
+        <a href="{{ route('laporan.arus.pdf', request()->query()) }}" target="_blank" class="btn btn-danger fw-bold shadow-sm px-3" title="Cetak PDF">
+            <i class="fa-solid fa-file-pdf me-1"></i> PDF
         </a>
-        <a href="{{ route('laporan.arus.excel', request()->query()) }}" class="btn btn-outline-success fw-bold shadow-sm">
-            <i class="fa-solid fa-file-excel me-1"></i> Export Excel
+        <a href="{{ route('laporan.arus.excel', request()->query()) }}" class="btn btn-success fw-bold shadow-sm px-3" title="Export Excel">
+            <i class="fa-solid fa-file-excel me-1"></i> Excel
         </a>
     </div>
 
@@ -142,9 +152,13 @@
                         <td class="fw-bold text-dark">{{ $row['nama_barang'] }}</td>
                         <td>Rp {{ number_format($row['harga_dasar'], 0, ',', '.') }}</td>
                         <td>{{ \Carbon\Carbon::parse($row['tanggal'])->format('d M Y H:i') }}</td>
-                        <td class="text-success fw-bold">+{{ $row['jumlah_masuk'] }}</td>
+                        <td class="text-green-bright fw-bold">+{{ $row['jumlah_masuk'] }}</td>
                         <td class="text-danger fw-bold">-{{ $row['jumlah_keluar'] }}</td>
-                        <td><span class="badge bg-primary px-3 py-2 rounded-pill fs-6">{{ $row['total_barang'] }}</span></td>
+                        <td>
+                            <span class="badge {{ $row['total_barang'] >= 0 ? 'bg-green-bright' : 'bg-danger' }} px-3 py-2 rounded-pill fs-6">
+                                {{ $row['total_barang'] }}
+                            </span>
+                        </td>
                         <td>{{ is_array($row['lokasi']) ? $row['lokasi']['nama_lokasi'] ?? '-' : $row['lokasi'] }}</td>
                         <td>{{ $pihak['nama_pemasok'] ?? $pihak['nama_penerima'] ?? $pihak['nama'] ?? '-' }}</td>
                     </tr>

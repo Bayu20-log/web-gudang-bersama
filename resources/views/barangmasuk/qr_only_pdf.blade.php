@@ -22,7 +22,7 @@
 </head>
 <body>
     <div class="wrapper">
-        <div class="brand">RAK<span>SAKTI</span></div>
+        <div class="brand">{{ Auth::check() ? strtoupper(Auth::user()->nama_toko) : 'NAMA TOKO' }}</div> 
         
         <div class="qr-container">
             @if($qrBase64)

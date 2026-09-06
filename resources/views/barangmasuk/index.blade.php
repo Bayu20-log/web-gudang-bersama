@@ -50,20 +50,27 @@
         td { border: none !important; text-align: left; padding: 8px 0 8px 45%; position: relative; }
         td:before { position: absolute; top: 8px; left: 0; width: 40%; white-space: nowrap; font-weight: 600; color: #4b5563; }
         
-        td:nth-of-type(1):before  { content: "No"; }
-        td:nth-of-type(2):before  { content: "Kode Barang"; }
+        /* --- SEMBUNYIKAN KOLOM YANG TIDAK PERLU DI HP --- */
+        td:nth-of-type(1),  /* No */
+        td:nth-of-type(2),  /* Kode Barang */
+        td:nth-of-type(5),  /* Harga Beli */
+        td:nth-of-type(6),  /* Total Harga */
+        td:nth-of-type(7),  /* Tgl Masuk */
+        td:nth-of-type(8),  /* Kadaluarsa */
+        td:nth-of-type(9),  /* Pemasok */
+        td:nth-of-type(10), /* Lokasi */
+        td:nth-of-type(11), /* Kondisi */
+        td:nth-of-type(13)  /* User */
+        {
+            display: none !important;
+        }
+
+        /* --- TAMPILKAN HANYA NAMA, JUMLAH, CATATAN, DAN AKSI --- */
         td:nth-of-type(3):before  { content: "Nama Barang"; }
-        td:nth-of-type(4):before  { content: "Jumlah"; }
-        td:nth-of-type(5):before  { content: "Harga Beli"; }
-        td:nth-of-type(6):before  { content: "Total Harga"; }
-        td:nth-of-type(7):before  { content: "Tanggal Masuk"; }
-        td:nth-of-type(8):before  { content: "Kadaluarsa"; }
-        td:nth-of-type(9):before  { content: "Pemasok"; }
-        td:nth-of-type(10):before { content: "Lokasi"; }
-        td:nth-of-type(11):before { content: "Kondisi"; }
+        td:nth-of-type(4):before  { content: "Jumlah Masuk"; }
         td:nth-of-type(12):before { content: "Catatan"; }
-        td:nth-of-type(13):before { content: "User"; }
-        td:nth-of-type(14):before { content: "Aksi QR"; }
+        td:nth-of-type(14):before { content: "Aksi QR"; } 
+        
         .td-action { justify-content: flex-start; flex-wrap: wrap; gap: 8px;}
     }
 </style>
