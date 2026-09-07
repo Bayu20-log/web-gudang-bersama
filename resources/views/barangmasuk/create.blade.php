@@ -25,7 +25,7 @@
             <select name="kode_barang" class="form-control @error('kode_barang') is-invalid @enderror" required>
                 <option value="" disabled selected>-- Pilih Item --</option>
                 @foreach ($items as $item)
-                    <option value="{{ $item->kode_barang }}" {{ old('kode_barang') == $item->kode_barang ? 'selected' : '' }}>
+                    <option value="{{ $item->kode_barang }}" {{ old('kode_barang', request('kode_barang')) == $item->kode_barang ? 'selected' : '' }}>
                         {{ $item->kode_barang }} - {{ $item->nama_barang }}
                     </option>
                 @endforeach

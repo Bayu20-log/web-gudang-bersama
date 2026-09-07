@@ -189,7 +189,7 @@
                                 <a class="nav-link {{ $routeName === 'user.index' ? 'active' : '' }}" href="{{ route('user.index') }}">Kelola User</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link {{ $routeName === 'laporan.stok.admin' ? 'active' : '' }}" href="{{ route('laporan.stok.admin') }}">Laporan Stok</a>
+                                <a class="nav-link {{ $routeName === 'laporan.stok.admin' ? 'active' : '' }}" href="{{ route('laporan.stok.admin') }}">LaporanStok</a>
                             </li>
                             
 
@@ -199,7 +199,7 @@
                             <a class="nav-link {{ $routeName === 'dashboard.' . $role ? 'active' : '' }}" href="{{ route('dashboard.' . $role) }}">Dashboard</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle {{ in_array($routeName, ['kondisi.index', 'lokasi.index', 'kategori.index', 'satuan.index', 'pemasok.index']) ? 'active' : '' }}" href="#" id="masterDataDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle {{ in_array($routeName, ['kondisi.index', 'lokasi.index', 'kategori.index', 'satuan.index','pemasok.index']) ? 'active' : '' }}" href="#" id="masterDataDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Master Data
                                 </a>
                                 <ul class="dropdown-menu">
@@ -280,13 +280,20 @@
                             <a href="{{ route('notifications.index') }}" class="text-dark" style="font-size: 20px;">
                                 <i class="fa-solid fa-bell"></i>
                                 @php
-                                    $unreadCount = \App\Models\Notification::where('user_id', Auth::id()) // 🔹 filter sesuai user
-                                                    ->where('is_read', false)
+                                    // Notifikasi stok adaptif (Judul 3) yang belum dibaca.
+                                    // Filter per user lewat join ke items karena
+                                    // stock_notifications tidak punya kolom user_id sendiri.
+                                    // Sistem Notification lama (stok_minimum tetap) sudah
+                                    // digantikan penuh oleh sistem ini per 6 Sep 2026.
+                                    $unreadStockCount = \Illuminate\Support\Facades\DB::table('stock_notifications')
+                                                    ->join('items', 'items.kode_barang', '=', 'stock_notifications.item_id')
+                                                    ->where('items.user_id', Auth::id())
+                                                    ->where('stock_notifications.is_read', false)
                                                     ->count();
                                 @endphp
-                                @if($unreadCount > 0)
+                                @if($unreadStockCount > 0)
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                        {{ $unreadCount }}
+                                        {{ $unreadStockCount }}
                                     </span>
                                 @endif
                             </a>
@@ -309,47 +316,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-
-    @if(Auth::check() && Auth::user()->role === 'gudang' && session('show_notification_popup'))
-        @php
-            session()->forget('show_notification_popup'); // Hapus biar gak muncul lagi
-            $notifications = \App\Models\Notification::where('user_id', Auth::id()) // filter user
-                        ->where('is_read', false)
-                        ->get();
-        @endphp
-       
-        @if($notifications->count() > 0)
-        <div class="modal fade" id="notifModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-warning">
-                        <h5 class="modal-title">Notifikasi</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <ul>
-                            @foreach($notifications as $notif)
-                                <li>{{ $notif->message }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    <div class="modal-footer">
-                        <form method="POST" action="{{ route('notifications.markRead') }}">
-                            @csrf
-                            <button type="submit" class="btn btn-primary">Tandai Dibaca</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var notifModal = new bootstrap.Modal(document.getElementById('notifModal'));
-                notifModal.show();
-            });
-        </script>
-        @endif
-    @endif
 
 @include('layouts.footer')
 </body>
