@@ -27,7 +27,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="konfigurasi-threshold-tab" data-bs-toggle="tab" data-bs-target="#konfigurasi-threshold" type="button" role="tab">
-                Konfigurasi Threshold
+                Pengaturan Batas Minimum
             </button>
         </li>
     </ul>
@@ -411,7 +411,7 @@
                 <div class="tc-intro">
                     <div class="tc-intro-icon"><i class="fa-solid fa-sliders"></i></div>
                     <div>
-                        <div class="tc-intro-title">Konfigurasi Threshold</div>
+                        <div class="tc-intro-title">Pengaturan Batas Minimum</div>
                         <p class="tc-intro-desc">Atur kapan barang ini dianggap Rendah atau Kritis. Angka di bawah otomatis dihitung ulang tiap kamu mengetik.</p>
                     </div>
                 </div>
@@ -422,21 +422,21 @@
                         <div class="tc-stat-icon" style="--tc-accent:#0dcaf0; --tc-soft:#e0f7fa;"><i class="fa-solid fa-chart-line"></i></div>
                         <div>
                             <div class="tc-stat-value" id="tc-adc-value">{{ number_format($currentAdc, 2) }}</div>
-                            <div class="tc-stat-label">ADC / hari</div>
+                            <div class="tc-stat-label">Rata-rata Keluar per Hari</div>
                         </div>
                     </div>
                     <div class="tc-stat-card">
                         <div class="tc-stat-icon" style="--tc-accent:#f97316; --tc-soft:#ffedd5;"><i class="fa-solid fa-triangle-exclamation"></i></div>
                         <div>
                             <div class="tc-stat-value" id="tc-low-value">{{ number_format($thresholdConfig->low_threshold ?? 0, 2) }}</div>
-                            <div class="tc-stat-label">Threshold Rendah</div>
+                            <div class="tc-stat-label">Batas Minimum Rendah</div>
                         </div>
                     </div>
                     <div class="tc-stat-card">
                         <div class="tc-stat-icon" style="--tc-accent:#dc3545; --tc-soft:#fee2e2;"><i class="fa-solid fa-box-open"></i></div>
                         <div>
                             <div class="tc-stat-value" id="tc-critical-value">{{ number_format($thresholdConfig->critical_threshold ?? 0, 2) }}</div>
-                            <div class="tc-stat-label">Threshold Kritis</div>
+                            <div class="tc-stat-label">Batas Minimum Kritis</div>
                         </div>
                     </div>
                 </div>
@@ -470,23 +470,24 @@
                     <div class="tc-section-title">📐 Cara Sistem Menghitung Angka Ini</div>
 
                     <div class="tc-formula-item">
-                        <div class="tc-formula-name">Threshold Rendah = (ADC × Lead Time) + (ADC × Safety Stock)</div>
+                        <div class="tc-formula-name">Batas Minimum Rendah = (Rata-rata Keluar per Hari × Lead Time) + (Rata-rata Keluar per Hari × Safety Stock)</div>
                         <div class="tc-formula-calc" id="tc-formula-low">Isi form di bawah untuk lihat perhitungannya</div>
                     </div>
 
                     <div class="tc-formula-item">
-                        <div class="tc-formula-name">Threshold Kritis = ADC × Waktu Respons</div>
+                        <div class="tc-formula-name">Batas Minimum Kritis = Rata-rata Keluar per Hari × Waktu Respons</div>
                         <div class="tc-formula-calc" id="tc-formula-critical">Isi form di bawah untuk lihat perhitungannya</div>
                     </div>
 
                     <div class="tc-citation">
-                        *ADC (Average Daily Consumption) = rata-rata barang keluar per hari. Formula Threshold Rendah mengadaptasi konsep Reorder Point (ROP) dari Afrizal et al. (2025).
+                        *Rata-rata Keluar per Hari (ADC/Average Daily Consumption) = rata-rata barang keluar per hari. Formula Batas Minimum Rendah mengadaptasi konsep Reorder Point (ROP) dari Afrizal et al. (2025).
                     </div>
                 </div>
 
                 <form action="{{ route('item.threshold.update', $item->kode_barang) }}" method="POST">
                     @csrf
                     @method('PUT')
+                    <input type="hidden" name="from" value="{{ request('from') }}">
 
                     <div class="tc-form-group">
                         <label for="tc_lead_time_days" class="tc-label">Lead Time (hari)</label>
@@ -512,7 +513,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="tc-submit">Simpan Konfigurasi Threshold</button>
+                    <button type="submit" class="tc-submit">Simpan Batas Minimum</button>
                 </form>
             </div>
 

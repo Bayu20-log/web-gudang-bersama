@@ -263,7 +263,7 @@
     <div class="sn-header">
         <div>
             <div class="sn-header-title">Monitoring &amp; Notifikasi Stok</div>
-            <div class="sn-header-subtitle">Evaluasi kondisi stok seluruh barang berdasarkan threshold adaptif</div>
+            <div class="sn-header-subtitle">Evaluasi kondisi stok seluruh barang berdasarkan batas minimum otomatis</div>
         </div>
         <form method="POST" action="{{ route('stock-notifications.evaluate') }}">
             @csrf
@@ -276,9 +276,11 @@
     @endif
 
     @php
+        // Skema warna mengikuti standar manajemen risiko:
+        // Aman = biru, Rendah = hijau, Kritis = kuning, Habis = merah
         $statusColors = [
-            'aman'   => ['bg' => '#dcfce7', 'text' => '#15803d', 'label' => 'Aman', 'icon' => 'fa-circle-check'],
-            'rendah' => ['bg' => '#e0f7fa', 'text' => '#0e7490', 'label' => 'Rendah', 'icon' => 'fa-circle-info'],
+            'aman'   => ['bg' => '#dbeafe', 'text' => '#1d4ed8', 'label' => 'Aman', 'icon' => 'fa-circle-check'],
+            'rendah' => ['bg' => '#dcfce7', 'text' => '#15803d', 'label' => 'Rendah', 'icon' => 'fa-circle-info'],
             'kritis' => ['bg' => '#fef3c7', 'text' => '#92400e', 'label' => 'Kritis', 'icon' => 'fa-triangle-exclamation'],
             'habis'  => ['bg' => '#fee2e2', 'text' => '#b91c1c', 'label' => 'Habis', 'icon' => 'fa-box-open'],
         ];
@@ -313,7 +315,7 @@
                 <button type="button" class="sn-pill sn-filter-pill" data-filter="{{ $key }}" style="background:{{ $c['bg'] }}; color:{{ $c['text'] }};">{{ $c['label'] }}</button>
             @endforeach
         </div>
-        <div class="sn-hint">💡 Klik "Lihat Perhitungan" untuk melihat rincian rumus ADC dan Threshold</div>
+        <div class="sn-hint">💡 Klik "Lihat Perhitungan" untuk melihat rincian rumus Rata-rata Keluar per Hari dan Batas Minimum</div>
     </div>
 
     <div id="sn-item-list">
@@ -327,12 +329,16 @@
                     <div class="sn-status-hint">{{ $statusHint[$item->status] ?? '' }}</div>
                     <div class="sn-chips">
                         <span class="sn-chip">Stok: <strong>{{ $item->stok }}</strong></span>
-                        <span class="sn-chip">ADC: <strong>{{ $item->adc !== null ? ceil($item->adc) : '-' }}</strong></span>
-                        <span class="sn-chip">Threshold Rendah: <strong>{{ $item->low_threshold !== null ? ceil($item->low_threshold) : '-' }}</strong></span>
-                        <span class="sn-chip">Threshold Kritis: <strong>{{ $item->critical_threshold !== null ? ceil($item->critical_threshold) : '-' }}</strong></span>
+                        <span class="sn-chip">Rata-rata Keluar per Hari: <strong>{{ $item->adc !== null ? ceil($item->adc) : '-' }}</strong></span>
+                        <span class="sn-chip">Batas Minimum Rendah: <strong>{{ $item->low_threshold !== null ? ceil($item->low_threshold) : '-' }}</strong></span>
+                        <span class="sn-chip">Batas Minimum Kritis: <strong>{{ $item->critical_threshold !== null ? ceil($item->critical_threshold) : '-' }}</strong></span>
                     </div>
                 </div>
                 <div class="sn-item-actions">
+                    <a href="{{ route('item.edit', $item->kode_barang) }}?from=stock-notifications#konfigurasi-threshold"
+                       class="sn-btn-ghost" style="text-decoration:none;">
+                        <i class="fa-solid fa-sliders"></i> Edit Threshold
+                    </a>
                     <button class="sn-btn-ghost" type="button" data-bs-toggle="collapse"
                             data-bs-target="#detail-{{ $item->kode_barang }}" aria-expanded="false">
                         Lihat Perhitungan <i class="fa-solid fa-chevron-down sn-chevron"></i>
@@ -344,32 +350,32 @@
                 @php $b = $item->breakdown; @endphp
                 <div class="sn-breakdown">
                     <div class="sn-breakdown-step">
-                        <div class="sn-breakdown-title">1. Menghitung ADC (rata-rata barang keluar per hari)</div>
+                        <div class="sn-breakdown-title">1. Menghitung Rata-rata Keluar per Hari</div>
                         <div>Total barang keluar 30 hari terakhir: <strong>{{ $b['total_outflow'] }} unit</strong></div>
                         <div>Dibagi jumlah hari valid (maks. 30 hari): <strong>{{ $b['valid_days'] }} hari</strong></div>
                         <div class="sn-formula-calc">
-                            ADC = {{ $b['total_outflow'] }} ÷ {{ $b['valid_days'] }} = {{ $b['adc'] }} unit/hari
+                            Rata-rata Keluar per Hari = {{ $b['total_outflow'] }} ÷ {{ $b['valid_days'] }} = {{ $b['adc'] }} unit/hari
                         </div>
                     </div>
 
                     <div class="sn-breakdown-step">
-                        <div class="sn-breakdown-title">2. Menghitung Threshold Rendah</div>
-                        <div>Safety Stock = ADC × Hari Buffer = {{ $b['adc'] }} × {{ $b['safety_stock_days'] }} = <strong>{{ $b['safety_stock'] }}</strong></div>
+                        <div class="sn-breakdown-title">2. Menghitung Batas Minimum Rendah</div>
+                        <div>Safety Stock = Rata-rata Keluar per Hari × Hari Buffer = {{ $b['adc'] }} × {{ $b['safety_stock_days'] }} = <strong>{{ $b['safety_stock'] }}</strong></div>
                         <div class="sn-formula-calc">
-                            Threshold Rendah = ({{ $b['adc'] }} × {{ $b['lead_time_days'] }}) + {{ $b['safety_stock'] }} = {{ $b['low_threshold'] }}
+                            Batas Minimum Rendah = ({{ $b['adc'] }} × {{ $b['lead_time_days'] }}) + {{ $b['safety_stock'] }} = {{ $b['low_threshold'] }}
                         </div>
                     </div>
 
                     <div class="sn-breakdown-step">
-                        <div class="sn-breakdown-title">3. Menghitung Threshold Kritis</div>
+                        <div class="sn-breakdown-title">3. Menghitung Batas Minimum Kritis</div>
                         <div class="sn-formula-calc">
-                            Threshold Kritis = {{ $b['adc'] }} × {{ $b['response_time_days'] }} = {{ $b['critical_threshold'] }}
+                            Batas Minimum Kritis = {{ $b['adc'] }} × {{ $b['response_time_days'] }} = {{ $b['critical_threshold'] }}
                         </div>
                     </div>
 
                     @if ((float) $b['adc'] === 0.0)
                         <div class="sn-adc-zero-note">
-                            ADC = 0 karena barang ini belum pernah ada transaksi keluar. Sistem otomatis menganggap status minimal <strong>Rendah</strong> (bukan Aman) untuk kondisi ini.
+                            Rata-rata Keluar per Hari masih 0 karena barang ini belum pernah ada transaksi keluar. Sistem otomatis menganggap status minimal <strong>Rendah</strong> (bukan Aman) untuk kondisi ini.
                         </div>
                     @endif
                 </div>

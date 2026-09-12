@@ -1,68 +1,71 @@
 <?php
+
 namespace Database\Seeders;
 
-
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\Pemasok;
+use Carbon\Carbon;
 
-
+/**
+ * Data pemasok TIDAK ADA di Excel Log Stok RAKSAKTI, jadi ini dummy realistis
+ * untuk kebutuhan bar minuman (bahan baku, kemasan, dessert).
+ */
 class PemasokSeeder extends Seeder
 {
+    protected int $userId = 2;
+
     public function run(): void
     {
-        $data = [
+        $pemasoks = [
             [
-                'nama_pemasok' => 'PT Alat Kantor',
-                'nama_pic' => 'Agus Riyanto',
-                'email' => 'alatkantor@mail.com',
-                'alamat' => 'Jakarta',
-                'no_telepon' => '021999888',
-                'jenis' => 'ATK',
-                'bergabung_sejak' => '2022-01-01',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'nama_pemasok' => 'CV Sumber Rasa Nusantara',
+                'jenis'        => 'Bahan Baku',
+                'email'        => 'sumberrasa@example.com',
+                'nama_pic'     => 'Budi Santoso',
+                'alamat'       => 'Jl. Industri No. 12, Balikpapan',
+                'no_telepon'   => '081234500001',
+                'bulan_lalu'   => 18,
             ],
             [
-                'nama_pemasok' => 'CV Elektronik',
-                'nama_pic' => 'Sari Lestari',
-                'email' => 'elektronik@mail.com',
-                'alamat' => 'Bandung',
-                'no_telepon' => '022555999',
-                'jenis' => 'Elektronik',
-                'bergabung_sejak' => '2023-03-15',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'nama_pemasok' => 'Toko Kemasan Jaya',
+                'jenis'        => 'Kemasan',
+                'email'        => 'kemasanjaya@example.com',
+                'nama_pic'     => 'Sri Wahyuni',
+                'alamat'       => 'Jl. Sudirman No. 45, Balikpapan',
+                'no_telepon'   => '081234500002',
+                'bulan_lalu'   => 12,
             ],
             [
-                'nama_pemasok' => 'PT Kebersihan Sehat',
-                'nama_pic' => 'Rahmat Hidayat',
-                'email' => 'kebersihan@mail.com',
-                'alamat' => 'Surabaya',
-                'no_telepon' => '031888111',
-                'jenis' => 'Kebersihan',
-                'bergabung_sejak' => '2021-11-20',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'nama_pemasok' => 'UD Sumber Kopi Nusantara',
+                'jenis'        => 'Bahan Baku',
+                'email'        => 'sumberkopi@example.com',
+                'nama_pic'     => 'Andi Prasetyo',
+                'alamat'       => 'Jl. MT Haryono No. 8, Balikpapan',
+                'no_telepon'   => '081234500003',
+                'bulan_lalu'   => 24,
+            ],
+            [
+                'nama_pemasok' => 'PT Boga Cita Rasa',
+                'jenis'        => 'Dessert & Bahan Kue',
+                'email'        => 'bogacitarasa@example.com',
+                'nama_pic'     => 'Dewi Lestari',
+                'alamat'       => 'Jl. Ahmad Yani No. 21, Balikpapan',
+                'no_telepon'   => '081234500004',
+                'bulan_lalu'   => 6,
             ],
         ];
 
-
-        // Tambahkan dummy data dari 4 sampai 20
-        for ($i = 4; $i <= 20; $i++) {
-            $data[] = [
-                'nama_pemasok' => "Pemasok Dummy $i",
-                'nama_pic' => "PIC Dummy $i",
-                'email' => "dummy$i@mail.com",
-                'alamat' => "Kota Dummy $i",
-                'no_telepon' => "08$i$i$i$i$i",
-                'jenis' => 'Umum',
-                'bergabung_sejak' => now()->subDays($i)->format('Y-m-d'),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
+        foreach ($pemasoks as $p) {
+            Pemasok::create([
+                'user_id'         => $this->userId,
+                'nama_pemasok'    => $p['nama_pemasok'],
+                'email'           => $p['email'],
+                'jenis'           => $p['jenis'],
+                'nama_pic'        => $p['nama_pic'],
+                'alamat'          => $p['alamat'],
+                'no_telepon'      => $p['no_telepon'],
+                'bergabung_sejak' => Carbon::now()->subMonths($p['bulan_lalu'])->format('Y-m-d'),
+            ]);
         }
-
-
-        DB::table('pemasoks')->insert($data);
     }
 }
