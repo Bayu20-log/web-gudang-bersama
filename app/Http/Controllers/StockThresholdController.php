@@ -60,6 +60,16 @@ class StockThresholdController extends Controller
         // admin tidak perlu menunggu scheduler berikutnya untuk melihat efeknya.
         $thresholdService->calculateAndSaveThreshold($item->kode_barang);
 
+        // Kalau form ini dibuka lewat link "Edit Threshold" di halaman
+        // /stock-notifications (demo sidang), balik ke halaman itu setelah
+        // Simpan. Selain itu (alur normal dari menu Barang), perilaku lama
+        // tetap dipertahankan persis seperti sebelumnya.
+        if ($request->input('from') === 'stock-notifications') {
+            return redirect()
+                ->route('stock-notifications.index')
+                ->with('success', 'Konfigurasi threshold berhasil diperbarui.');
+        }
+
         return redirect()
             ->to(route('item.edit', $item->kode_barang) . '#konfigurasi-threshold')
             ->with('success_threshold', 'Konfigurasi threshold berhasil diperbarui.');
