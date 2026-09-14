@@ -100,39 +100,100 @@ class PrediksiController extends Controller
     }
 
     /**
-     * STEP 1 & 2: pilih item -> sistem cek kelayakan data -> uji SES/HWES/ARIMA
-     * -> tampilkan tabel perbandingan RMSE/MAPE/MAE + rekomendasi model terbaik.
+     * Ambil data histori (series) untuk 1 item, lalu potong jadi hanya titik-titik
+     * SEBELUM $cutoff. Dipakai supaya model evaluasi/forecast tidak pernah "mengintip"
+     * data yang secara kronologis belum diketahui pada tanggal mulai prediksi yang
+     * dipilih user (penting untuk mode backtest, ketika tanggal mulai yang dipilih
+     * overlap dengan data historis yang sudah ada).
+     */
+    protected function seriesSebelumTanggal($series, Carbon $cutoff)
+    {
+        return $series->filter(
+            fn($point) => Carbon::parse($point['tanggal'])->lt($cutoff)
+        )->values();
+    }
+
+    /**
+     * STEP 1: pilih item -> tampilkan info histori + form pilih rentang tanggal.
+     * STEP 2: setelah tanggal_mulai & tanggal_akhir dipilih -> BARU sistem cek
+     * kelayakan data & uji SES/HWES/ARIMA -> tampilkan tabel perbandingan +
+     * rekomendasi model terbaik.
+     *
+     * Evaluasi model HANYA memakai data historis SEBELUM tanggal_mulai (bukan
+     * seluruh histori sampai data_end). Ini mencegah kebocoran data: kalau user
+     * memilih tanggal mulai yang ternyata sudah ada datanya (mode backtest),
+     * model tetap dilatih seolah-olah tanggal setelahnya belum diketahui, supaya
+     * perbandingan actual vs prediksi di step berikutnya valid.
      */
     public function create(Request $request)
     {
         $items = Item::orderBy('nama_barang')->get();
 
-        $kodeBarang = $request->query('kode_barang');
-        $selectedItem = null;
-        $feasible = null;
-        $isThin = false;
-        $evaluations = [];
-        $dataPoints = 0;
-        $dataStart = null;
-        $dataEnd = null;
+        $kodeBarang   = $request->query('kode_barang');
+        $tanggalMulai = $request->query('tanggal_mulai');
+        $tanggalAkhir = $request->query('tanggal_akhir');
+
+        $selectedItem       = null;
+        $feasible           = null;
+        $isThin             = false;
+        $evaluations        = [];
+        $dataPoints         = 0;      // total histori item (seluruhnya, buat info umum)
+        $trainingDataPoints = 0;      // histori yang benar-benar dipakai buat training (sebelum tanggal_mulai)
+        $dataStart          = null;
+        $dataEnd            = null;
+        $horizonHari        = null;
+        $dateError          = null;
 
         if ($kodeBarang) {
             $selectedItem = Item::where('kode_barang', $kodeBarang)->firstOrFail();
 
             $series = $this->forecasting->getDailySeries($kodeBarang, auth()->id());
             $dataPoints = $series->count();
-            $feasible = $this->forecasting->isFeasible($series);
+            $dataStart  = $series->first()['tanggal'] ?? null;
+            $dataEnd    = $series->last()['tanggal'] ?? null;
 
-            if ($feasible) {
-                $isThin = $this->forecasting->isDataThin($series);
-                $evaluations = $this->forecasting->evaluateAllModels($series);
-                $dataStart = $series->first()['tanggal'];
-                $dataEnd = $series->last()['tanggal']; // dipakai buat hitung tanggal mulai prediksi (data_end + 1 hari)
+            // Default tanggal (kalau user belum submit form step 2): mulai sehari
+            // setelah data terakhir, horizon default 7 hari. User tetap bebas ubah
+            // sebelum klik "Lihat Rekomendasi Model" (termasuk mundurin ke tanggal
+            // yang overlap data historis buat mode backtest).
+            if (!$tanggalMulai && $dataEnd) {
+                $tanggalMulai = Carbon::parse($dataEnd)->addDay()->format('Y-m-d');
+            }
+            if (!$tanggalAkhir && $tanggalMulai) {
+                $tanggalAkhir = Carbon::parse($tanggalMulai)->copy()->addDays(6)->format('Y-m-d');
+            }
+
+            // Evaluasi model HANYA jalan kalau tanggal sudah eksplisit ada di query
+            // string (artinya user sudah submit form step 2), bukan sekadar nilai
+            // default di atas.
+            if ($request->query('tanggal_mulai') && $request->query('tanggal_akhir')) {
+                $mulaiDate = Carbon::parse($tanggalMulai)->startOfDay();
+                $akhirDate = Carbon::parse($tanggalAkhir)->startOfDay();
+
+                if ($akhirDate->lt($mulaiDate)) {
+                    $dateError = 'Tanggal akhir tidak boleh sebelum tanggal mulai.';
+                } elseif ($mulaiDate->diffInDays($akhirDate) + 1 > 90) {
+                    $dateError = 'Rentang prediksi maksimal 90 hari. Perpendek rentang tanggalnya.';
+                } else {
+                    $horizonHari = $mulaiDate->diffInDays($akhirDate) + 1;
+
+                    $trainingSeries = $this->seriesSebelumTanggal($series, $mulaiDate);
+                    $trainingDataPoints = $trainingSeries->count();
+
+                    $feasible = $this->forecasting->isFeasible($trainingSeries);
+
+                    if ($feasible) {
+                        $isThin = $this->forecasting->isDataThin($trainingSeries);
+                        $evaluations = $this->forecasting->evaluateAllModels($trainingSeries);
+                    }
+                }
             }
         }
 
         return view('prediksi.create', compact(
-            'items', 'kodeBarang', 'selectedItem', 'feasible', 'isThin', 'evaluations', 'dataPoints', 'dataStart', 'dataEnd'
+            'items', 'kodeBarang', 'selectedItem', 'feasible', 'isThin', 'evaluations',
+            'dataPoints', 'trainingDataPoints', 'dataStart', 'dataEnd',
+            'tanggalMulai', 'tanggalAkhir', 'horizonHari', 'dateError'
         ))->with('minDataPoints', $this->forecasting->minDataPoints);
     }
 
@@ -142,6 +203,10 @@ class PrediksiController extends Controller
      * - 1 baris forecast_runs
      * - 3 baris forecast_model_results (semua model yang diuji, is_selected untuk 1 model)
      * - N baris forecast_values (hanya untuk model yang dipilih, sejumlah horizon)
+     *
+     * tanggal_mulai & tanggal_akhir dikunci dari step 2 (dikirim sebagai hidden
+     * input, bukan diketik ulang di sini), dan horizon dihitung ulang di server
+     * dari kedua tanggal itu -- bukan dipercaya begitu saja dari client.
      */
     public function store(Request $request)
     {
@@ -149,8 +214,8 @@ class PrediksiController extends Controller
             'kode_barang'   => 'required|exists:items,kode_barang',
             'model'         => 'required|in:SES,HWES,ARIMA',
             'params'        => 'required|string', // JSON string dari form
-            'horizon'       => 'required|integer|min:1|max:90',
-            'tanggal_mulai' => 'required|date', // bebas dipilih user, tidak dikunci ke data_end+1
+            'tanggal_mulai' => 'required|date',
+            'tanggal_akhir' => 'required|date|after_or_equal:tanggal_mulai',
         ]);
 
         $params = json_decode($request->params, true);
@@ -162,38 +227,48 @@ class PrediksiController extends Controller
         $kodeBarang = $request->kode_barang;
         $item = Item::where('kode_barang', $kodeBarang)->firstOrFail();
 
-        $series = $this->forecasting->getDailySeries($kodeBarang, $userId);
+        $tanggalMulai = Carbon::parse($request->tanggal_mulai)->startOfDay();
+        $tanggalAkhir = Carbon::parse($request->tanggal_akhir)->startOfDay();
 
-        if (!$this->forecasting->isFeasible($series)) {
-            return back()->with('error', "Data historis item ini belum cukup (total data historis kurang dari {$this->forecasting->minDataPoints} hari) untuk diprediksi.");
+        $horizon = $tanggalMulai->diffInDays($tanggalAkhir) + 1;
+        if ($horizon > 90) {
+            return back()->with('error', 'Rentang prediksi maksimal 90 hari. Perpendek rentang tanggalnya.');
         }
 
-        // Validasi: data historis SEBELUM tanggal mulai yang dipilih user harus minimal
-        // sejumlah minDataPoints (7 hari), supaya model tetap punya cukup dasar perhitungan.
-        // Ini yang mencegah user memilih tanggal mulai yang terlalu mepet/di tengah data historis.
-        $tanggalMulai = Carbon::parse($request->tanggal_mulai)->startOfDay();
-        $daysBefore = $series->filter(function ($point) use ($tanggalMulai) {
-            return Carbon::parse($point['tanggal'])->lt($tanggalMulai);
-        })->count();
+        // Series lengkap (dipakai belakangan buat isi actual_quantity_out kalau
+        // tanggal forecast ternyata overlap sama data historis yang sudah ada).
+        $series = $this->forecasting->getDailySeries($kodeBarang, $userId);
 
+        // Series yang BENERAN dipakai buat training model: hanya data SEBELUM
+        // tanggal_mulai. Ini yang mencegah model "curang" lihat data yang
+        // seharusnya belum diketahui pada tanggal_mulai yang dipilih user.
+        $trainingSeries = $this->seriesSebelumTanggal($series, $tanggalMulai);
+
+        if (!$this->forecasting->isFeasible($trainingSeries)) {
+            return back()->with('error', "Data historis SEBELUM tanggal mulai yang dipilih belum cukup (kurang dari {$this->forecasting->minDataPoints} hari) untuk diprediksi.");
+        }
+
+        $daysBefore = $trainingSeries->count();
         if ($daysBefore < $this->forecasting->minDataPoints) {
             return back()->with('error', "Tanggal mulai prediksi yang dipilih ({$tanggalMulai->format('d M Y')}) cuma punya {$daysBefore} hari data historis sebelumnya. Minimal {$this->forecasting->minDataPoints} hari data historis dibutuhkan SEBELUM tanggal mulai prediksi. Pilih tanggal mulai yang lebih jauh ke depan, atau lengkapi data historis lebih awal.");
         }
 
-        // Uji ulang ketiga model supaya ketiganya tersimpan di forecast_model_results
-        $allEvaluations = $this->forecasting->evaluateAllModels($series);
+        // Uji ulang ketiga model (pakai training series yang sama dengan yang
+        // ditampilkan di halaman rekomendasi) supaya ketiganya tersimpan di
+        // forecast_model_results dan konsisten dengan apa yang user lihat.
+        $allEvaluations = $this->forecasting->evaluateAllModels($trainingSeries);
 
-        $result = $this->forecasting->runFinalForecast($series, $request->model, $params, (int) $request->horizon);
+        $result = $this->forecasting->runFinalForecast($trainingSeries, $request->model, $params, $horizon, $tanggalMulai);
 
         DB::beginTransaction();
         try {
             $run = ForecastRun::create([
                 'user_id'          => $userId,
                 'item_id'          => $item->kode_barang,
-                'data_start'       => $series->first()['tanggal'],
-                'data_end'         => $series->last()['tanggal'],
+                'data_start'       => $trainingSeries->first()['tanggal'],
+                'data_end'         => $trainingSeries->last()['tanggal'],
                 'frequency'        => 'harian',
-                'horizon'          => $request->horizon,
+                'horizon'          => $horizon,
                 'selected_model'   => $request->model,
                 'selection_metric' => 'RMSE',
                 'status'           => 'selesai',
@@ -235,15 +310,17 @@ class PrediksiController extends Controller
             }
 
             // Simpan hasil forecast masa depan hanya untuk model yang dipilih.
-            // Tanggal mulai dihitung dari input user (bebas dipilih), BUKAN otomatis data_end+1,
-            // supaya user bisa memprediksi periode yang mereka mau.
+            // Tanggal mulai persis sesuai pilihan user di step 2 (bebas overlap
+            // dengan data historis untuk mode backtest).
             //
-            // Kalau tanggal forecast ternyata sudah ada di data historis (karena user pilih
-            // tanggal mulai yang overlap dengan data historis), langsung isi actual_quantity_out
-            // dan realized_error dari data historis itu, bukan dibiarkan kosong menunggu "nanti".
+            // Kalau tanggal forecast ternyata sudah ada di data historis LENGKAP
+            // ($series, bukan $trainingSeries), langsung isi actual_quantity_out
+            // dan realized_error dari data historis itu -- ini valid sebagai
+            // perbandingan karena modelnya sendiri TIDAK dilatih pakai data itu
+            // (trainingSeries sudah dipotong sebelum tanggal_mulai).
             $historicalByDate = $series->keyBy('tanggal');
 
-            $forecastDate = Carbon::parse($request->tanggal_mulai);
+            $forecastDate = $tanggalMulai->copy();
             foreach ($result['future_forecast'] as $i => $pred) {
                 $tanggal = $forecastDate->copy()->addDays($i)->format('Y-m-d');
                 $actual = $historicalByDate->has($tanggal) ? (float) $historicalByDate[$tanggal]['y'] : null;

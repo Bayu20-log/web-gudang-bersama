@@ -242,6 +242,7 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item {{ $routeName === 'prediksi.index' ? 'active' : '' }}" href="{{ route('prediksi.index') }}">Prediksi</a></li>
+                                    <LI><a class="dropdown-item {{ $routeName === 'prediksi.create' ? 'active' : '' }}" href="{{ route('prediksi.create') }}">Buat Prediksi</a></LI>
                                 </ul>
                             </li>
 

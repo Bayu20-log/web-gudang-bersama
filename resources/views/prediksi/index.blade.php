@@ -291,7 +291,7 @@
                                     &ndash;
                                     {{ \Carbon\Carbon::parse($run->data_end)->addDays($run->horizon)->format('d M Y') }}
                                 </div>
-                            </div>'
+                            </div>
                             
                         </td>
                         <td>

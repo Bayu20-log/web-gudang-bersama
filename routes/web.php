@@ -131,7 +131,7 @@ Route::middleware(['auth', 'auto.logout'])->group(function () {
         Route::resource('kategori', KategoriController::class);
         Route::resource('aset', LaporanAsetController::class);
         Route::resource('omzet', OmzetController::class);
-        Route::resource('prediksi', PrediksiController::class);
+        
     });
     //untuk view stok
     Route::middleware(['auth'])->group(function () {
@@ -173,13 +173,14 @@ Route::middleware(['auth', 'auto.logout'])->group(function () {
     
     });
 
-        Route::middleware('auth')->group(function () {
-        Route::get('/prediksi', [PrediksiController::class, 'index'])->name('prediksi.index');
-        Route::get('/prediksi/create', [PrediksiController::class, 'create'])->name('prediksi.create');
-        Route::post('/prediksi', [PrediksiController::class, 'store'])->name('prediksi.store');
-        Route::get('/prediksi/{prediksi}', [PrediksiController::class, 'show'])->name('prediksi.show');
-        Route::get('/prediksi/{prediksi}/pdf', [PrediksiController::class, 'exportPdf'])->name('prediksi.pdf');
-    });
+    Route::middleware('auth')->group(function () {
+    Route::get('/prediksi', [PrediksiController::class, 'index'])->name('prediksi.index');
+    Route::get('/prediksi/create', [PrediksiController::class, 'create'])->name('prediksi.create');
+    Route::get('/prediksi/preview', [PrediksiController::class, 'preview'])->name('prediksi.preview'); // <- pindah ke sini, SEBELUM /prediksi/{prediksi}
+    Route::post('/prediksi', [PrediksiController::class, 'store'])->name('prediksi.store');
+    Route::get('/prediksi/{prediksi}', [PrediksiController::class, 'show'])->name('prediksi.show');
+    Route::get('/prediksi/{prediksi}/pdf', [PrediksiController::class, 'exportPdf'])->name('prediksi.pdf');
+}); 
 
     
 

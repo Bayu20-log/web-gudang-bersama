@@ -456,17 +456,38 @@ class ForecastingService
         return $results;
     }
 
-    /**
+        /**
      * Setelah user pilih model, hitung ulang forecast final di masa depan (horizon hari)
      * memakai parameter terbaik model tersebut, dievaluasi ulang pada test set untuk
      * menghasilkan RMSE/MAPE/MAE final yang disimpan ke history.
+     *
+     * $tanggalMulai dipakai untuk memastikan forecast SELALU "buta" terhadap data pada
+     * atau setelah tanggal itu - bahkan kalau user sengaja memilih tanggal mulai yang
+     * overlap dengan data historis yang sudah ada (misalnya untuk keperluan validasi/
+     * pengujian). Tanpa filter ini, forecastSES/HWES/ARIMA() akan diam-diam "mengintip"
+     * data yang seharusnya jadi target prediksi, sehingga hasilnya terlihat lebih akurat
+     * dari yang sebenarnya.
      */
-    public function runFinalForecast(Collection $series, string $model, array $params, int $horizon): array
+    public function runFinalForecast(Collection $series, string $model, array $params, int $horizon, ?Carbon $tanggalMulai = null): array
     {
         $split = $this->trainTestSplit($series);
         $train = $split['train']->pluck('y')->values()->all();
         $test  = $split['test']->pluck('y')->values()->all();
-        $full  = $series->pluck('y')->values()->all();
+
+        // Data untuk forecast final: cuma yang tanggalnya SEBELUM tanggal_mulai yang dipilih
+        // user. Kalau tanggal_mulai tidak dikirim (fallback aman), pakai seluruh series
+        // seperti sebelumnya.
+        $full = $tanggalMulai
+            ? $series->filter(fn($point) => Carbon::parse($point['tanggal'])->lt($tanggalMulai))
+                ->pluck('y')->values()->all()
+            : $series->pluck('y')->values()->all();
+
+        // Safety fallback: kalau hasil filter ternyata kosong/terlalu pendek (harusnya tidak
+        // terjadi karena sudah divalidasi minDataPoints di controller), pakai full series
+        // apa adanya supaya tidak error, daripada forecast gagal total.
+        if (count($full) < 2) {
+            $full = $series->pluck('y')->values()->all();
+        }
 
         switch ($model) {
             case 'SES':
@@ -508,7 +529,6 @@ class ForecastingService
             'bounds' => $bounds,
         ];
     }
-
     // ================== CHART UNTUK PDF (GD, karena dompdf tidak reliable render SVG) ==================
 
     /**
