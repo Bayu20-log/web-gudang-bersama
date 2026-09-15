@@ -69,9 +69,10 @@
     <div class="nomor">Nomor : BA-PB/{{ str_pad($barangMasuk->id, 4, '0', STR_PAD_LEFT) }}/{{ \Carbon\Carbon::parse($barangMasuk->tanggal_masuk)->format('m/Y') }}</div>
 
     <p style="text-align: justify;">
-        Pada hari ini <strong>{{ \Carbon\Carbon::parse($barangMasuk->tanggal_masuk)->translatedFormat('l') }}</strong>, 
-        tanggal <strong>{{ \Carbon\Carbon::parse($barangMasuk->tanggal_masuk)->translatedFormat('d F Y') }}</strong>, 
-        bertempat di lokasi <strong>{{ $barangMasuk->lokasi->nama_lokasi ?? '-' }}</strong>, 
+        Pada hari ini <strong>{{ \Carbon\Carbon::parse($barangMasuk->tanggal_masuk)->locale('id')->isoFormat('dddd') }}</strong>,
+        tanggal <strong>{{ \Carbon\Carbon::parse($barangMasuk->tanggal_masuk)->locale('id')->isoFormat('D MMMM YYYY') }}</strong>,
+        pukul <strong>{{ \Carbon\Carbon::parse($barangMasuk->tanggal_masuk)->format('H:i') }}</strong>,
+        bertempat di lokasi <strong>{{ $barangMasuk->lokasi->nama_lokasi ?? '-' }}</strong>,
         telah dilakukan penerimaan barang dari:
     </p>
 
