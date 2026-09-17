@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-USE illuminate\Database\QueryException;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Validator;
 
 class KategoriController extends Controller
 {
@@ -20,7 +21,6 @@ class KategoriController extends Controller
         }
 
         $kategoris = $query->paginate(10);
-
         return view('kategori.index', compact('kategoris'));
     }
 
@@ -31,7 +31,6 @@ class KategoriController extends Controller
 
     public function store(Request $request)
     {
-        // ✅ Validasi eksplisit gunakan kolom "kategori"
         $request->validate([
             'kategori'  => 'required|unique:kategoris,kategori',
             'deskripsi' => 'nullable|string',
@@ -41,20 +40,56 @@ class KategoriController extends Controller
         ]);
 
         try {
-            // sementara debug untuk pastikan request masuk
-            // dd($request->all());
-
             Kategori::create([
                 'kategori'  => $request->kategori,
                 'deskripsi' => $request->deskripsi,
                 'user_id'   => Auth::id(),
             ]);
 
-
             return redirect()->route('kategori.index')
                 ->with('success', 'Kategori berhasil ditambahkan.');
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan saat menyimpan data.');
+        }
+    }
+
+    // ==========================================
+    // FUNGSI BARU UNTUK MENERIMA AJAX DARI MODAL
+    // DENGAN PENAMBAHAN DESKRIPSI
+    // ==========================================
+    public function storeAjax(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'kategori'  => 'required|unique:kategoris,kategori',
+            'deskripsi' => 'nullable|string',
+        ], [
+            'kategori.required' => 'Nama kategori wajib diisi.',
+            'kategori.unique'   => 'Kategori ini sudah ada di database.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first()
+            ], 400); 
+        }
+
+        try {
+            $kategori = Kategori::create([
+                'kategori'  => $request->kategori,
+                'deskripsi' => $request->deskripsi,
+                'user_id'   => Auth::id(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data'    => $kategori
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan sistem di server.'
+            ], 500);
         }
     }
 
@@ -83,29 +118,26 @@ class KategoriController extends Controller
         }
     }
 
-    public function destroy(Kategori $Kategori)
+    public function destroy(Kategori $kategori)
     {
         try {
-            // (Opsional tapi rapi) Cek dulu jika punya relasi items()
-            if (method_exists($Kategori, 'items') && $Kategori->items()->exists()) {
+            if (method_exists($kategori, 'items') && $kategori->items()->exists()) {
                 return back()->with('error', 'Tidak dapat menghapus data karena sudah digunakan untuk pencatatan item.');
             }
 
-            $Kategori->delete();
-
-            return redirect()->route('Kategori.index')->with('success', 'Kategori berhasil dihapus.');
+            $kategori->delete();
+            return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus.');
         } catch (QueryException $e) {
-            // Tangani pelanggaran FK: SQLSTATE 23000 / MySQL 1451 / Postgres 23503
-            $mysqlCode   = $e->errorInfo[1] ?? null;   // 1451
-            $sqlState    = $e->errorInfo[0] ?? null;   // 23000
-            $pgSqlCode   = $e->getCode();              // 23503 pada Postgres
+            $mysqlCode   = $e->errorInfo[1] ?? null;   
+            $sqlState    = $e->errorInfo[0] ?? null;   
+            $pgSqlCode   = $e->getCode();              
 
             if ($sqlState === '23000' || $mysqlCode == 1451 || $pgSqlCode == '23503') {
                 return back()->with('error', 'Tidak dapat menghapus data karena sudah digunakan untuk pencatatan item.');
             }
 
-            // Error lain
             report($e);
             return back()->with('error', 'Terjadi kesalahan saat menghapus data.');
-        }}
+        }
+    }
 }
