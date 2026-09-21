@@ -13,8 +13,8 @@
     </div>
 
     <!-- Kotak konten biru lembut tanpa garis tepi -->
-    <div class="rounded p-4 shadow-sm hero-band-dark"  data-aos="fade-up" data-aos-delay="200">
-        <h2 class="text-center fw-bold mb-4 text-white">Frequently Ask Questions</h2>
+    <div class="rounded p-4 shadow-sm hero-band-brand"  data-aos="fade-up" data-aos-delay="200">
+        <h2 class="text-center fw-bold mb-4" style="color:#1e293b">Frequently Ask Questions</h2>
 
         <div class="container mt-4" x-data="{ open1: false, open2: false, open3: false, open4: false, open5: false, open6: false, open7: false, open8: false, open9: false }">
             

@@ -15,8 +15,8 @@
     </div>
 
     <!-- Kotak konten biru lembut tanpa garis tepi -->
-    <div class="rounded p-4 shadow-sm hero-band-dark" data-aos="fade-up" data-aos-delay="200">
-        <h2 class="text-center fw-bold mb-4 text-white">Galeri</h2>
+    <div class="rounded p-4 shadow-sm hero-band-brand" data-aos="fade-up" data-aos-delay="200">
+        <h2 class="text-center fw-bold mb-4" style="color:#1e293b">Galeri</h2>
         <p class="text-center fs-5 text-muted mb-4">
             Tampilan Antarmuka GudangKu
         </p>

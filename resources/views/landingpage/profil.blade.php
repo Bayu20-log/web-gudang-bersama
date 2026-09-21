@@ -13,14 +13,14 @@
     </div>
 
     <!-- Kotak konten bertema gudang (dark slate + aksen oranye) -->
-    <div class="rounded p-4 shadow-sm hero-band-dark" data-aos="fade-up" data-aos-delay="200">
-        <h2 class="text-center fw-bold mb-4 text-white">Profil GudangKu</h2>
+    <div class="rounded p-4 shadow-sm hero-band-brand" data-aos="fade-up" data-aos-delay="200">
+        <h2 class="text-center fw-bold mb-4" style="color:#1e293b">Profil GudangKu</h2>
         <p class="text-center fs-5 text-muted mb-4">
             Di era digital yang menuntut efisiensi dan kecepatan, pengelolaan gudang secara manual tidak lagi relevan. Gudangku hadir sebagai solusi sistem informasi pergudangan yang modern, sederhana, dan powerful untuk membantu Anda mengelola stok barang dengan lebih mudah, cepat, dan akurat.
         </p>
 
         <div class="container mt-4" x-data="{ open1: false, open2: false, open3: false, open4: false, open5: false, open6: false, open7: false, open8: false }">
-            <h3 class="fw-bold mb-4 text-white">Keunggulan meliputi:</h3>
+            <h3 class="fw-bold mb-4" style="color:#1e293b">Keunggulan meliputi:</h3>
 
             <!-- Keunggulan 1 -->
             <div class="mb-3 bg-white shadow-sm p-4 rounded-4 hover:shadow-md transition-all duration-300 cursor-pointer" @click="open1 = !open1">
@@ -135,8 +135,8 @@
             </div>
         </div>
     <BR>
-    <h4 class="text-center fw-bold mb-4 text-white">🚀 Saatnya Tinggalkan Sistem Manual. Beralih ke GudangKu Sekarang!</h4>
-    <p class="text-center" style="color:#cbd5e1"><i>Dengan <strong>GudangKu</strong>, Anda tidak hanya mengelola gudang. Anda sedang membangun sistem kerja yang lebih profesional, rapi, dan siap berkembang.</i></p>
+    <h4 class="text-center fw-bold mb-4" style="color:#1e293b">🚀 Saatnya Tinggalkan Sistem Manual. Beralih ke GudangKu Sekarang!</h4>
+    <p class="text-center" style="color:#57534e"><i>Dengan <strong>GudangKu</strong>, Anda tidak hanya mengelola gudang. Anda sedang membangun sistem kerja yang lebih profesional, rapi, dan siap berkembang.</i></p>
 
     </div>
 </div>
