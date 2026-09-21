@@ -37,7 +37,7 @@
             <!-- Foto -->
             <div class="col-md-2 text-center">
                 @if($item->foto)
-                    <img src="{{ asset('storage/' . $item->foto) }}" class="img-box shadow-sm">
+                    <img src="{{ asset($item->foto) }}" class="img-box shadow-sm">
                 @else
                     <div class="img-box d-flex align-items-center justify-content-center mx-auto">
                         <span class="text-muted fw-medium" style="font-size:0.8rem;">Foto Produk</span>

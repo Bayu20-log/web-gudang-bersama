@@ -256,7 +256,7 @@ td:before {
                     <tr>
                         <td>
                             @if ($user->photo)
-                                <img src="{{ asset('storage/' . $user->photo) }}" alt="Foto {{ $user->name }}" class="rounded-circle" width="50" height="50" style="object-fit: cover;">
+                                <img src="{{ asset($user->photo) }}" alt="Foto {{ $user->name }}" class="rounded-circle" width="50" height="50" style="object-fit: cover;">
                             @else
                                 <span class="text-muted fst-italic">(Tidak ada foto)</span>
                             @endif

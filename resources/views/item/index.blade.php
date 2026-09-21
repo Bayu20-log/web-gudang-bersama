@@ -125,8 +125,8 @@
                         <td><span class="badge bg-secondary px-3 py-2 rounded-pill">{{ $item->stok_minimum }}</span></td>
                         <td>
                             @if ($item->foto)
-                                <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto" class="img-thumbnail-custom shadow-sm"
-                                      onclick="openLightbox('{{ asset('storage/' . $item->foto) }}', '{{ $item->nama_barang }}')">
+                                <img src="{{ asset($item->foto) }}" alt="Foto" class="img-thumbnail-custom shadow-sm"
+                                      onclick="openLightbox('{{ asset($item->foto) }}', '{{ $item->nama_barang }}')">
                             @else
                                 <span class="badge bg-light text-muted border px-2 py-1">Kosong</span>
                             @endif

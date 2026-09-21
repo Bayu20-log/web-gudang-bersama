@@ -44,6 +44,17 @@ return [
             'throw' => false,
         ],
 
+        // Disk khusus untuk hosting yang tidak mendukung symlink (mis. InfinityFree).
+        // File disimpan LANGSUNG di folder public/, jadi tidak butuh perintah
+        // `php artisan storage:link` sama sekali.
+        'public_direct' => [
+            'driver' => 'local',
+            'root' => public_path(),
+            'url' => env('APP_URL'),
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

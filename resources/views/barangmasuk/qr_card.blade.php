@@ -48,7 +48,7 @@
                 <div class="mb-3 detail-label text-center">Foto Barang</div>
                 <div class="photo-container">
                     @if($barangMasuk->item && $barangMasuk->item->foto && Storage::disk('public')->exists($barangMasuk->item->foto))
-                        <img src="{{ asset('storage/' . $barangMasuk->item->foto) }}" alt="Foto Barang">
+                        <img src="{{ asset($barangMasuk->item->foto) }}" alt="Foto Barang">
                     @else
                         <div class="text-muted fst-italic d-flex flex-column align-items-center">
                             <i class="fa-solid fa-image fs-1 mb-2 text-secondary"></i>
@@ -103,7 +103,7 @@
                     <!-- Kotak QR -->
                     <div class="qr-box text-center shadow-sm d-flex flex-column align-items-center justify-content-center">
                         @if($barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code))
-                            <img src="{{ asset('storage/' . $barangMasuk->qr_code) }}" alt="QR Code" style="width: 120px; height: 120px; mix-blend-mode: multiply;">
+                            <img src="{{ asset($barangMasuk->qr_code) }}" alt="QR Code" style="width: 120px; height: 120px; mix-blend-mode: multiply;">
                         @else
                             <div class="text-muted fst-italic p-3">QR Code belum digenerate</div>
                         @endif

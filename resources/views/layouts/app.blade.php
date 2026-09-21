@@ -178,7 +178,7 @@
 
                         <!-- 2. Foto Profil (Dropdown) -->
                         <li class="nav-item dropdown d-flex align-items-center">
-                            <img src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=f97316&color=fff' }}" 
+                            <img src="{{ Auth::user()->photo ? asset(Auth::user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=f97316&color=fff' }}" 
                                  class="user-photo dropdown-toggle shadow-sm" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" style="cursor:pointer;">
                             
                             <ul class="dropdown-menu dropdown-menu-end mt-3 border-0 py-2 shadow">
