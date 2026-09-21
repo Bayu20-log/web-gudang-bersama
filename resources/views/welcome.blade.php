@@ -16,21 +16,21 @@
     }
 </style>
 <div class="container py-5">
-    {{-- Kotak biru lembut --}}
-    <div class="rounded p-4 mb-5" style="background-color: #edd078; color: #070707;">
+    {{-- Kotak hero bertema gudang --}}
+    <div class="rounded p-4 mb-5 hero-band-dark">
         <div class="row align-items-center">
             <div class="col-md-8">
-                <h6 class="fw-bold" style="color: #003322;">Profil RAKSAKTI</h6>
-                <h2 class="fw-bold">RAKSAKTI</h2>
-                <p class="fst-italic">Kelola Stok Barang dengan Cerdas, Cepat, dan Akurat.</p>
-                <p>
+                <h6 class="fw-bold text-brand">Profil RAKSAKTI</h6>
+                <h2 class="fw-bold text-white">RAKSAKTI</h2>
+                <p class="fst-italic" style="color:#e2e8f0">Kelola Stok Barang dengan Cerdas, Cepat, dan Akurat.</p>
+                <p style="color:#cbd5e1">
                     RAKSAKTI adalah sistem informasi pergudangan berbasis web yang dirancang
                     untuk memudahkan pengelolaan stok barang secara real-time, multi-user, dan
                     terstruktur. Tidak perlu instalasi tambahan, cukup buka browser dan login.
                 </p>
                 <!--Tombol -->
                 <div class="d-flex gap-3">
-                    <a href="{{ route('profil') }}" class="btn btn-outline-success" style="color: #162f26">Selengkapnya</a>
+                    <a href="{{ route('profil') }}" class="btn btn-warning fw-bold" style="background-color: #f97316; border-color: #f97316; color: #fff;">Selengkapnya</a>
                 </div>
             </div>  
             <div class="col-md-4 text-center">
@@ -61,11 +61,11 @@
                     <div class="card h-100 text-center border-0 shadow-sm">
                         <div class="card-body">
                             <img src="{{ asset('images/superadmin1.png') }}" alt="Superadmin" style="height:70px;" class="mb-3">
-                            <h5 class="fw-bold mb-2 text-primary">Superadmin</h5>
+                            <h5 class="fw-bold mb-2" style="color:#1e293b">Superadmin</h5>
                             <p class="text-muted">
                                 Pengguna Superadmin mengelola akun pengguna dan memiliki akses untuk melihat laporan-laporan penting.
                             </p>
-                            <a href="{{ route('superadmin') }}" class="btn btn-outline-primary">Lihat Detail</a>
+                            <a href="{{ route('superadmin') }}" class="btn btn-outline-dark-slate">Lihat Detail</a>
                         </div>
                     </div>
                 </div>
@@ -75,11 +75,11 @@
                 <div class="card h-100 text-center border-0 shadow-sm">
                     <div class="card-body">
                         <img src="{{ asset('images/gudang.png') }}" alt="Gudang" style="height:70px;" class="mb-3">
-                        <h5 class="fw-bold mb-2 text-success">Gudang</h5>
+                        <h5 class="fw-bold mb-2 text-brand">Gudang</h5>
                         <p class="text-muted">
                             Pengguna Gudang bertugas mencatat dan mengelola aktivitas keluar masuk barang, serta menyusun berita acara.
                         </p>
-                        <a href="{{ route('gudang') }}" class="btn btn-outline-success">Lihat Detail</a>
+                        <a href="{{ route('gudang') }}" class="btn btn-outline-brand">Lihat Detail</a>
                     </div>
                 </div>
             </div>
@@ -89,11 +89,11 @@
                 <div class="card h-100 text-center border-0 shadow-sm">
                     <div class="card-body">
                         <img src="{{ asset('images/viewer.png') }}" alt="Viewer" style="height:70px;" class="mb-3">
-                        <h5 class="fw-bold mb-2 text-info">Viewer</h5>
+                        <h5 class="fw-bold mb-2" style="color:#2563eb">Viewer</h5>
                         <p class="text-muted">
                             Pengguna Viewer hanya memiliki hak akses untuk melihat laporan tanpa dapat mengubah data.
                         </p>
-                        <a href="{{ route('viewer') }}" class="btn btn-outline-info">Lihat Detail</a>
+                        <a href="{{ route('viewer') }}" class="btn" style="border:1px solid #2563eb; color:#2563eb;">Lihat Detail</a>
                     </div>
                 </div>
             </div>

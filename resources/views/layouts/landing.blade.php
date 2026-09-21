@@ -102,7 +102,7 @@
         .breadcrumb-item,
         .breadcrumb-item a,
         .breadcrumb-item.active {
-            color: #79b687 !important; 
+            color: #f97316 !important; 
         }
         .nav-pills .nav-link {
             color: #ffffff !important; 
@@ -110,13 +110,45 @@
             border-radius: 0 !important; 
         }
         .nav-pills .nav-link:hover {
-            color: #1e7e34 !important; 
+            color: #f97316 !important; 
         }
         .nav-pills .nav-link.active {
             font-weight: bold; 
-            border-bottom: 2px solid #18231b; 
+            border-bottom: 2px solid #f97316; 
             color: #ffffff !important; 
             background-color: transparent !important;
+        }
+
+        /* --- TEMA KONTEN: bidang besar bertema gudang (pengganti kotak hijau lama) --- */
+        .hero-band-dark {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #f1f5f9;
+            border-bottom: 3px solid #f97316;
+        }
+        .hero-band-dark .text-muted {
+            color: #cbd5e1 !important;
+        }
+        /* Aksen oranye khas tema gudang, pengganti warna generik bootstrap */
+        .text-brand {
+            color: #f97316 !important;
+        }
+        .btn-outline-brand {
+            color: #f97316;
+            border-color: #f97316;
+        }
+        .btn-outline-brand:hover {
+            color: #fff;
+            background-color: #f97316;
+            border-color: #f97316;
+        }
+        .btn-outline-dark-slate {
+            color: #1e293b;
+            border-color: #1e293b;
+        }
+        .btn-outline-dark-slate:hover {
+            color: #fff;
+            background-color: #1e293b;
+            border-color: #1e293b;
         }
         
         footer {
