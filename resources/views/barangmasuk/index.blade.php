@@ -65,7 +65,7 @@
 
     {{-- Tombol pemicu filter versi HP --}}
     <button type="button" class="filter-trigger-btn" data-bs-toggle="offcanvas" data-bs-target="#filterBarangMasuk">
-        <i class="fa-solid fa-sliders"></i> Filter
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05Zm-4.9 5a2.5 2.5 0 0 1 4.9 0H16v1H9.05a2.5 2.5 0 0 1-4.9 0H0V8h4.15Zm.9.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0ZM.5 12a2.5 2.5 0 0 1 4.9 0H16v1H5.4a2.5 2.5 0 0 1-4.9 0H0v-1h.5Z"/></svg> Filter
         @if(request('search') || request('lokasi'))
             <span class="badge" style="background:#f97316;">{{ collect([request('search'), request('lokasi')])->filter()->count() }}</span>
         @endif
@@ -160,13 +160,13 @@
                     <div class="fw-bold mb-1" style="color:#16a34a;">+{{ $bm->jumlah }}</div>
                     <div class="dropdown">
                         <button class="btn-action-menu" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Menu Aksi">
-                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/></svg>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
                             <li>
                                 @if($bm->qr_code)
                                     <a class="dropdown-item" href="{{ route('barang-masuk.qr-card', $bm->id) }}">
-                                        <i class="fa-solid fa-qrcode" style="color:#3b82f6;"></i> Lihat QR
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="#3b82f6" viewBox="0 0 16 16"><path d="M2 2h2v2H2V2Z"/><path d="M6 0v6H0V0h6ZM5 1H1v4h4V1ZM4 12H2v2h2v-2Z"/><path d="M6 10v6H0v-6h6Zm-5 1v4h4v-4H1Zm11-9h2v2h-2V2Z"/><path d="M10 0v6h6V0h-6Zm5 1v4h-4V1h4ZM8 1V0h1v2H8v2H7V1h1Zm0 5V4h1v2H8ZM6 8V7h1V6h1v2h1V7h5v1h-4v1H7V8H6Zm0 0v1H2V8H1v1H0V7h3v1h3Zm10 1h-1V7h1v2Zm-1 0h-1v2h2v-1h-1V9Zm-4 0h2v1h-1v1h-1V9Zm2 3v-1h-1v1h-1v1H9v1h3v-2h1Zm0 0h3v1h-2v1h-1v-2Zm-4-1v1h1v-2H7v1h2Z"/><path d="M7 12h1v3h4v1H7v-4Zm9 2v2h-3v-1h2v-1h1Z"/></svg> Lihat QR
                                     </a>
                                 @else
                                     <span class="dropdown-item disabled">QR tidak tersedia</span>
@@ -178,7 +178,7 @@
             </div>
         @empty
             <div class="text-center py-5 text-muted fw-medium">
-                <i class="fa-solid fa-box-open mb-2" style="font-size:28px; color:#cbd5e1;"></i><br>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="mb-2" style="color: #cbd5e1;" viewBox="0 0 16 16"><path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"/></svg><br>
                 Data transaksi masuk belum tersedia.
             </div>
         @endforelse

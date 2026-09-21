@@ -68,8 +68,8 @@
         @endif
     </div>
 
-    {{-- Filter Form --}}
-    <form method="GET" class="filter-form">
+    {{-- Filter versi desktop --}}
+    <form method="GET" class="filter-form filter-form-inline">
         <div class="form-group">
             <label>Nama Barang</label>
             <input type="text" name="nama_barang" placeholder="Ketik nama barang..." value="{{ request('nama_barang') }}">
@@ -99,15 +99,62 @@
         </div>
     </form>
 
-    {{-- Export Buttons --}}
+    {{-- Tombol pemicu filter versi HP --}}
+    <button type="button" class="filter-trigger-btn" data-bs-toggle="offcanvas" data-bs-target="#filterLaporanStok">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05Zm-4.9 5a2.5 2.5 0 0 1 4.9 0H16v1H9.05a2.5 2.5 0 0 1-4.9 0H0V8h4.15Zm.9.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0ZM.5 12a2.5 2.5 0 0 1 4.9 0H16v1H5.4a2.5 2.5 0 0 1-4.9 0H0v-1h.5Z"/></svg> Filter
+    </button>
+
+    {{-- Panel filter bottom-sheet (khusus HP) --}}
+    <div class="offcanvas offcanvas-bottom offcanvas-filter" tabindex="-1" id="filterLaporanStok" style="height:auto; max-height:80vh; border-radius:20px 20px 0 0;">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Filter Laporan Stok</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <form method="GET" class="d-flex flex-column">
+            <div class="offcanvas-body">
+                <label>Nama Barang</label>
+                <input type="text" name="nama_barang" class="form-control" placeholder="Ketik nama barang..." value="{{ request('nama_barang') }}">
+                <label>Kode Barang</label>
+                <input type="text" name="kode_barang" class="form-control" placeholder="Ketik kode..." value="{{ request('kode_barang') }}">
+                <label>Lokasi</label>
+                <select name="lokasi" class="form-select">
+                    <option value="">-- Semua Lokasi --</option>
+                    @foreach($lokasis as $lokasi)
+                        @php
+                            $lokasiId   = is_array($lokasi) ? ($lokasi['id'] ?? $lokasi['nama_lokasi']) : $lokasi;
+                            $lokasiName = is_array($lokasi) ? ($lokasi['nama_lokasi'] ?? '-') : $lokasi;
+                        @endphp
+                        <option value="{{ $lokasiId }}" {{ request('lokasi') == $lokasiId ? 'selected' : '' }}>
+                            {{ $lokasiName }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="offcanvas-footer">
+                <a href="{{ route('laporan') }}" class="btn btn-outline-dark fw-bold flex-fill">Reset</a>
+                <button type="submit" class="btn btn-orange fw-bold flex-fill">Terapkan</button>
+            </div>
+        </form>
+    </div>
+
+    {{-- Tombol Ekspor ringkas: 1 tombol, terbuka jadi 2 pilihan --}}
     @if ($role === 'gudang')
-        <div class="d-flex flex-wrap gap-2 mb-3">
-            <a href="{{ route('laporan.pdf', request()->query()) }}" target="_blank" class="btn btn-danger fw-bold shadow-sm px-3" title="Cetak PDF">
-                <i class="fa-solid fa-file-pdf me-1"></i> PDF
-            </a>
-            <a href="{{ route('laporan.excel', request()->query()) }}" class="btn btn-success fw-bold shadow-sm px-3" title="Export Excel">
-                <i class="fa-solid fa-file-excel me-1"></i> Excel
-            </a>
+        <div class="dropdown export-split mb-3">
+            <button class="btn btn-outline-dark fw-bold shadow-sm px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5Z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3Z"/></svg> Ekspor
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a class="dropdown-item" href="{{ route('laporan.pdf', request()->query()) }}" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ef4444" class="me-2" viewBox="0 0 16 16"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2Z"/></svg> Sebagai PDF
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{{ route('laporan.excel', request()->query()) }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#16a34a" class="me-2" viewBox="0 0 16 16"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2Z"/></svg> Sebagai Excel
+                    </a>
+                </li>
+            </ul>
         </div>
     @endif
 
