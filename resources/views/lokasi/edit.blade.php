@@ -61,7 +61,7 @@
                 @enderror
             </div>
 
-            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+            <div class="d-flex justify-content-end gap-2 pt-3 border-top form-btn-row">
                 <a href="{{ route('lokasi.index') }}" class="btn btn-outline-dark px-4">Batal</a>
                 <button type="submit" class="btn btn-orange px-5 fw-bold"><i class="fa-solid fa-save me-1"></i> Perbarui Lokasi</button>
             </div>
