@@ -94,14 +94,23 @@
         </div>
     </form>
 
-    {{-- Export Buttons (Diubah jadi tombol solid & ditambah teks agar tetap terlihat jika ikon error) --}}
-    <div class="d-flex flex-wrap gap-2 mb-3">
-        <a href="{{ route('laporan.arus.pdf', request()->query()) }}" target="_blank" class="btn btn-danger fw-bold shadow-sm px-3" title="Cetak PDF">
-            <i class="fa-solid fa-file-pdf me-1"></i> PDF
-        </a>
-        <a href="{{ route('laporan.arus.excel', request()->query()) }}" class="btn btn-success fw-bold shadow-sm px-3" title="Export Excel">
-            <i class="fa-solid fa-file-excel me-1"></i> Excel
-        </a>
+    {{-- Tombol Ekspor ringkas: 1 tombol, terbuka jadi 2 pilihan (PDF & Excel) saat diklik --}}
+    <div class="dropdown export-split mb-3">
+        <button class="btn btn-outline-dark fw-bold shadow-sm px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-file-export me-1"></i> Ekspor
+        </button>
+        <ul class="dropdown-menu">
+            <li>
+                <a class="dropdown-item" href="{{ route('laporan.arus.pdf', request()->query()) }}" target="_blank">
+                    <i class="fa-solid fa-file-pdf me-2" style="color:#ef4444;"></i> Sebagai PDF
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="{{ route('laporan.arus.excel', request()->query()) }}">
+                    <i class="fa-solid fa-file-excel me-2" style="color:#16a34a;"></i> Sebagai Excel
+                </a>
+            </li>
+        </ul>
     </div>
 
     @php

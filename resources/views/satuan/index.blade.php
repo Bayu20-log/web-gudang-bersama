@@ -8,54 +8,25 @@
     .btn-outline-dark:hover { background-color: #1e293b; color: #fff; }
     .container-laporan { max-width: 1200px; margin: auto; padding: 30px 20px; font-family: 'Segoe UI', sans-serif; }
     .header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-    
+
     form.filter-form { background-color: #ffffff; border: none; border-radius: 12px; padding: 20px 25px; margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
     .filter-form .form-group { display: flex; flex-direction: column; min-width: 250px; flex-grow: 1; }
     .filter-form label { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #374151;}
     .filter-form input { padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: #f8fafc; transition: 0.3s; }
     .filter-form input:focus { border-color: #f97316; outline: none; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1); }
-    
+
     .table-wrapper { width: 100%; overflow-x: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: white; }
     table { width: 100%; border-collapse: collapse; }
     th, td { padding: 16px 20px; text-align: center; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
     th { background-color: #1e293b !important; color: #ffffff !important; font-weight: 600; white-space: nowrap; border-bottom: 4px solid #f97316; letter-spacing: 0.5px; }
     tr:hover { background-color: #f8fafc; }
-    
+
     .btn-action {
-         width: 36px;
-         height: 36px;
-         border-radius: 8px;
-         font-size: 14px;
-         cursor: pointer;
-         text-decoration: none;
-         display: inline-flex;
-         align-items: center;
-         justify-content: center;
-         border: none;
-         transition: 0.2s;
+         width: 36px; height: 36px; border-radius: 8px; font-size: 14px; cursor: pointer;
+         text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
+         border: none; transition: 0.2s;
      }
     .btn-action:hover { opacity: 0.85; transform: translateY(-2px); }
-    
-    @media(max-width: 768px) {
-        .header { flex-direction: column; align-items: flex-start; }
-        .filter-form { flex-direction: column; }
-        .filter-form .form-group, .btn-action-group { width: 100%; }
-        .btn-action-group { display: flex; gap: 10px; }
-        .btn-action-group button, .btn-action-group a { flex: 1; text-align: center; justify-content: center; }
-        
-        table, thead, tbody, th, td, tr { display: block; width: 100%; }
-        thead { display: none; }
-        tr { margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background-color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        td { border: none !important; text-align: left; padding: 8px 0 8px 45%; position: relative; }
-        td:before { position: absolute; top: 8px; left: 0; width: 40%; white-space: nowrap; font-weight: 600; color: #4b5563; }
-        
-        td:nth-of-type(1):before { content: "No"; }
-        td:nth-of-type(2):before { content: "Nama Satuan"; }
-        td:nth-of-type(3):before { content: "Dibuat pada"; }
-        td:nth-of-type(4):before { content: "Diperbarui pada"; }
-        td:nth-of-type(5):before { content: "Aksi"; }
-        .td-action { justify-content: flex-start; flex-wrap: wrap; gap: 8px;}
-    }
 </style>
 
 <div class="container-laporan mb-5">
@@ -74,7 +45,8 @@
         <div class="alert alert-danger">{{ $errors->first() }}</div>
     @endif
 
-    <form method="GET" action="{{ route('satuan.index') }}" class="filter-form">
+    {{-- Filter versi desktop (langsung terlihat) --}}
+    <form method="GET" action="{{ route('satuan.index') }}" class="filter-form filter-form-inline">
         <div class="form-group">
             <label for="search">Cari Satuan</label>
             <input type="text" name="search" id="search" placeholder="Ketik nama satuan..." value="{{ request('search') }}">
@@ -85,7 +57,34 @@
         </div>
     </form>
 
-    <div class="table-wrapper">
+    {{-- Tombol pemicu filter versi HP (membuka panel dari bawah) --}}
+    <button type="button" class="filter-trigger-btn" data-bs-toggle="offcanvas" data-bs-target="#filterSatuan">
+        <i class="fa-solid fa-sliders"></i> Filter
+        @if(request('search'))
+            <span class="badge bg-orange" style="background:#f97316;">1</span>
+        @endif
+    </button>
+
+    {{-- Panel filter bottom-sheet (khusus HP) --}}
+    <div class="offcanvas offcanvas-bottom offcanvas-filter" tabindex="-1" id="filterSatuan" style="height:auto; max-height:80vh; border-radius:20px 20px 0 0;">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Filter Satuan</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <form method="GET" action="{{ route('satuan.index') }}" class="d-flex flex-column">
+            <div class="offcanvas-body">
+                <label>Cari Satuan</label>
+                <input type="text" name="search" class="form-control" placeholder="Ketik nama satuan..." value="{{ request('search') }}">
+            </div>
+            <div class="offcanvas-footer">
+                <a href="{{ route('satuan.index') }}" class="btn btn-outline-dark fw-bold flex-fill">Reset</a>
+                <button type="submit" class="btn btn-orange fw-bold flex-fill">Terapkan</button>
+            </div>
+        </form>
+    </div>
+
+    {{-- ================= TAMPILAN DESKTOP (tabel) ================= --}}
+    <div class="table-wrapper desktop-table-wrapper">
         <table>
             <thead>
                 <tr>
@@ -123,7 +122,44 @@
             </tbody>
         </table>
     </div>
-    
+
+    {{-- ================= TAMPILAN HP (kartu + menu titik tiga) ================= --}}
+    <div class="mobile-card-list">
+        @forelse($satuans as $satuan)
+            <div class="mobile-card-item">
+                <div>
+                    <div class="mc-title">{{ $satuan->nama_satuan }}</div>
+                    <div class="mc-sub">Diperbarui {{ optional($satuan->updated_at)->format('d M Y, H:i') }}</div>
+                </div>
+                <div class="dropdown">
+                    <button class="btn-action-menu" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Menu Aksi">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{{ route('satuan.edit', $satuan->id) }}">
+                                <i class="fa-solid fa-pen" style="color:#f97316;"></i> Edit
+                            </a>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item text-danger" onclick="confirmDelete('{{ $satuan->id }}')">
+                                <i class="fa-solid fa-trash"></i> Hapus
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <form id="delete-form-{{ $satuan->id }}" action="{{ route('satuan.destroy', $satuan->id) }}" method="POST" class="d-none">
+                    @csrf @method('DELETE')
+                </form>
+            </div>
+        @empty
+            <div class="text-center py-5 text-muted fw-medium">
+                <i class="fa-solid fa-box-open mb-2" style="font-size:28px; color:#cbd5e1;"></i><br>
+                Data satuan belum tersedia.
+            </div>
+        @endforelse
+    </div>
+
     <div class="mt-4 d-flex justify-content-center">
         {{ $satuans->links('pagination::bootstrap-5') }}
     </div>

@@ -1,0 +1,546 @@
+diff --git a/resources/views/barangmasuk/index.blade.php b/resources/views/barangmasuk/index.blade.php
+index b78d0e4..e344cda 100644
+--- a/resources/views/barangmasuk/index.blade.php
++++ b/resources/views/barangmasuk/index.blade.php
+@@ -9,76 +9,30 @@
+     .bg-dark-header { background-color: #1e293b !important; color: #fff; border-bottom: 2px solid #f97316; }
+     .container-laporan { max-width: 1200px; margin: auto; padding: 30px 20px; font-family: 'Segoe UI', sans-serif; }
+     .header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+-    
++
+     form.filter-form { background-color: #ffffff; border: none; border-radius: 12px; padding: 20px 25px; margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+     .filter-form .form-group { display: flex; flex-direction: column; min-width: 250px; flex-grow: 1; }
+     .filter-form label { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #374151;}
+     .filter-form input, .filter-form select { padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: #f8fafc; transition: 0.3s; }
+     .filter-form input:focus, .filter-form select:focus { border-color: #f97316; outline: none; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1); }
+-    
++
+     .table-wrapper { width: 100%; overflow-x: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: white; }
+     table { width: 100%; border-collapse: collapse; }
+     th, td { padding: 16px 20px; text-align: center; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+     th { background-color: #1e293b !important; color: #ffffff !important; font-weight: 600; white-space: nowrap; border-bottom: 4px solid #f97316; letter-spacing: 0.5px; }
+     tr:hover { background-color: #f8fafc; }
+-    
+-    .btn-action { 
+-        width: 36px; 
+-        height: 36px; 
+-        border-radius: 8px; 
+-        font-size: 14px; 
+-        cursor: pointer; 
+-        text-decoration: none; 
+-        display: inline-flex; 
+-        align-items: center; 
+-        justify-content: center; 
+-        border: none; 
+-        transition: 0.2s; 
+-    }
+-    .btn-action:hover { opacity: 0.85; transform: translateY(-2px); }
+-    
+-    @media(max-width: 768px) {
+-        .header { flex-direction: column; align-items: flex-start; }
+-        .filter-form { flex-direction: column; }
+-        .filter-form .form-group, .btn-action-group { width: 100%; }
+-        .btn-action-group { display: flex; gap: 10px; }
+-        .btn-action-group button, .btn-action-group a { flex: 1; text-align: center; justify-content: center; }
+-        
+-        table, thead, tbody, th, td, tr { display: block; width: 100%; }
+-        thead { display: none; }
+-        tr { margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background-color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+-        td { border: none !important; text-align: left; padding: 8px 0 8px 45%; position: relative; }
+-        td:before { position: absolute; top: 8px; left: 0; width: 40%; white-space: nowrap; font-weight: 600; color: #4b5563; }
+-        
+-        /* --- SEMBUNYIKAN KOLOM YANG TIDAK PERLU DI HP --- */
+-        td:nth-of-type(1),  /* No */
+-        td:nth-of-type(2),  /* Kode Barang */
+-        td:nth-of-type(5),  /* Harga Beli */
+-        td:nth-of-type(6),  /* Total Harga */
+-        td:nth-of-type(7),  /* Tgl Masuk */
+-        td:nth-of-type(8),  /* Kadaluarsa */
+-        td:nth-of-type(9),  /* Pemasok */
+-        td:nth-of-type(10), /* Lokasi */
+-        td:nth-of-type(11), /* Kondisi */
+-        td:nth-of-type(13)  /* User */
+-        {
+-            display: none !important;
+-        }
+ 
+-        /* --- TAMPILKAN HANYA NAMA, JUMLAH, CATATAN, DAN AKSI --- */
+-        td:nth-of-type(3):before  { content: "Nama Barang"; }
+-        td:nth-of-type(4):before  { content: "Jumlah Masuk"; }
+-        td:nth-of-type(12):before { content: "Catatan"; }
+-        td:nth-of-type(14):before { content: "Aksi QR"; } 
+-        
+-        .td-action { justify-content: flex-start; flex-wrap: wrap; gap: 8px;}
++    .btn-action {
++        width: 36px; height: 36px; border-radius: 8px; font-size: 14px; cursor: pointer;
++        text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
++        border: none; transition: 0.2s;
+     }
++    .btn-action:hover { opacity: 0.85; transform: translateY(-2px); }
+ </style>
+ 
+ <div class="container-laporan mb-5">
+     <div class="header">
+         <h4 class="fw-bold" style="color: #1e293b;">Barang &rsaquo; Daftar Barang Masuk</h4>
+-        <!-- Tombol tambah tetap teks agar mencolok -->
+         <a href="{{ route('barang-masuk.create') }}" class="btn btn-orange fw-bold px-4 py-2 shadow-sm">+ Tambah Barang Masuk</a>
+     </div>
+ 
+@@ -86,7 +40,8 @@
+         <div class="alert alert-success">{{ session('success') }}</div>
+     @endif
+ 
+-    <form method="GET" action="{{ route('barang-masuk.index') }}" class="filter-form">
++    {{-- Filter versi desktop --}}
++    <form method="GET" action="{{ route('barang-masuk.index') }}" class="filter-form filter-form-inline">
+         <div class="form-group">
+             <label for="search">Cari Barang</label>
+             <input type="text" id="search" name="search" placeholder="Ketik nama atau kode barang..." value="{{ request('search') }}">
+@@ -108,24 +63,53 @@
+         </div>
+     </form>
+ 
+-    <div class="table-wrapper">
++    {{-- Tombol pemicu filter versi HP --}}
++    <button type="button" class="filter-trigger-btn" data-bs-toggle="offcanvas" data-bs-target="#filterBarangMasuk">
++        <i class="fa-solid fa-sliders"></i> Filter
++        @if(request('search') || request('lokasi'))
++            <span class="badge" style="background:#f97316;">{{ collect([request('search'), request('lokasi')])->filter()->count() }}</span>
++        @endif
++    </button>
++
++    {{-- Panel filter bottom-sheet (khusus HP) --}}
++    <div class="offcanvas offcanvas-bottom offcanvas-filter" tabindex="-1" id="filterBarangMasuk" style="height:auto; max-height:80vh; border-radius:20px 20px 0 0;">
++        <div class="offcanvas-header">
++            <h5 class="offcanvas-title">Filter Barang Masuk</h5>
++            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
++        </div>
++        <form method="GET" action="{{ route('barang-masuk.index') }}" class="d-flex flex-column">
++            <div class="offcanvas-body">
++                <label>Cari Barang</label>
++                <input type="text" name="search" class="form-control" placeholder="Ketik nama atau kode barang..." value="{{ request('search') }}">
++
++                <label>Lokasi</label>
++                <div class="filter-chip-group">
++                    <label class="filter-chip {{ request('lokasi') ? '' : 'active' }}">
++                        <input type="radio" name="lokasi" value="" class="d-none" {{ request('lokasi') ? '' : 'checked' }}> Semua
++                    </label>
++                    @foreach($lokasis as $lokasi)
++                        <label class="filter-chip {{ request('lokasi') == $lokasi->id ? 'active' : '' }}">
++                            <input type="radio" name="lokasi" value="{{ $lokasi->id }}" class="d-none" {{ request('lokasi') == $lokasi->id ? 'checked' : '' }}>
++                            {{ $lokasi->nama_lokasi }}
++                        </label>
++                    @endforeach
++                </div>
++            </div>
++            <div class="offcanvas-footer">
++                <a href="{{ route('barang-masuk.index') }}" class="btn btn-outline-dark fw-bold flex-fill">Reset</a>
++                <button type="submit" class="btn btn-orange fw-bold flex-fill">Terapkan</button>
++            </div>
++        </form>
++    </div>
++
++    {{-- ================= TAMPILAN DESKTOP (tabel) ================= --}}
++    <div class="table-wrapper desktop-table-wrapper">
+         <table>
+             <thead>
+                 <tr>
+-                    <th>No</th>
+-                    <th>Kode Barang</th>
+-                    <th>Nama Barang</th>
+-                    <th>Jumlah</th>
+-                    <th>Harga Beli</th>
+-                    <th>Total Harga</th>
+-                    <th>Tgl Masuk</th>
+-                    <th>Kadaluarsa</th>
+-                    <th>Pemasok</th>
+-                    <th>Lokasi</th>
+-                    <th>Kondisi</th>
+-                    <th>Catatan</th>
+-                    <th>User</th>
+-                    <th>Aksi QR</th>
++                    <th>No</th><th>Kode Barang</th><th>Nama Barang</th><th>Jumlah</th>
++                    <th>Harga Beli</th><th>Total Harga</th><th>Tgl Masuk</th><th>Kadaluarsa</th>
++                    <th>Pemasok</th><th>Lokasi</th><th>Kondisi</th><th>Catatan</th><th>User</th><th>Aksi QR</th>
+                 </tr>
+             </thead>
+             <tbody>
+@@ -162,9 +146,46 @@
+             </tbody>
+         </table>
+     </div>
+-    
++
++    {{-- ================= TAMPILAN HP (kartu + menu titik tiga) ================= --}}
++    <div class="mobile-card-list">
++        @forelse($barangMasuks as $bm)
++            <div class="mobile-card-item">
++                <div>
++                    <div class="mc-title">{{ $bm->item->nama_barang ?? '-' }}</div>
++                    <div class="mc-sub">{{ $bm->lokasi->nama_lokasi ?? '-' }} &middot; {{ $bm->pemasok->nama_pemasok ?? '-' }}</div>
++                    <div class="mc-sub">{{ \Carbon\Carbon::parse($bm->tanggal_masuk)->format('d M Y H:i') }}</div>
++                </div>
++                <div class="text-end">
++                    <div class="fw-bold mb-1" style="color:#16a34a;">+{{ $bm->jumlah }}</div>
++                    <div class="dropdown">
++                        <button class="btn-action-menu" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Menu Aksi">
++                            <i class="fa-solid fa-ellipsis-vertical"></i>
++                        </button>
++                        <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
++                            <li>
++                                @if($bm->qr_code)
++                                    <a class="dropdown-item" href="{{ route('barang-masuk.qr-card', $bm->id) }}">
++                                        <i class="fa-solid fa-qrcode" style="color:#3b82f6;"></i> Lihat QR
++                                    </a>
++                                @else
++                                    <span class="dropdown-item disabled">QR tidak tersedia</span>
++                                @endif
++                            </li>
++                        </ul>
++                    </div>
++                </div>
++            </div>
++        @empty
++            <div class="text-center py-5 text-muted fw-medium">
++                <i class="fa-solid fa-box-open mb-2" style="font-size:28px; color:#cbd5e1;"></i><br>
++                Data transaksi masuk belum tersedia.
++            </div>
++        @endforelse
++    </div>
++
+     <div class="mt-4 d-flex justify-content-center">
+         {{ $barangMasuks->links('pagination::bootstrap-5') }}
+     </div>
+ </div>
+-@endsection
+\ No newline at end of file
++@endsection
+diff --git a/resources/views/item/create.blade.php b/resources/views/item/create.blade.php
+index 65df08e..598e10a 100644
+--- a/resources/views/item/create.blade.php
++++ b/resources/views/item/create.blade.php
+@@ -99,7 +99,7 @@
+             </div>
+         </div>
+ 
+-        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
++        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top form-btn-row">
+             <!-- Jika datang dari Barang Masuk, Batal akan mengarah ke Barang Masuk -->
+             <a href="{{ request('redirect') == 'barang-masuk' ? route('barang-masuk.create') : route('item.index') }}" class="btn btn-outline-secondary px-4 fw-medium">Batal</a>
+             <button type="submit" class="btn btn-orange px-5 fw-bold"><i class="bi bi-save me-2"></i>Simpan Produk</button>
+diff --git a/resources/views/item/edit.blade.php b/resources/views/item/edit.blade.php
+index 2a865fe..be74a12 100644
+--- a/resources/views/item/edit.blade.php
++++ b/resources/views/item/edit.blade.php
+@@ -123,7 +123,7 @@
+             </div>
+         </div>
+ 
+-        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
++        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top form-btn-row">
+             <a href="{{ route('item.index') }}" class="btn btn-outline-secondary px-4 fw-medium">Batal</a>
+             <button type="submit" class="btn btn-orange px-5 fw-bold"><i class="bi bi-save me-2"></i>Perbarui Produk</button>
+         </div>
+diff --git a/resources/views/laporan/arus.blade.php b/resources/views/laporan/arus.blade.php
+index 9ae6baa..f6f0147 100644
+--- a/resources/views/laporan/arus.blade.php
++++ b/resources/views/laporan/arus.blade.php
+@@ -94,14 +94,23 @@
+         </div>
+     </form>
+ 
+-    {{-- Export Buttons (Diubah jadi tombol solid & ditambah teks agar tetap terlihat jika ikon error) --}}
+-    <div class="d-flex flex-wrap gap-2 mb-3">
+-        <a href="{{ route('laporan.arus.pdf', request()->query()) }}" target="_blank" class="btn btn-danger fw-bold shadow-sm px-3" title="Cetak PDF">
+-            <i class="fa-solid fa-file-pdf me-1"></i> PDF
+-        </a>
+-        <a href="{{ route('laporan.arus.excel', request()->query()) }}" class="btn btn-success fw-bold shadow-sm px-3" title="Export Excel">
+-            <i class="fa-solid fa-file-excel me-1"></i> Excel
+-        </a>
++    {{-- Tombol Ekspor ringkas: 1 tombol, terbuka jadi 2 pilihan (PDF & Excel) saat diklik --}}
++    <div class="dropdown export-split mb-3">
++        <button class="btn btn-outline-dark fw-bold shadow-sm px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
++            <i class="fa-solid fa-file-export me-1"></i> Ekspor
++        </button>
++        <ul class="dropdown-menu">
++            <li>
++                <a class="dropdown-item" href="{{ route('laporan.arus.pdf', request()->query()) }}" target="_blank">
++                    <i class="fa-solid fa-file-pdf me-2" style="color:#ef4444;"></i> Sebagai PDF
++                </a>
++            </li>
++            <li>
++                <a class="dropdown-item" href="{{ route('laporan.arus.excel', request()->query()) }}">
++                    <i class="fa-solid fa-file-excel me-2" style="color:#16a34a;"></i> Sebagai Excel
++                </a>
++            </li>
++        </ul>
+     </div>
+ 
+     @php
+diff --git a/resources/views/layouts/app.blade.php b/resources/views/layouts/app.blade.php
+index 408e6ce..bb27210 100644
+--- a/resources/views/layouts/app.blade.php
++++ b/resources/views/layouts/app.blade.php
+@@ -78,6 +78,72 @@
+         html, body { height: 100%; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+         main { flex: 1; }
+         footer { background: #f8f9fa; padding: 15px 0; text-align: center; color: #666; font-size: 14px; }
++
++        /* ======================================================
++           KOMPONEN BERSAMA — dipakai di Master Data & Barang
++           (kartu list HP, menu aksi titik tiga, panel filter,
++            tombol submit 1 baris)
++           ====================================================== */
++
++        /* --- Menu aksi titik tiga (pengganti tombol Edit/Hapus yang berjejer) --- */
++        .btn-action-menu {
++            width: 36px; height: 36px; border-radius: 8px;
++            border: 1px solid #e2e8f0; background: #f8fafc; color: #1e293b;
++            display: inline-flex; align-items: center; justify-content: center;
++            transition: 0.2s;
++        }
++        .btn-action-menu:hover, .btn-action-menu:focus { background: #1e293b; color: #fff; }
++        .btn-action-menu::after { display: none; }
++        .action-dropdown-menu { min-width: 170px; padding: 6px; }
++        .action-dropdown-menu .dropdown-item { border-radius: 8px; padding: 8px 12px; font-size: 14px; display: flex; align-items: center; gap: 8px; }
++        .action-dropdown-menu .dropdown-item.text-danger:hover { background-color: #fef2f2; }
++        .action-dropdown-menu .dropdown-item:hover:not(.text-danger) { background-color: #fff7ed; color: #f97316; }
++
++        /* --- Kartu list bergaya mobile (dipakai menggantikan tabel di layar kecil) --- */
++        .mobile-card-list { display: none; }
++        .mobile-card-item {
++            background: #fff; border: 1px solid #e2e8f0; border-radius: 14px;
++            padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
++            display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
++        }
++        .mobile-card-item .mc-title { font-weight: 700; color: #1e293b; font-size: 15px; }
++        .mobile-card-item .mc-sub { font-size: 12.5px; color: #6b7280; margin-top: 2px; }
++        .mobile-card-item .mc-badge { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; display: inline-block; margin-bottom: 4px; }
++        .mc-badge.aman { background:#f0fdf4; color:#16a34a; }
++        .mc-badge.rendah { background:#fff7ed; color:#ea580c; }
++        .mc-badge.kritis { background:#fef2f2; color:#ef4444; }
++
++        /* --- Panel filter bottom-sheet (offcanvas Bootstrap, muncul dari bawah di HP) --- */
++        .filter-trigger-btn {
++            display: none; align-items: center; gap: 8px;
++            background: #fff; border: 1px solid #d1d5db; border-radius: 10px;
++            padding: 10px 16px; font-weight: 600; color: #1e293b; margin-bottom: 16px;
++        }
++        .offcanvas-filter .offcanvas-header { border-bottom: 1px solid #f1f5f9; }
++        .offcanvas-filter .offcanvas-title { font-weight: 700; color: #1e293b; }
++        .offcanvas-filter label { font-size: 13px; font-weight: 700; color: #374151; text-transform: uppercase; letter-spacing: 0.03em; margin: 14px 0 8px; display: block; }
++        .filter-chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
++        .filter-chip {
++            border: 1px solid #d1d5db; border-radius: 999px; padding: 7px 16px;
++            font-size: 14px; background: #fff; color: #374151; cursor: pointer; transition: 0.15s;
++        }
++        .filter-chip.active, .filter-chip:hover { border-color: #f97316; color: #f97316; background: #fff7ed; }
++        .offcanvas-filter .offcanvas-footer { display: flex; gap: 10px; padding: 16px; border-top: 1px solid #f1f5f9; }
++
++        /* --- Tombol export ringkas (Ekspor ▾ → PDF / Excel) --- */
++        .export-split .dropdown-menu { min-width: 160px; }
++
++        /* --- Tombol submit form (Batal/Simpan) selalu 1 baris, termasuk di HP --- */
++        .form-btn-row { display: flex; gap: 10px; flex-wrap: nowrap; }
++        .form-btn-row > * { flex: 1; text-align: center; white-space: nowrap; }
++
++        @media (max-width: 768px) {
++            .desktop-table-wrapper { display: none !important; }
++            .mobile-card-list { display: block; }
++            .filter-trigger-btn { display: inline-flex; width: 100%; justify-content: center; }
++            .filter-form-inline { display: none !important; }
++            .form-btn-row > * { font-size: 14px; padding-left: 8px; padding-right: 8px; }
++        }
+     </style>
+ </head>
+ @if(Auth::check())
+diff --git a/resources/views/satuan/create.blade.php b/resources/views/satuan/create.blade.php
+index 25d9cc1..3d851e6 100644
+--- a/resources/views/satuan/create.blade.php
++++ b/resources/views/satuan/create.blade.php
+@@ -49,7 +49,7 @@ class="form-control @error('nama_satuan') is-invalid @enderror"
+                 @enderror
+             </div>
+ 
+-            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
++            <div class="d-flex justify-content-end gap-2 pt-3 border-top form-btn-row">
+                 <a href="{{ route('satuan.index') }}" class="btn btn-outline-dark px-4">Batal</a>
+                 <button type="submit" class="btn btn-orange px-5 fw-bold"><i class="fa-solid fa-save me-1"></i> Simpan Satuan</button>
+             </div>
+diff --git a/resources/views/satuan/edit.blade.php b/resources/views/satuan/edit.blade.php
+index f08d372..c4ace0e 100644
+--- a/resources/views/satuan/edit.blade.php
++++ b/resources/views/satuan/edit.blade.php
+@@ -49,7 +49,7 @@ class="form-control @error('nama_satuan') is-invalid @enderror"
+                 @enderror
+             </div>
+ 
+-            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
++            <div class="d-flex justify-content-end gap-2 pt-3 border-top form-btn-row">
+                 <a href="{{ route('satuan.index') }}" class="btn btn-outline-dark px-4">Batal</a>
+                 <button type="submit" class="btn btn-orange px-5 fw-bold"><i class="fa-solid fa-save me-1"></i> Perbarui Satuan</button>
+             </div>
+diff --git a/resources/views/satuan/index.blade.php b/resources/views/satuan/index.blade.php
+index 4ee6b15..3aa6d4b 100644
+--- a/resources/views/satuan/index.blade.php
++++ b/resources/views/satuan/index.blade.php
+@@ -8,54 +8,25 @@
+     .btn-outline-dark:hover { background-color: #1e293b; color: #fff; }
+     .container-laporan { max-width: 1200px; margin: auto; padding: 30px 20px; font-family: 'Segoe UI', sans-serif; }
+     .header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+-    
++
+     form.filter-form { background-color: #ffffff; border: none; border-radius: 12px; padding: 20px 25px; margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+     .filter-form .form-group { display: flex; flex-direction: column; min-width: 250px; flex-grow: 1; }
+     .filter-form label { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #374151;}
+     .filter-form input { padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: #f8fafc; transition: 0.3s; }
+     .filter-form input:focus { border-color: #f97316; outline: none; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1); }
+-    
++
+     .table-wrapper { width: 100%; overflow-x: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: white; }
+     table { width: 100%; border-collapse: collapse; }
+     th, td { padding: 16px 20px; text-align: center; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+     th { background-color: #1e293b !important; color: #ffffff !important; font-weight: 600; white-space: nowrap; border-bottom: 4px solid #f97316; letter-spacing: 0.5px; }
+     tr:hover { background-color: #f8fafc; }
+-    
++
+     .btn-action {
+-         width: 36px;
+-         height: 36px;
+-         border-radius: 8px;
+-         font-size: 14px;
+-         cursor: pointer;
+-         text-decoration: none;
+-         display: inline-flex;
+-         align-items: center;
+-         justify-content: center;
+-         border: none;
+-         transition: 0.2s;
++         width: 36px; height: 36px; border-radius: 8px; font-size: 14px; cursor: pointer;
++         text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
++         border: none; transition: 0.2s;
+      }
+     .btn-action:hover { opacity: 0.85; transform: translateY(-2px); }
+-    
+-    @media(max-width: 768px) {
+-        .header { flex-direction: column; align-items: flex-start; }
+-        .filter-form { flex-direction: column; }
+-        .filter-form .form-group, .btn-action-group { width: 100%; }
+-        .btn-action-group { display: flex; gap: 10px; }
+-        .btn-action-group button, .btn-action-group a { flex: 1; text-align: center; justify-content: center; }
+-        
+-        table, thead, tbody, th, td, tr { display: block; width: 100%; }
+-        thead { display: none; }
+-        tr { margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background-color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+-        td { border: none !important; text-align: left; padding: 8px 0 8px 45%; position: relative; }
+-        td:before { position: absolute; top: 8px; left: 0; width: 40%; white-space: nowrap; font-weight: 600; color: #4b5563; }
+-        
+-        td:nth-of-type(1):before { content: "No"; }
+-        td:nth-of-type(2):before { content: "Nama Satuan"; }
+-        td:nth-of-type(3):before { content: "Dibuat pada"; }
+-        td:nth-of-type(4):before { content: "Diperbarui pada"; }
+-        td:nth-of-type(5):before { content: "Aksi"; }
+-        .td-action { justify-content: flex-start; flex-wrap: wrap; gap: 8px;}
+-    }
+ </style>
+ 
+ <div class="container-laporan mb-5">
+@@ -74,7 +45,8 @@
+         <div class="alert alert-danger">{{ $errors->first() }}</div>
+     @endif
+ 
+-    <form method="GET" action="{{ route('satuan.index') }}" class="filter-form">
++    {{-- Filter versi desktop (langsung terlihat) --}}
++    <form method="GET" action="{{ route('satuan.index') }}" class="filter-form filter-form-inline">
+         <div class="form-group">
+             <label for="search">Cari Satuan</label>
+             <input type="text" name="search" id="search" placeholder="Ketik nama satuan..." value="{{ request('search') }}">
+@@ -85,7 +57,34 @@
+         </div>
+     </form>
+ 
+-    <div class="table-wrapper">
++    {{-- Tombol pemicu filter versi HP (membuka panel dari bawah) --}}
++    <button type="button" class="filter-trigger-btn" data-bs-toggle="offcanvas" data-bs-target="#filterSatuan">
++        <i class="fa-solid fa-sliders"></i> Filter
++        @if(request('search'))
++            <span class="badge bg-orange" style="background:#f97316;">1</span>
++        @endif
++    </button>
++
++    {{-- Panel filter bottom-sheet (khusus HP) --}}
++    <div class="offcanvas offcanvas-bottom offcanvas-filter" tabindex="-1" id="filterSatuan" style="height:auto; max-height:80vh; border-radius:20px 20px 0 0;">
++        <div class="offcanvas-header">
++            <h5 class="offcanvas-title">Filter Satuan</h5>
++            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
++        </div>
++        <form method="GET" action="{{ route('satuan.index') }}" class="d-flex flex-column">
++            <div class="offcanvas-body">
++                <label>Cari Satuan</label>
++                <input type="text" name="search" class="form-control" placeholder="Ketik nama satuan..." value="{{ request('search') }}">
++            </div>
++            <div class="offcanvas-footer">
++                <a href="{{ route('satuan.index') }}" class="btn btn-outline-dark fw-bold flex-fill">Reset</a>
++                <button type="submit" class="btn btn-orange fw-bold flex-fill">Terapkan</button>
++            </div>
++        </form>
++    </div>
++
++    {{-- ================= TAMPILAN DESKTOP (tabel) ================= --}}
++    <div class="table-wrapper desktop-table-wrapper">
+         <table>
+             <thead>
+                 <tr>
+@@ -123,7 +122,44 @@
+             </tbody>
+         </table>
+     </div>
+-    
++
++    {{-- ================= TAMPILAN HP (kartu + menu titik tiga) ================= --}}
++    <div class="mobile-card-list">
++        @forelse($satuans as $satuan)
++            <div class="mobile-card-item">
++                <div>
++                    <div class="mc-title">{{ $satuan->nama_satuan }}</div>
++                    <div class="mc-sub">Diperbarui {{ optional($satuan->updated_at)->format('d M Y, H:i') }}</div>
++                </div>
++                <div class="dropdown">
++                    <button class="btn-action-menu" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Menu Aksi">
++                        <i class="fa-solid fa-ellipsis-vertical"></i>
++                    </button>
++                    <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
++                        <li>
++                            <a class="dropdown-item" href="{{ route('satuan.edit', $satuan->id) }}">
++                                <i class="fa-solid fa-pen" style="color:#f97316;"></i> Edit
++                            </a>
++                        </li>
++                        <li>
++                            <button type="button" class="dropdown-item text-danger" onclick="confirmDelete('{{ $satuan->id }}')">
++                                <i class="fa-solid fa-trash"></i> Hapus
++                            </button>
++                        </li>
++                    </ul>
++                </div>
++                <form id="delete-form-{{ $satuan->id }}" action="{{ route('satuan.destroy', $satuan->id) }}" method="POST" class="d-none">
++                    @csrf @method('DELETE')
++                </form>
++            </div>
++        @empty
++            <div class="text-center py-5 text-muted fw-medium">
++                <i class="fa-solid fa-box-open mb-2" style="font-size:28px; color:#cbd5e1;"></i><br>
++                Data satuan belum tersedia.
++            </div>
++        @endforelse
++    </div>
++
+     <div class="mt-4 d-flex justify-content-center">
+         {{ $satuans->links('pagination::bootstrap-5') }}
+     </div>
+@@ -148,4 +184,4 @@ function confirmDelete(id) {
+         });
+     }
+ </script>
+-@endsection
+\ No newline at end of file
++@endsection
