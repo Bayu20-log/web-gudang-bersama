@@ -102,21 +102,58 @@
         .breadcrumb-item,
         .breadcrumb-item a,
         .breadcrumb-item.active {
-            color: #79b687 !important; 
+            color: #f97316 !important; 
         }
         .nav-pills .nav-link {
-            color: #ffffff !important; 
+            color: #57534e !important; 
             background-color: transparent !important; 
             border-radius: 0 !important; 
         }
         .nav-pills .nav-link:hover {
-            color: #1e7e34 !important; 
+            color: #ea580c !important; 
         }
         .nav-pills .nav-link.active {
             font-weight: bold; 
-            border-bottom: 2px solid #18231b; 
-            color: #ffffff !important; 
+            border-bottom: 2px solid #f97316; 
+            color: #1e293b !important; 
             background-color: transparent !important;
+        }
+
+        /* --- TEMA KONTEN: bidang besar bertema gudang, versi terang & hangat --- */
+        .hero-band-brand {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 45%, #fed7aa 100%);
+            color: #1e293b;
+            border: 1px solid #fdba74;
+            border-left: 5px solid #f97316;
+            box-shadow: 0 8px 24px rgba(249, 115, 22, 0.08);
+        }
+        .hero-band-brand .text-muted {
+            color: #57534e !important;
+        }
+        .hero-band-brand .card {
+            border: 1px solid #f1e4d6 !important;
+        }
+        /* Aksen oranye khas tema gudang, pengganti warna generik bootstrap */
+        .text-brand {
+            color: #ea580c !important;
+        }
+        .btn-outline-brand {
+            color: #ea580c;
+            border-color: #ea580c;
+        }
+        .btn-outline-brand:hover {
+            color: #fff;
+            background-color: #ea580c;
+            border-color: #ea580c;
+        }
+        .btn-outline-dark-slate {
+            color: #1e293b;
+            border-color: #1e293b;
+        }
+        .btn-outline-dark-slate:hover {
+            color: #fff;
+            background-color: #1e293b;
+            border-color: #1e293b;
         }
         
         footer {

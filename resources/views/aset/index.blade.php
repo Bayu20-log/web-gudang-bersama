@@ -79,8 +79,8 @@
         <h4 class="fw-bold" style="color: #1e293b;">Laporan &rsaquo; Total Aset</h4>     
     </div>     
     
-    {{-- Filter --}}     
-    <form method="GET" class="filter-form">         
+    {{-- Filter versi desktop --}}     
+    <form method="GET" class="filter-form filter-form-inline">         
         <div class="form-group">             
             <label>Tanggal Mulai</label>             
             <input type="date" name="start_date" value="{{ request('start_date') }}">         
@@ -120,21 +120,67 @@
             <a href="{{ route('aset.index') }}" class="btn btn-outline-dark fw-bold px-4" style="display: inline-flex; align-items: center; justify-content: center;">Reset</a>         
         </div>     
     </form>     
-    
+
+    {{-- Tombol pemicu filter versi HP --}}
+    <button type="button" class="filter-trigger-btn" data-bs-toggle="offcanvas" data-bs-target="#filterAset">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05Zm-4.9 5a2.5 2.5 0 0 1 4.9 0H16v1H9.05a2.5 2.5 0 0 1-4.9 0H0V8h4.15Zm.9.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0ZM.5 12a2.5 2.5 0 0 1 4.9 0H16v1H5.4a2.5 2.5 0 0 1-4.9 0H0v-1h.5Z"/></svg> Filter
+    </button>
+
+    {{-- Panel filter bottom-sheet (khusus HP) --}}
+    <div class="offcanvas offcanvas-bottom offcanvas-filter" tabindex="-1" id="filterAset" style="height:auto; max-height:85vh; border-radius:20px 20px 0 0;">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Filter Aset</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <form method="GET" class="d-flex flex-column">
+            <div class="offcanvas-body">
+                <label>Tanggal Mulai</label>
+                <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
+                <label>Tanggal Selesai</label>
+                <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
+                <label>Lokasi</label>
+                <select name="lokasi" class="form-select">
+                    <option value="">-- Semua Lokasi --</option>
+                    @foreach($listLokasi as $lokasi)
+                        <option value="{{ $lokasi }}" {{ request('lokasi') == $lokasi ? 'selected' : '' }}>{{ $lokasi }}</option>
+                    @endforeach
+                </select>
+                <label>Kondisi</label>
+                <select name="kondisi" class="form-select">
+                    <option value="">-- Semua Kondisi --</option>
+                    @foreach($listKondisi as $kondisi)
+                        <option value="{{ $kondisi }}" {{ request('kondisi') == $kondisi ? 'selected' : '' }}>{{ $kondisi }}</option>
+                    @endforeach
+                </select>
+                <label>Nama Barang</label>
+                <input type="text" name="nama_barang" class="form-control" placeholder="Ketik nama barang..." value="{{ request('nama_barang') }}">
+            </div>
+            <div class="offcanvas-footer">
+                <a href="{{ route('aset.index') }}" class="btn btn-outline-dark fw-bold flex-fill">Reset</a>
+                <button type="submit" class="btn btn-orange fw-bold flex-fill">Terapkan</button>
+            </div>
+        </form>
+    </div>
+
     @php         
         $query = request()->except(['page']);         
         if (request('start_date')) $query['tanggal_mulai'] = request('start_date');         
         if (request('end_date')) $query['tanggal_selesai'] = request('end_date');     
     @endphp          
     
-    {{-- Tombol Ekspor --}}     
-    <div class="d-flex flex-wrap gap-2 mb-4">         
-        <a href="{{ route('export.aset.pdf', $query) }}" target="_blank" class="btn btn-danger fw-bold shadow-sm">             
-            <i class="fa-solid fa-file-pdf me-1"></i> PDF         
-        </a>         
-        <a href="{{ route('export.aset.excel', $query) }}" class="btn btn-success fw-bold shadow-sm">             
-            <i class="fa-solid fa-file-excel me-1"></i> Excel         
-        </a>     
+    {{-- Tombol Ekspor ringkas: 1 tombol, terbuka jadi 2 pilihan --}}     
+    <div class="dropdown export-split mb-4">
+        <button class="btn btn-outline-dark fw-bold shadow-sm px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5Z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3Z"/></svg> Ekspor
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{{ route('export.aset.pdf', $query) }}" target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ef4444" class="me-2" viewBox="0 0 16 16"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2Z"/></svg> Sebagai PDF
+            </a></li>
+            <li><a class="dropdown-item" href="{{ route('export.aset.excel', $query) }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#16a34a" class="me-2" viewBox="0 0 16 16"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2Z"/></svg> Sebagai Excel
+            </a></li>
+        </ul>
     </div>     
 
     {{-- Ringkasan Total Aset (Dipindah ke atas, gaya dipertahankan seperti aslinya) --}}

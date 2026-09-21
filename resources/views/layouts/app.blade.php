@@ -78,6 +78,72 @@
         html, body { height: 100%; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
         main { flex: 1; }
         footer { background: #f8f9fa; padding: 15px 0; text-align: center; color: #666; font-size: 14px; }
+
+        /* ======================================================
+           KOMPONEN BERSAMA — dipakai di Master Data & Barang
+           (kartu list HP, menu aksi titik tiga, panel filter,
+            tombol submit 1 baris)
+           ====================================================== */
+
+        /* --- Menu aksi titik tiga (pengganti tombol Edit/Hapus yang berjejer) --- */
+        .btn-action-menu {
+            width: 36px; height: 36px; border-radius: 8px;
+            border: 1px solid #e2e8f0; background: #f8fafc; color: #1e293b;
+            display: inline-flex; align-items: center; justify-content: center;
+            transition: 0.2s;
+        }
+        .btn-action-menu:hover, .btn-action-menu:focus { background: #1e293b; color: #fff; }
+        .btn-action-menu::after { display: none; }
+        .action-dropdown-menu { min-width: 170px; padding: 6px; }
+        .action-dropdown-menu .dropdown-item { border-radius: 8px; padding: 8px 12px; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .action-dropdown-menu .dropdown-item.text-danger:hover { background-color: #fef2f2; }
+        .action-dropdown-menu .dropdown-item:hover:not(.text-danger) { background-color: #fff7ed; color: #f97316; }
+
+        /* --- Kartu list bergaya mobile (dipakai menggantikan tabel di layar kecil) --- */
+        .mobile-card-list { display: none; }
+        .mobile-card-item {
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 14px;
+            padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+        }
+        .mobile-card-item .mc-title { font-weight: 700; color: #1e293b; font-size: 15px; }
+        .mobile-card-item .mc-sub { font-size: 12.5px; color: #6b7280; margin-top: 2px; }
+        .mobile-card-item .mc-badge { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; display: inline-block; margin-bottom: 4px; }
+        .mc-badge.aman { background:#f0fdf4; color:#16a34a; }
+        .mc-badge.rendah { background:#fff7ed; color:#ea580c; }
+        .mc-badge.kritis { background:#fef2f2; color:#ef4444; }
+
+        /* --- Panel filter bottom-sheet (offcanvas Bootstrap, muncul dari bawah di HP) --- */
+        .filter-trigger-btn {
+            display: none; align-items: center; gap: 8px;
+            background: #fff; border: 1px solid #d1d5db; border-radius: 10px;
+            padding: 10px 16px; font-weight: 600; color: #1e293b; margin-bottom: 16px;
+        }
+        .offcanvas-filter .offcanvas-header { border-bottom: 1px solid #f1f5f9; }
+        .offcanvas-filter .offcanvas-title { font-weight: 700; color: #1e293b; }
+        .offcanvas-filter label { font-size: 13px; font-weight: 700; color: #374151; text-transform: uppercase; letter-spacing: 0.03em; margin: 14px 0 8px; display: block; }
+        .filter-chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+        .filter-chip {
+            border: 1px solid #d1d5db; border-radius: 999px; padding: 7px 16px;
+            font-size: 14px; background: #fff; color: #374151; cursor: pointer; transition: 0.15s;
+        }
+        .filter-chip.active, .filter-chip:hover { border-color: #f97316; color: #f97316; background: #fff7ed; }
+        .offcanvas-filter .offcanvas-footer { display: flex; gap: 10px; padding: 16px; border-top: 1px solid #f1f5f9; }
+
+        /* --- Tombol export ringkas (Ekspor ▾ → PDF / Excel) --- */
+        .export-split .dropdown-menu { min-width: 160px; }
+
+        /* --- Tombol submit form (Batal/Simpan) selalu 1 baris, termasuk di HP --- */
+        .form-btn-row { display: flex; gap: 10px; flex-wrap: nowrap; }
+        .form-btn-row > * { flex: 1; text-align: center; white-space: nowrap; }
+
+        @media (max-width: 768px) {
+            .desktop-table-wrapper { display: none !important; }
+            .mobile-card-list { display: block; }
+            .filter-trigger-btn { display: inline-flex; width: 100%; justify-content: center; }
+            .filter-form-inline { display: none !important; }
+            .form-btn-row > * { font-size: 14px; padding-left: 8px; padding-right: 8px; }
+        }
     </style>
 </head>
 @if(Auth::check())
