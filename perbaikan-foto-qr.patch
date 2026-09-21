@@ -1,0 +1,246 @@
+diff --git a/app/Http/Controllers/BarangMasukController.php b/app/Http/Controllers/BarangMasukController.php
+index 913f4a1..76fd194 100644
+--- a/app/Http/Controllers/BarangMasukController.php
++++ b/app/Http/Controllers/BarangMasukController.php
+@@ -99,7 +99,7 @@ public function store(Request $request)
+             $qrPath = 'qrcodes/' . $barang->kode_barang . '.svg';
+             $qrCode = QrCode::format('svg')->size(300)->margin(2)->generate($qrData);
+             
+-            Storage::disk('public')->put($qrPath, $qrCode);
++            Storage::disk('public_direct')->put($qrPath, $qrCode);
+             $barang->update(['qr_code' => $qrPath]);
+ 
+             return redirect()->route('barang-masuk.index')->with('success', 'Barang masuk berhasil ditambahkan beserta QR Code.');
+@@ -155,8 +155,8 @@ public function destroy($id)
+     {
+         $barangMasuk = BarangMasuk::findOrFail($id);
+         
+-        if ($barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code)) {
+-            Storage::disk('public')->delete($barangMasuk->qr_code);
++        if ($barangMasuk->qr_code && Storage::disk('public_direct')->exists($barangMasuk->qr_code)) {
++            Storage::disk('public_direct')->delete($barangMasuk->qr_code);
+         }
+ 
+         $barangMasuk->delete();
+@@ -180,8 +180,8 @@ public function cetakPDF($id)
+         $barangMasuk = BarangMasuk::with(['item', 'kondisi', 'user'])->findOrFail($id);
+         
+         $qrBase64 = null;
+-        if ($barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code)) {
+-            $qrContent = Storage::disk('public')->get($barangMasuk->qr_code);
++        if ($barangMasuk->qr_code && Storage::disk('public_direct')->exists($barangMasuk->qr_code)) {
++            $qrContent = Storage::disk('public_direct')->get($barangMasuk->qr_code);
+             // Sesuaikan base64 header untuk SVG
+             $qrBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrContent);
+         }
+@@ -214,8 +214,8 @@ public function cetakQRKecil($id)
+         $barangMasuk = BarangMasuk::with(['item'])->findOrFail($id);
+         
+         $qrBase64 = null;
+-        if ($barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code)) {
+-            $qrContent = Storage::disk('public')->get($barangMasuk->qr_code);
++        if ($barangMasuk->qr_code && Storage::disk('public_direct')->exists($barangMasuk->qr_code)) {
++            $qrContent = Storage::disk('public_direct')->get($barangMasuk->qr_code);
+             // Sesuaikan base64 header untuk SVG
+             $qrBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrContent);
+         }
+diff --git a/app/Http/Controllers/ItemController.php b/app/Http/Controllers/ItemController.php
+index 64802a7..a340c16 100644
+--- a/app/Http/Controllers/ItemController.php
++++ b/app/Http/Controllers/ItemController.php
+@@ -78,7 +78,7 @@ public function store(Request $request)
+         $item->user_id     = Auth::id(); 
+ 
+         if ($request->hasFile('foto')) {
+-            $item->foto = $request->file('foto')->store('foto_barang', 'public');
++            $item->foto = $request->file('foto')->store('foto_barang', 'public_direct');
+         }
+ 
+         $item->save();
+@@ -137,7 +137,7 @@ public function update(Request $request, Item $item)
+         $item->deskripsi   = $request->deskripsi;
+ 
+         if ($request->hasFile('foto')) {
+-            $item->foto = $request->file('foto')->store('foto_barang', 'public');
++            $item->foto = $request->file('foto')->store('foto_barang', 'public_direct');
+         }
+ 
+         $item->save();
+diff --git a/app/Http/Controllers/ProfileController.php b/app/Http/Controllers/ProfileController.php
+index 3f3d9ee..f35f08f 100644
+--- a/app/Http/Controllers/ProfileController.php
++++ b/app/Http/Controllers/ProfileController.php
+@@ -53,12 +53,12 @@ public function update(Request $request, User $user)
+         if ($request->hasFile('photo')) {
+             // Hapus foto lama (kecuali default)
+             if ($user->photo && $user->photo !== 'default.jpg') {
+-                Storage::delete($user->photo);
++                Storage::disk('public_direct')->delete($user->photo);
+             }
+ 
+ 
+             // Simpan foto baru
+-            $validated['photo'] = $request->file('photo')->store('user_photos', 'public');
++            $validated['photo'] = $request->file('photo')->store('user_photos', 'public_direct');
+         }
+ 
+ 
+diff --git a/app/Http/Controllers/UserController.php b/app/Http/Controllers/UserController.php
+index 0cf6f25..6066164 100644
+--- a/app/Http/Controllers/UserController.php
++++ b/app/Http/Controllers/UserController.php
+@@ -75,7 +75,7 @@ public function store(Request $request)
+ 
+         $photoPath = null;
+         if ($request->hasFile('photo')) {
+-            $photoPath = $request->file('photo')->store('user_photos', 'public');
++            $photoPath = $request->file('photo')->store('user_photos', 'public_direct');
+         }
+ 
+         User::create([
+@@ -122,7 +122,7 @@ public function update(Request $request, User $user)
+ 
+ 
+         if ($request->hasFile('photo')) {
+-            $photoPath = $request->file('photo')->store('user_photos', 'public');
++            $photoPath = $request->file('photo')->store('user_photos', 'public_direct');
+             $user->photo = $photoPath;
+         }
+ 
+diff --git a/config/filesystems.php b/config/filesystems.php
+index e9d9dbd..2a344fd 100644
+--- a/config/filesystems.php
++++ b/config/filesystems.php
+@@ -44,6 +44,17 @@
+             'throw' => false,
+         ],
+ 
++        // Disk khusus untuk hosting yang tidak mendukung symlink (mis. InfinityFree).
++        // File disimpan LANGSUNG di folder public/, jadi tidak butuh perintah
++        // `php artisan storage:link` sama sekali.
++        'public_direct' => [
++            'driver' => 'local',
++            'root' => public_path(),
++            'url' => env('APP_URL'),
++            'visibility' => 'public',
++            'throw' => false,
++        ],
++
+         's3' => [
+             'driver' => 's3',
+             'key' => env('AWS_ACCESS_KEY_ID'),
+diff --git a/resources/views/barangmasuk/qr_card.blade.php b/resources/views/barangmasuk/qr_card.blade.php
+index dbeccc5..f6d3165 100644
+--- a/resources/views/barangmasuk/qr_card.blade.php
++++ b/resources/views/barangmasuk/qr_card.blade.php
+@@ -48,7 +48,7 @@
+                 <div class="mb-3 detail-label text-center">Foto Barang</div>
+                 <div class="photo-container">
+                     @if($barangMasuk->item && $barangMasuk->item->foto && Storage::disk('public')->exists($barangMasuk->item->foto))
+-                        <img src="{{ asset('storage/' . $barangMasuk->item->foto) }}" alt="Foto Barang">
++                        <img src="{{ asset($barangMasuk->item->foto) }}" alt="Foto Barang">
+                     @else
+                         <div class="text-muted fst-italic d-flex flex-column align-items-center">
+                             <i class="fa-solid fa-image fs-1 mb-2 text-secondary"></i>
+@@ -103,7 +103,7 @@
+                     <!-- Kotak QR -->
+                     <div class="qr-box text-center shadow-sm d-flex flex-column align-items-center justify-content-center">
+                         @if($barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code))
+-                            <img src="{{ asset('storage/' . $barangMasuk->qr_code) }}" alt="QR Code" style="width: 120px; height: 120px; mix-blend-mode: multiply;">
++                            <img src="{{ asset($barangMasuk->qr_code) }}" alt="QR Code" style="width: 120px; height: 120px; mix-blend-mode: multiply;">
+                         @else
+                             <div class="text-muted fst-italic p-3">QR Code belum digenerate</div>
+                         @endif
+diff --git a/resources/views/barangmasuk/qr_card_pdf.blade.php b/resources/views/barangmasuk/qr_card_pdf.blade.php
+index 2729ea0..18f2b82 100644
+--- a/resources/views/barangmasuk/qr_card_pdf.blade.php
++++ b/resources/views/barangmasuk/qr_card_pdf.blade.php
+@@ -47,7 +47,7 @@
+         <!-- Kolom Kiri: Foto -->
+         <td class="photo-col">
+           @if($barangMasuk->item->foto && Storage::disk('public')->exists($barangMasuk->item->foto))
+-            <img class="photo-img" src="{{ public_path('storage/' . $barangMasuk->item->foto) }}" alt="Foto">
++            <img class="photo-img" src="{{ public_path($barangMasuk->item->foto) }}" alt="Foto">
+           @else
+             <div style="border: 2px dashed #000; height: 150px; display:flex; align-items:center; justify-content:center;">
+                 <em style="font-size: 12pt;">TANPA FOTO</em>
+diff --git a/resources/views/item/edit.blade.php b/resources/views/item/edit.blade.php
+index 77bc842..2a865fe 100644
+--- a/resources/views/item/edit.blade.php
++++ b/resources/views/item/edit.blade.php
+@@ -80,7 +80,7 @@
+                     <div class="d-flex gap-3 align-items-start flex-column flex-sm-row">
+                         <div class="preview-box w-100" id="previewBox" style="max-width: 300px;">
+                             @if ($item->foto)
+-                                <img id="imagePreview" src="{{ asset('storage/' . $item->foto) }}" style="display: block;">
++                                <img id="imagePreview" src="{{ asset($item->foto) }}" style="display: block;">
+                                 <span id="previewText" class="text-muted fw-medium" style="display: none;"><i class="bi bi-image me-1"></i>Preview Foto</span>
+                             @else
+                                 <img id="imagePreview" style="display: none;">
+diff --git a/resources/views/item/index.blade.php b/resources/views/item/index.blade.php
+index 2c24178..e03dd05 100644
+--- a/resources/views/item/index.blade.php
++++ b/resources/views/item/index.blade.php
+@@ -125,8 +125,8 @@
+                         <td><span class="badge bg-secondary px-3 py-2 rounded-pill">{{ $item->stok_minimum }}</span></td>
+                         <td>
+                             @if ($item->foto)
+-                                <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto" class="img-thumbnail-custom shadow-sm"
+-                                      onclick="openLightbox('{{ asset('storage/' . $item->foto) }}', '{{ $item->nama_barang }}')">
++                                <img src="{{ asset($item->foto) }}" alt="Foto" class="img-thumbnail-custom shadow-sm"
++                                      onclick="openLightbox('{{ asset($item->foto) }}', '{{ $item->nama_barang }}')">
+                             @else
+                                 <span class="badge bg-light text-muted border px-2 py-1">Kosong</span>
+                             @endif
+diff --git a/resources/views/item/show.blade.php b/resources/views/item/show.blade.php
+index 0d89dcd..2622c6c 100644
+--- a/resources/views/item/show.blade.php
++++ b/resources/views/item/show.blade.php
+@@ -37,7 +37,7 @@
+             <!-- Foto -->
+             <div class="col-md-2 text-center">
+                 @if($item->foto)
+-                    <img src="{{ asset('storage/' . $item->foto) }}" class="img-box shadow-sm">
++                    <img src="{{ asset($item->foto) }}" class="img-box shadow-sm">
+                 @else
+                     <div class="img-box d-flex align-items-center justify-content-center mx-auto">
+                         <span class="text-muted fw-medium" style="font-size:0.8rem;">Foto Produk</span>
+diff --git a/resources/views/layouts/app.blade.php b/resources/views/layouts/app.blade.php
+index fd56cd8..408e6ce 100644
+--- a/resources/views/layouts/app.blade.php
++++ b/resources/views/layouts/app.blade.php
+@@ -178,7 +178,7 @@ function logoutViaPost() {
+ 
+                         <!-- 2. Foto Profil (Dropdown) -->
+                         <li class="nav-item dropdown d-flex align-items-center">
+-                            <img src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=f97316&color=fff' }}" 
++                            <img src="{{ Auth::user()->photo ? asset(Auth::user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=f97316&color=fff' }}" 
+                                  class="user-photo dropdown-toggle shadow-sm" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" style="cursor:pointer;">
+                             
+                             <ul class="dropdown-menu dropdown-menu-end mt-3 border-0 py-2 shadow">
+diff --git a/resources/views/profile/show.blade.php b/resources/views/profile/show.blade.php
+index 30f5d8a..9ae2416 100644
+--- a/resources/views/profile/show.blade.php
++++ b/resources/views/profile/show.blade.php
+@@ -86,7 +86,7 @@
+                 <!-- Avatar & Identitas Singkat -->
+                 <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end mb-4 mb-md-5">
+                     <div class="profile-img-container flex-shrink-0 mx-auto mx-md-0 mb-3 mb-md-0">
+-                        <img id="imagePreview" src="{{ $user->photo ? asset('storage/'.$user->photo) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=f97316&color=fff&size=150' }}" alt="Foto Profil">
++                        <img id="imagePreview" src="{{ $user->photo ? asset($user->photo) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=f97316&color=fff&size=150' }}" alt="Foto Profil">
+                     </div>
+                     
+                     <div class="flex-grow-1 text-center text-md-start pb-md-2 ms-md-4 mb-3 mb-md-0">
+diff --git a/resources/views/user/index.blade.php b/resources/views/user/index.blade.php
+index 7ee0e2a..e5d71e0 100644
+--- a/resources/views/user/index.blade.php
++++ b/resources/views/user/index.blade.php
+@@ -256,7 +256,7 @@
+                     <tr>
+                         <td>
+                             @if ($user->photo)
+-                                <img src="{{ asset('storage/' . $user->photo) }}" alt="Foto {{ $user->name }}" class="rounded-circle" width="50" height="50" style="object-fit: cover;">
++                                <img src="{{ asset($user->photo) }}" alt="Foto {{ $user->name }}" class="rounded-circle" width="50" height="50" style="object-fit: cover;">
+                             @else
+                                 <span class="text-muted fst-italic">(Tidak ada foto)</span>
+                             @endif

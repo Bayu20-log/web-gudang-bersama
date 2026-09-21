@@ -80,7 +80,7 @@
                     <div class="d-flex gap-3 align-items-start flex-column flex-sm-row">
                         <div class="preview-box w-100" id="previewBox" style="max-width: 300px;">
                             @if ($item->foto)
-                                <img id="imagePreview" src="{{ asset('storage/' . $item->foto) }}" style="display: block;">
+                                <img id="imagePreview" src="{{ asset($item->foto) }}" style="display: block;">
                                 <span id="previewText" class="text-muted fw-medium" style="display: none;"><i class="bi bi-image me-1"></i>Preview Foto</span>
                             @else
                                 <img id="imagePreview" style="display: none;">

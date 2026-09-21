@@ -52,12 +52,12 @@ class ProfileController extends Controller
         if ($request->hasFile('photo')) {
             // Hapus foto lama (kecuali default)
             if ($user->photo && $user->photo !== 'default.jpg') {
-                Storage::delete($user->photo);
+                Storage::disk('public_direct')->delete($user->photo);
             }
 
 
             // Simpan foto baru
-            $validated['photo'] = $request->file('photo')->store('user_photos', 'public');
+            $validated['photo'] = $request->file('photo')->store('user_photos', 'public_direct');
         }
 
 

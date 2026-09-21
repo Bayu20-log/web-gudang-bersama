@@ -99,7 +99,7 @@ class BarangMasukController extends Controller
             $qrPath = 'qrcodes/' . $barang->kode_barang . '.svg';
             $qrCode = QrCode::format('svg')->size(300)->margin(2)->generate($qrData);
             
-            Storage::disk('public')->put($qrPath, $qrCode);
+            Storage::disk('public_direct')->put($qrPath, $qrCode);
             $barang->update(['qr_code' => $qrPath]);
 
             return redirect()->route('barang-masuk.index')->with('success', 'Barang masuk berhasil ditambahkan beserta QR Code.');
@@ -155,8 +155,8 @@ class BarangMasukController extends Controller
     {
         $barangMasuk = BarangMasuk::findOrFail($id);
         
-        if ($barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code)) {
-            Storage::disk('public')->delete($barangMasuk->qr_code);
+        if ($barangMasuk->qr_code && Storage::disk('public_direct')->exists($barangMasuk->qr_code)) {
+            Storage::disk('public_direct')->delete($barangMasuk->qr_code);
         }
 
         $barangMasuk->delete();
@@ -180,8 +180,8 @@ class BarangMasukController extends Controller
         $barangMasuk = BarangMasuk::with(['item', 'kondisi', 'user'])->findOrFail($id);
         
         $qrBase64 = null;
-        if ($barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code)) {
-            $qrContent = Storage::disk('public')->get($barangMasuk->qr_code);
+        if ($barangMasuk->qr_code && Storage::disk('public_direct')->exists($barangMasuk->qr_code)) {
+            $qrContent = Storage::disk('public_direct')->get($barangMasuk->qr_code);
             // Sesuaikan base64 header untuk SVG
             $qrBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrContent);
         }
@@ -214,8 +214,8 @@ class BarangMasukController extends Controller
         $barangMasuk = BarangMasuk::with(['item'])->findOrFail($id);
         
         $qrBase64 = null;
-        if ($barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code)) {
-            $qrContent = Storage::disk('public')->get($barangMasuk->qr_code);
+        if ($barangMasuk->qr_code && Storage::disk('public_direct')->exists($barangMasuk->qr_code)) {
+            $qrContent = Storage::disk('public_direct')->get($barangMasuk->qr_code);
             // Sesuaikan base64 header untuk SVG
             $qrBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrContent);
         }

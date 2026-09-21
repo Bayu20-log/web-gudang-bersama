@@ -86,7 +86,7 @@
                 <!-- Avatar & Identitas Singkat -->
                 <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end mb-4 mb-md-5">
                     <div class="profile-img-container flex-shrink-0 mx-auto mx-md-0 mb-3 mb-md-0">
-                        <img id="imagePreview" src="{{ $user->photo ? asset('storage/'.$user->photo) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=f97316&color=fff&size=150' }}" alt="Foto Profil">
+                        <img id="imagePreview" src="{{ $user->photo ? asset($user->photo) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=f97316&color=fff&size=150' }}" alt="Foto Profil">
                     </div>
                     
                     <div class="flex-grow-1 text-center text-md-start pb-md-2 ms-md-4 mb-3 mb-md-0">

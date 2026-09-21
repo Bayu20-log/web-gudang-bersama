@@ -47,7 +47,7 @@
         <!-- Kolom Kiri: Foto -->
         <td class="photo-col">
           @if($barangMasuk->item->foto && Storage::disk('public')->exists($barangMasuk->item->foto))
-            <img class="photo-img" src="{{ public_path('storage/' . $barangMasuk->item->foto) }}" alt="Foto">
+            <img class="photo-img" src="{{ public_path($barangMasuk->item->foto) }}" alt="Foto">
           @else
             <div style="border: 2px dashed #000; height: 150px; display:flex; align-items:center; justify-content:center;">
                 <em style="font-size: 12pt;">TANPA FOTO</em>

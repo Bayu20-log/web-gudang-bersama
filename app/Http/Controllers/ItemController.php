@@ -78,7 +78,7 @@ class ItemController extends Controller
         $item->user_id     = Auth::id(); 
 
         if ($request->hasFile('foto')) {
-            $item->foto = $request->file('foto')->store('foto_barang', 'public');
+            $item->foto = $request->file('foto')->store('foto_barang', 'public_direct');
         }
 
         $item->save();
@@ -137,7 +137,7 @@ class ItemController extends Controller
         $item->deskripsi   = $request->deskripsi;
 
         if ($request->hasFile('foto')) {
-            $item->foto = $request->file('foto')->store('foto_barang', 'public');
+            $item->foto = $request->file('foto')->store('foto_barang', 'public_direct');
         }
 
         $item->save();
