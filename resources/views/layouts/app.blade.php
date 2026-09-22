@@ -112,6 +112,19 @@
         .mc-badge.aman { background:#f0fdf4; color:#16a34a; }
         .mc-badge.rendah { background:#fff7ed; color:#ea580c; }
         .mc-badge.kritis { background:#fef2f2; color:#ef4444; }
+        .mc-badge.habis { background:#f1f5f9; color:#64748b; }
+
+        /* --- Kartu laporan versi kaya: header+badge, divider, 3 kolom mini-stat --- */
+        .report-card { background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:14px 16px; margin-bottom:12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .report-card .rcard-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:3px; }
+        .report-card .rcard-title { font-weight:700; color:#1e293b; font-size:15px; }
+        .report-card .rcard-sub { font-size:12.5px; color:#6b7280; }
+        .report-card .rcard-divider { border-top:1px solid #f1f5f9; margin:10px 0; }
+        .report-card .rcard-stats { display:flex; justify-content:space-between; gap:8px; text-align:left; }
+        .report-card .rcard-stats > div { flex:1; }
+        .report-card .rcard-stats .stat-label { font-size:10.5px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.03em; margin-bottom:3px; }
+        .report-card .rcard-stats .stat-value { font-size:15px; font-weight:700; }
+        .report-card .rcard-stats .stat-sub { font-size:11px; color:#94a3b8; font-weight:500; }
 
         /* --- Search bar + tombol filter bulat (menggantikan kotak filter lama, dipakai di semua section) --- */
         .search-filter-bar { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; }
@@ -151,13 +164,19 @@
         .report-summary-row .report-summary-card { flex: 1 1 200px; }
 
         /* --- Toggle pill Laporan Stok / Arus Barang --- */
-        .report-toggle { display: inline-flex; background: #f1f5f9; border-radius: 999px; padding: 4px; gap: 4px; }
+        .report-toggle { display: flex; width: 100%; background: #f1f5f9; border-radius: 999px; padding: 4px; gap: 4px; margin-bottom: 16px; }
         .report-toggle-btn {
-            padding: 8px 18px; border-radius: 999px; font-weight: 600; font-size: 13.5px;
+            flex: 1; text-align: center; padding: 10px 14px; border-radius: 999px; font-weight: 700; font-size: 14px;
             color: #64748b; text-decoration: none; transition: 0.2s;
         }
-        .report-toggle-btn.active { background: #1e293b; color: #fff; }
+        .report-toggle-btn.active { background: #1e293b; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
         .report-toggle-btn:not(.active):hover { color: #ea580c; }
+
+        /* --- Baris ringkasan jumlah barang + tombol ekspor --- */
+        .report-count-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+        .report-count-row .rc-text { font-size: 13.5px; color: #475569; font-weight: 600; }
+        .report-count-row .rc-text strong { color: #1e293b; }
+        .report-count-row .rc-text .rc-warn { color: #ea580c; }
 
         /* --- Panel filter bottom-sheet (offcanvas Bootstrap) --- */
         .filter-trigger-btn {
@@ -188,6 +207,8 @@
             .mobile-card-list { display: block; }
             .form-btn-row { gap: 8px; }
             .form-btn-row > * { font-size: 14px; }
+            .export-split .btn { padding: 7px 14px; font-size: 13.5px; }
+            .report-count-row { margin-bottom: 12px; }
         }
     </style>
 </head>

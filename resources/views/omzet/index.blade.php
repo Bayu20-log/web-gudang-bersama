@@ -85,20 +85,27 @@
         </form>
     </div>
     
-    {{-- Tombol Ekspor ringkas: 1 tombol, terbuka jadi 2 pilihan --}}     
-    <div class="dropdown export-split mb-4">
-        <button class="btn btn-outline-dark fw-bold shadow-sm px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5Z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3Z"/></svg> Ekspor
-        </button>
-        <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ route('export.omzet.pdf', request()->query()) }}" target="_blank">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ef4444" class="me-2" viewBox="0 0 16 16"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2Z"/></svg> Sebagai PDF
-            </a></li>
-            <li><a class="dropdown-item" href="{{ route('export.omzet.excel', request()->query()) }}">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#16a34a" class="me-2" viewBox="0 0 16 16"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2Z"/></svg> Sebagai Excel
-            </a></li>
-        </ul>
-    </div>     
+    @php
+        $totalOmzetItems = $data instanceof \Illuminate\Pagination\LengthAwarePaginator ? $data->total() : collect($data)->count();
+    @endphp
+
+    {{-- Ringkasan jumlah transaksi + tombol Ekspor --}}
+    <div class="report-count-row">
+        <div class="rc-text"><strong>{{ $totalOmzetItems }}</strong> transaksi</div>
+        <div class="dropdown export-split">
+            <button class="btn btn-outline-dark fw-bold shadow-sm px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5Z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3Z"/></svg> Ekspor
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ route('export.omzet.pdf', request()->query()) }}" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ef4444" class="me-2" viewBox="0 0 16 16"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2Z"/></svg> Sebagai PDF
+                </a></li>
+                <li><a class="dropdown-item" href="{{ route('export.omzet.excel', request()->query()) }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#16a34a" class="me-2" viewBox="0 0 16 16"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2Z"/></svg> Sebagai Excel
+                </a></li>
+            </ul>
+        </div>
+    </div>
 
     {{-- Ringkasan Total Omzet --}}
     @if(count($data) > 0)
@@ -155,15 +162,26 @@
     {{-- ================= TAMPILAN HP (kartu) ================= --}}
     <div class="mobile-card-list">
         @forelse($data as $item)
-            <div class="mobile-card-item">
-                <div>
-                    <div class="mc-title">{{ $item['nama_barang'] }}</div>
-                    <div class="mc-sub">{{ $item['lokasi'] }} &middot; {{ $item['kondisi'] }}</div>
-                    <div class="mc-sub">{{ \Carbon\Carbon::parse($item['tanggal'])->format('d M Y, H:i') }}</div>
+            <div class="report-card">
+                <div class="rcard-head">
+                    <span class="rcard-title">{{ $item['nama_barang'] }}</span>
                 </div>
-                <div class="text-end">
-                    <div class="fw-bold mb-1" style="color:#ef4444;">-{{ $item['jumlah_keluar'] }}</div>
-                    <div class="fw-bold" style="color:#16a34a;">Rp {{ number_format($item['omzet_item'], 0, ',', '.') }}</div>
+                <div class="rcard-sub">{{ $item['lokasi'] }} &middot; {{ $item['kondisi'] }}</div>
+                <div class="rcard-sub">{{ \Carbon\Carbon::parse($item['tanggal'])->format('d M Y, H:i') }}</div>
+                <div class="rcard-divider"></div>
+                <div class="rcard-stats">
+                    <div>
+                        <div class="stat-label">Jml Keluar</div>
+                        <div class="stat-value text-danger">-{{ $item['jumlah_keluar'] }}</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Harga Jual</div>
+                        <div class="stat-value" style="color:#1e293b; font-size:13.5px;">Rp {{ number_format($item['harga_jual'], 0, ',', '.') }}</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Omzet</div>
+                        <div class="stat-value" style="color:#16a34a; font-size:13.5px;">Rp {{ number_format($item['omzet_item'], 0, ',', '.') }}</div>
+                    </div>
                 </div>
             </div>
         @empty
