@@ -31,7 +31,7 @@
 
     <form id="formBarangMasuk" method="POST" action="{{ route('barang-masuk.store') }}" onsubmit="confirmSimpan(event)">
         @csrf
-        <div class="row g-4">
+        <div class="row g-4 form-grid-row">
             
             <!-- KOLOM KIRI -->
             <div class="col-md-6">

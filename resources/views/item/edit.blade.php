@@ -49,7 +49,7 @@
         @csrf
         @method('PUT')
         
-        <div class="row g-4">
+        <div class="row g-4 form-grid-row">
             <!-- KOLOM KIRI -->
             <div class="col-md-6">
                 <div class="mb-3">
