@@ -108,7 +108,7 @@
         }
         .mobile-card-item .mc-title { font-weight: 700; color: #1e293b; font-size: 15px; }
         .mobile-card-item .mc-sub { font-size: 12.5px; color: #6b7280; margin-top: 2px; }
-        .mobile-card-item .mc-badge { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; display: inline-block; margin-bottom: 4px; }
+        .mc-badge { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; display: inline-block; line-height: 1.5; vertical-align: middle; }
         .mc-badge.aman { background:#f0fdf4; color:#16a34a; }
         .mc-badge.rendah { background:#fff7ed; color:#ea580c; }
         .mc-badge.kritis { background:#fef2f2; color:#ef4444; }
