@@ -32,7 +32,7 @@
 
 <div class="container-laporan mb-5">
     <div class="header">
-        <h4 class="fw-bold" style="color: #1e293b;">Barang &rsaquo; Daftar Barang Masuk</h4>
+        <h4 class="fw-bold" style="color: #1e293b;">Daftar Barang Masuk</h4>
         <a href="{{ route('barang-masuk.create') }}" class="btn btn-orange fw-bold px-4 py-2 shadow-sm">+ Tambah Barang Masuk</a>
     </div>
 

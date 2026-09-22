@@ -20,7 +20,7 @@
 </style>
 
 <div class="container mt-2 mb-5">
-    <h3 class="fw-bold mb-4" style="color: #374151;">Barang Masuk &rsaquo; Tambah Transaksi</h3>
+    <h3 class="fw-bold mb-4" style="color: #374151;">Tambah Transaksi</h3>
     
     @if(session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>

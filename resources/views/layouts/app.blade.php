@@ -267,8 +267,7 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle {{ in_array($routeName, ['laporan', 'laporan.arus', 'omzet.index','aset.index']) ? 'active' : '' }}" href="#" id="laporanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Laporan</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item fw-medium {{ $routeName === 'laporan' ? 'active' : '' }}" href="{{ route('laporan') }}">Laporan Stok</a></li>
-                                    <li><a class="dropdown-item fw-medium {{ $routeName === 'laporan.arus' ? 'active' : '' }}" href="{{ route('laporan.arus') }}">Arus Barang</a></li>
+                                    <li><a class="dropdown-item fw-medium {{ in_array($routeName, ['laporan', 'laporan.arus']) ? 'active' : '' }}" href="{{ route('laporan') }}">Stok &amp; Arus Barang</a></li>
                                     <li><a class="dropdown-item fw-medium {{ $routeName === 'aset.index' ? 'active' : '' }}" href="{{ route('aset.index') }}">Laporan Aset</a></li>
                                     <li><a class="dropdown-item fw-medium {{ $routeName === 'omzet.index' ? 'active' : '' }}" href="{{ route('omzet.index') }}">Omzet Penjualan</a></li>
                                 </ul>

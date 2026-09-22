@@ -31,7 +31,7 @@
 
 <div class="container-laporan mb-5">
     <div class="header">
-        <h4 class="fw-bold" style="color: #1e293b;">Master Data &rsaquo; Daftar Kategori</h4>
+        <h4 class="fw-bold" style="color: #1e293b;">Daftar Kategori</h4>
         <a href="{{ route('kategori.create') }}" class="btn btn-orange fw-bold px-4 py-2 shadow-sm">+ Tambah Kategori</a>
     </div>
 

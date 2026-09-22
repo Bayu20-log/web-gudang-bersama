@@ -30,37 +30,13 @@
         background-color: #22c55e !important;
         color: #ffffff !important; 
     }
-
-    @media(max-width: 768px) {
-        .header { flex-direction: column; align-items: flex-start; }
-        .filter-form { flex-direction: column; }
-        .filter-form .form-group, .btn-action-group { width: 100%; }
-        .btn-action-group { display: flex; gap: 10px; }
-        .btn-action-group button, .btn-action-group a { flex: 1; text-align: center; justify-content: center; }
-        
-        table { min-width: 100%; }
-        table, thead, tbody, th, td, tr { display: block; width: 100%; }
-        thead { display: none; }
-        tr { margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background-color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        td { border: none !important; text-align: left; padding: 8px 0 8px 45%; position: relative; }
-        td:before { position: absolute; top: 8px; left: 0; width: 40%; white-space: nowrap; font-weight: 600; color: #4b5563; }
-        
-        td:nth-of-type(1):before { content: "Kode Barang"; }
-        td:nth-of-type(2):before { content: "Nama Barang"; }
-        td:nth-of-type(3):before { content: "Harga Dasar"; }
-        td:nth-of-type(4):before { content: "Total Masuk"; }
-        td:nth-of-type(5):before { content: "Total Keluar"; }
-        td:nth-of-type(6):before { content: "Stok Akhir"; }
-        td:nth-of-type(7):before { content: "Lokasi"; }
-        td:nth-of-type(8):before { content: "Username"; }
-    }
 </style>
 
 @php $role = auth()->user()->role; @endphp
 
 <div class="container-laporan mb-5">
     <div class="header">
-        <h4 class="fw-bold mb-0" style="color: #1e293b;">Laporan &rsaquo; Stok &amp; Arus Barang</h4>
+        <h4 class="fw-bold mb-0" style="color: #1e293b;">Stok &amp; Arus Barang</h4>
         @if ($role === 'gudang')
             <div class="report-toggle">
                 <a href="{{ route('laporan') }}" class="report-toggle-btn active">Stok Barang</a>
@@ -151,8 +127,8 @@
         ];
     @endphp
 
-    {{-- Tabel --}}
-    <div class="table-wrapper">
+    {{-- ================= TAMPILAN DESKTOP (tabel) ================= --}}
+    <div class="table-wrapper desktop-table-wrapper">
         <table>
             <thead>
                 <tr>
@@ -161,9 +137,9 @@
                             <a href="{{ route('laporan', array_merge(request()->all(), ['sort_by' => $key, 'sort_dir' => ($sortBy === $key && request('sort_dir') === 'asc') ? 'desc' : 'asc'])) }}">
                                 {{ $label }}
                                 @if($sortBy === $key)
-                                    <i class="fa-solid fa-sort-{{ request('sort_dir') === 'asc' ? 'up' : 'down' }} ms-1"></i>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="ms-1" viewBox="0 0 16 16">@if(request('sort_dir') === 'asc')<path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>@else<path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>@endif</svg>
                                 @else
-                                    <i class="fa-solid fa-sort text-muted ms-1" style="opacity: 0.5;"></i>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="ms-1" style="opacity:0.5" viewBox="0 0 16 16"><path d="M3.5 12.5a.5.5 0 0 1-.5-.5V3.707L1.354 5.354a.5.5 0 1 1-.708-.708l2.5-2.5a.5.5 0 0 1 .708 0l2.5 2.5a.5.5 0 1 1-.708.708L4 3.707V12a.5.5 0 0 1-.5.5Zm9-9a.5.5 0 0 1 .5.5v8.293l1.646-1.647a.5.5 0 0 1 .708.708l-2.5 2.5a.5.5 0 0 1-.708 0l-2.5-2.5a.5.5 0 1 1 .708-.708L12 12.293V4a.5.5 0 0 1 .5-.5Z"/></svg>
                                 @endif
                             </a>
                         </th>
@@ -183,10 +159,35 @@
                         <td>{{ $item['username'] }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="8" class="text-center py-5 text-muted fw-medium"><i class="fa-solid fa-folder-open fs-2 mb-2 d-block text-light"></i>Data laporan stok belum tersedia.</td></tr>
+                    <tr><td colspan="8" class="text-center py-5 text-muted fw-medium"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="mb-2" style="color: #cbd5e1;" viewBox="0 0 16 16"><path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"/></svg><br>Data laporan stok belum tersedia.</td></tr>
                 @endforelse
             </tbody>
         </table>
+    </div>
+
+    {{-- ================= TAMPILAN HP (kartu) ================= --}}
+    <div class="mobile-card-list">
+        @forelse ($data as $item)
+            <div class="mobile-card-item">
+                <div>
+                    <div class="mc-title">{{ $item['nama_barang'] }}</div>
+                    <div class="mc-sub">{{ $item['kode_barang'] }} &middot; {{ is_array($item['lokasi']) ? ($item['lokasi']['nama_lokasi'] ?? '-') : $item['lokasi'] }}</div>
+                    <div class="mc-sub">Rp {{ number_format($item['harga_dasar'], 0, ',', '.') }} &middot; {{ $item['username'] }}</div>
+                </div>
+                <div class="text-end">
+                    <span class="badge bg-stok-akhir px-3 py-2 rounded-pill fs-6 mb-1 d-inline-block">{{ $item['stok_akhir'] }}</span>
+                    <div style="font-size:12.5px;">
+                        <span class="text-success fw-bold">+{{ $item['total_masuk'] }}</span>
+                        <span class="text-danger fw-bold ms-1">-{{ $item['total_keluar'] }}</span>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="text-center py-5 text-muted fw-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="mb-2" style="color: #cbd5e1;" viewBox="0 0 16 16"><path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"/></svg><br>
+                Data laporan stok belum tersedia.
+            </div>
+        @endforelse
     </div>
 
     @php

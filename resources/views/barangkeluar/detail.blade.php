@@ -11,7 +11,7 @@
 
 <div class="container mt-2 mb-5" style="max-width: 800px;">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold mb-0" style="color: #374151;">Barang Keluar &rsaquo; Detail Transaksi</h3>
+        <h3 class="fw-bold mb-0" style="color: #374151;">Detail Transaksi</h3>
         <a href="{{ route('barang-keluar.index') }}" class="btn btn-outline-secondary px-4 fw-medium">Kembali</a>
     </div>
 

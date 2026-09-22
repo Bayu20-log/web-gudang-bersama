@@ -30,7 +30,7 @@
 
 <div class="container-laporan mb-5">     
     <div class="header">         
-        <h4 class="fw-bold" style="color: #1e293b;">Laporan &rsaquo; Total Aset</h4>     
+        <h4 class="fw-bold" style="color: #1e293b;">Total Aset</h4>     
     </div>     
     
     {{-- Search bar + tombol filter --}}     

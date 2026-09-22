@@ -14,7 +14,7 @@
 
 <div class="container mt-2 mb-5" style="max-width: 900px;">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold mb-0" style="color: #1e293b;">Master Data &rsaquo; Tambah Pemasok</h4>
+        <h4 class="fw-bold mb-0" style="color: #1e293b;">Tambah Pemasok</h4>
     </div>
 
     @if(session('error'))

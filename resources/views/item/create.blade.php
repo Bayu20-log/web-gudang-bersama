@@ -16,7 +16,7 @@
 </style>
 
 <div class="container mt-2 mb-5">
-    <h3 class="fw-bold mb-4" style="color: #374151;">Katalog Produk &rsaquo; Tambah Produk</h3>
+    <h3 class="fw-bold mb-4" style="color: #374151;">Tambah Produk</h3>
     
     @if ($errors->any())
         <div class="alert alert-danger">

@@ -15,7 +15,7 @@
 
 <div class="container mt-2 mb-5" style="max-width: 700px;">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold mb-0" style="color: #1e293b;">Master Data &rsaquo; Edit Kategori</h4>
+        <h4 class="fw-bold mb-0" style="color: #1e293b;">Edit Kategori</h4>
     </div>
 
     {{-- Flash error dari session --}}
