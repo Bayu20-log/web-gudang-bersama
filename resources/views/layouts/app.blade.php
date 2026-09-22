@@ -113,7 +113,41 @@
         .mc-badge.rendah { background:#fff7ed; color:#ea580c; }
         .mc-badge.kritis { background:#fef2f2; color:#ef4444; }
 
-        /* --- Panel filter bottom-sheet (offcanvas Bootstrap, muncul dari bawah di HP) --- */
+        /* --- Search bar + tombol filter bulat (menggantikan kotak filter lama, dipakai di semua section) --- */
+        .search-filter-bar { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; }
+        .search-bar-form {
+            flex: 1; display: flex; align-items: center; gap: 10px;
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 999px;
+            padding: 0 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: 0.2s;
+        }
+        .search-bar-form:focus-within { border-color: #f97316; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1); }
+        .search-bar-form svg { flex: none; color: #94a3b8; }
+        .search-bar-form input {
+            border: none; outline: none; background: transparent; flex: 1;
+            padding: 13px 0; font-size: 14.5px; color: #1e293b;
+        }
+        .filter-icon-btn {
+            flex: none; width: 48px; height: 48px; border-radius: 50%;
+            background: #fff; border: 1px solid #e2e8f0; color: #1e293b;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative; transition: 0.2s;
+        }
+        .filter-icon-btn:hover, .filter-icon-btn:focus { background: #1e293b; color: #fff; border-color: #1e293b; }
+        .filter-dot {
+            position: absolute; top: 4px; right: 4px; width: 9px; height: 9px;
+            border-radius: 50%; background: #f97316; border: 2px solid #fff;
+        }
+
+        /* --- Toggle pill Laporan Stok / Arus Barang --- */
+        .report-toggle { display: inline-flex; background: #f1f5f9; border-radius: 999px; padding: 4px; gap: 4px; }
+        .report-toggle-btn {
+            padding: 8px 18px; border-radius: 999px; font-weight: 600; font-size: 13.5px;
+            color: #64748b; text-decoration: none; transition: 0.2s;
+        }
+        .report-toggle-btn.active { background: #1e293b; color: #fff; }
+        .report-toggle-btn:not(.active):hover { color: #ea580c; }
+
+        /* --- Panel filter bottom-sheet (offcanvas Bootstrap) --- */
         .filter-trigger-btn {
             display: none; align-items: center; gap: 8px;
             background: #fff; border: 1px solid #d1d5db; border-radius: 10px;
@@ -135,14 +169,13 @@
 
         /* --- Tombol submit form (Batal/Simpan) selalu 1 baris, termasuk di HP --- */
         .form-btn-row { display: flex; gap: 10px; flex-wrap: nowrap; }
-        .form-btn-row > * { flex: 1; text-align: center; white-space: nowrap; }
+        .form-btn-row > * { flex: 1 1 0; min-width: 0; text-align: center; }
 
         @media (max-width: 768px) {
             .desktop-table-wrapper { display: none !important; }
             .mobile-card-list { display: block; }
-            .filter-trigger-btn { display: inline-flex; width: 100%; justify-content: center; }
-            .filter-form-inline { display: none !important; }
-            .form-btn-row > * { font-size: 14px; padding-left: 8px; padding-right: 8px; }
+            .form-btn-row { gap: 8px; }
+            .form-btn-row > * { font-size: 13.5px; padding-left: 6px; padding-right: 6px; white-space: normal; line-height: 1.2; }
         }
     </style>
 </head>

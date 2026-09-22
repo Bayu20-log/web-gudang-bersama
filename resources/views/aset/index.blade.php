@@ -79,52 +79,21 @@
         <h4 class="fw-bold" style="color: #1e293b;">Laporan &rsaquo; Total Aset</h4>     
     </div>     
     
-    {{-- Filter versi desktop --}}     
-    <form method="GET" class="filter-form filter-form-inline">         
-        <div class="form-group">             
-            <label>Tanggal Mulai</label>             
-            <input type="date" name="start_date" value="{{ request('start_date') }}">         
-        </div>         
-        <div class="form-group">             
-            <label>Tanggal Selesai</label>             
-            <input type="date" name="end_date" value="{{ request('end_date') }}">         
-        </div>         
-        <div class="form-group">             
-            <label>Lokasi</label>             
-            <select name="lokasi">                 
-                <option value="">-- Semua Lokasi --</option>                 
-                @foreach($listLokasi as $lokasi)                     
-                    <option value="{{ $lokasi }}" {{ request('lokasi') == $lokasi ? 'selected' : '' }}>                         
-                        {{ $lokasi }}                     
-                    </option>                 
-                @endforeach             
-            </select>         
-        </div>         
-        <div class="form-group">             
-            <label>Kondisi</label>             
-            <select name="kondisi">                 
-                <option value="">-- Semua Kondisi --</option>                 
-                @foreach($listKondisi as $kondisi)                     
-                    <option value="{{ $kondisi }}" {{ request('kondisi') == $kondisi ? 'selected' : '' }}>                         
-                        {{ $kondisi }}                     
-                    </option>                 
-                @endforeach             
-            </select>         
-        </div>         
-        <div class="form-group">             
-            <label>Nama Barang</label>             
-            <input type="text" name="nama_barang" placeholder="Ketik nama barang..." value="{{ request('nama_barang') }}">         
-        </div>         
-        <div class="btn-action-group" style="display: flex; gap: 10px;">             
-            <button type="submit" class="btn btn-orange fw-bold px-4">Filter</button>             
-            <a href="{{ route('aset.index') }}" class="btn btn-outline-dark fw-bold px-4" style="display: inline-flex; align-items: center; justify-content: center;">Reset</a>         
-        </div>     
-    </form>     
-
-    {{-- Tombol pemicu filter versi HP --}}
-    <button type="button" class="filter-trigger-btn" data-bs-toggle="offcanvas" data-bs-target="#filterAset">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05Zm-4.9 5a2.5 2.5 0 0 1 4.9 0H16v1H9.05a2.5 2.5 0 0 1-4.9 0H0V8h4.15Zm.9.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0ZM.5 12a2.5 2.5 0 0 1 4.9 0H16v1H5.4a2.5 2.5 0 0 1-4.9 0H0v-1h.5Z"/></svg> Filter
-    </button>
+    {{-- Search bar + tombol filter --}}     
+    <div class="search-filter-bar">
+        <form method="GET" class="search-bar-form">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+            <input type="text" name="nama_barang" placeholder="Cari nama barang..." value="{{ request('nama_barang') }}" onchange="this.form.submit()">
+            @if(request('start_date'))<input type="hidden" name="start_date" value="{{ request('start_date') }}">@endif
+            @if(request('end_date'))<input type="hidden" name="end_date" value="{{ request('end_date') }}">@endif
+            @if(request('lokasi'))<input type="hidden" name="lokasi" value="{{ request('lokasi') }}">@endif
+            @if(request('kondisi'))<input type="hidden" name="kondisi" value="{{ request('kondisi') }}">@endif
+        </form>
+        <button type="button" class="filter-icon-btn" data-bs-toggle="offcanvas" data-bs-target="#filterAset" title="Filter">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05Zm-4.9 5a2.5 2.5 0 0 1 4.9 0H16v1H9.05a2.5 2.5 0 0 1-4.9 0H0V8h4.15Zm.9.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0ZM.5 12a2.5 2.5 0 0 1 4.9 0H16v1H5.4a2.5 2.5 0 0 1-4.9 0H0v-1h.5Z"/></svg>
+            @if(request('start_date') || request('end_date') || request('lokasi') || request('kondisi'))<span class="filter-dot"></span>@endif
+        </button>
+    </div>
 
     {{-- Panel filter bottom-sheet (khusus HP) --}}
     <div class="offcanvas offcanvas-bottom offcanvas-filter" tabindex="-1" id="filterAset" style="height:auto; max-height:85vh; border-radius:20px 20px 0 0;">

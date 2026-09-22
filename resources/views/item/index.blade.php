@@ -35,6 +35,8 @@
     .img-thumbnail-custom:hover { transform: scale(1.15); border-color: #f97316; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2); }
 
     .mc-photo { width: 48px; height: 48px; object-fit: cover; border-radius: 8px; border: 2px solid #e2e8f0; cursor: pointer; flex: none; }
+    .img-placeholder { display: flex; align-items: center; justify-content: center; background: #f8fafc; color: #cbd5e1; cursor: default; }
+    .img-placeholder:hover { transform: none; border-color: #e2e8f0; box-shadow: none; }
 </style>
 
 <div class="container-laporan mb-5">
@@ -50,36 +52,18 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    {{-- Filter versi desktop --}}
-    <form method="GET" action="{{ route('item.index') }}" class="filter-form filter-form-inline">
-        <div class="form-group">
-            <label for="search">Cari Produk</label>
-            <input type="text" id="search" name="search" placeholder="Ketik nama atau kode produk..." value="{{ request('search') }}">
-        </div>
-        <div class="form-group">
-            <label for="kategori">Kategori</label>
-            <select name="kategori" id="kategori">
-                <option value="">-- Semua Kategori --</option>
-                @foreach($kategoris as $kategori)
-                    <option value="{{ $kategori->id }}" {{ request('kategori') == $kategori->id ? 'selected' : '' }}>
-                        {{ $kategori->kategori }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        <div class="btn-action-group" style="display: flex; gap: 10px;">
-            <button type="submit" class="btn btn-orange fw-bold px-4">Filter</button>
-            <a href="{{ route('item.index') }}" class="btn btn-outline-dark fw-bold px-4" style="display: inline-flex; align-items: center; justify-content: center;">Reset</a>
-        </div>
-    </form>
-
-    {{-- Tombol pemicu filter versi HP --}}
-    <button type="button" class="filter-trigger-btn" data-bs-toggle="offcanvas" data-bs-target="#filterProduk">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05Zm-4.9 5a2.5 2.5 0 0 1 4.9 0H16v1H9.05a2.5 2.5 0 0 1-4.9 0H0V8h4.15Zm.9.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0ZM.5 12a2.5 2.5 0 0 1 4.9 0H16v1H5.4a2.5 2.5 0 0 1-4.9 0H0v-1h.5Z"/></svg> Filter
-        @if(request('search') || request('kategori'))
-            <span class="badge" style="background:#f97316;">{{ collect([request('search'), request('kategori')])->filter()->count() }}</span>
-        @endif
-    </button>
+    {{-- Search bar + tombol filter --}}
+    <div class="search-filter-bar">
+        <form method="GET" action="{{ route('item.index') }}" class="search-bar-form">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+            <input type="text" name="search" placeholder="Cari nama atau kode produk..." value="{{ request('search') }}" onchange="this.form.submit()">
+            @if(request('kategori'))<input type="hidden" name="kategori" value="{{ request('kategori') }}">@endif
+        </form>
+        <button type="button" class="filter-icon-btn" data-bs-toggle="offcanvas" data-bs-target="#filterProduk" title="Filter">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05Zm-4.9 5a2.5 2.5 0 0 1 4.9 0H16v1H9.05a2.5 2.5 0 0 1-4.9 0H0V8h4.15Zm.9.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0ZM.5 12a2.5 2.5 0 0 1 4.9 0H16v1H5.4a2.5 2.5 0 0 1-4.9 0H0v-1h.5Z"/></svg>
+            @if(request('kategori'))<span class="filter-dot"></span>@endif
+        </button>
+    </div>
 
     {{-- Panel filter bottom-sheet (khusus HP) --}}
     <div class="offcanvas offcanvas-bottom offcanvas-filter" tabindex="-1" id="filterProduk" style="height:auto; max-height:80vh; border-radius:20px 20px 0 0;">
@@ -133,7 +117,9 @@
                                 <img src="{{ asset($item->foto) }}" alt="Foto" class="img-thumbnail-custom shadow-sm"
                                       onclick="openLightbox('{{ asset($item->foto) }}', '{{ $item->nama_barang }}')">
                             @else
-                                <span class="badge bg-light text-muted border px-2 py-1">Kosong</span>
+                                <div class="img-thumbnail-custom img-placeholder" title="Belum ada foto">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16"><path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/><path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-10zm10 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h10z"/></svg>
+                                </div>
                             @endif
                         </td>
                         <td class="td-action">
@@ -166,6 +152,10 @@
             <div class="mobile-card-item">
                 @if($item->foto)
                     <img src="{{ asset($item->foto) }}" alt="Foto" class="mc-photo" onclick="openLightbox('{{ asset($item->foto) }}', '{{ $item->nama_barang }}')">
+                @else
+                    <div class="mc-photo img-placeholder" title="Belum ada foto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/><path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-10zm10 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h10z"/></svg>
+                    </div>
                 @endif
                 <div class="flex-grow-1">
                     <div class="mc-title">{{ $item->nama_barang }}</div>

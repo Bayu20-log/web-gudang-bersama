@@ -65,39 +65,25 @@
 
 <div class="container-laporan mb-5">
     <div class="header">
-        <h4 class="fw-bold" style="color: #1e293b;">Laporan &rsaquo; Arus Barang</h4>
-        <a href="{{ route('laporan') }}" class="btn btn-outline-dark fw-bold px-4 shadow-sm">
-            <i class="fa-solid fa-box me-1"></i> Stok Barang
-        </a>
+        <h4 class="fw-bold mb-0" style="color: #1e293b;">Laporan &rsaquo; Stok &amp; Arus Barang</h4>
+        <div class="report-toggle">
+            <a href="{{ route('laporan') }}" class="report-toggle-btn">Stok Barang</a>
+            <a href="{{ route('laporan.arus') }}" class="report-toggle-btn active">Arus Barang</a>
+        </div>
     </div>
 
-    {{-- Filter Form versi desktop --}}
-    <form class="filter-form filter-form-inline" method="GET" action="{{ route('laporan.arus') }}">
-        <div class="form-group">
-            <label>Lokasi</label>
-            <select name="lokasi">
-                <option value="">-- Semua Lokasi --</option>
-                @foreach($lokasis as $lokasi)
-                    <option value="{{ $lokasi->id }}" {{ request('lokasi') == $lokasi->id ? 'selected' : '' }}>
-                        {{ $lokasi->nama_lokasi }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Pencarian</label>
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama/kode/pihak...">
-        </div>
-        <div class="btn-action-group" style="display: flex; gap: 10px;">
-            <button type="submit" class="btn btn-orange fw-bold px-4">Filter</button>
-            <a href="{{ route('laporan.arus') }}" class="btn btn-outline-dark fw-bold px-4" style="display: inline-flex; align-items: center; justify-content: center;">Reset</a>
-        </div>
-    </form>
-
-    {{-- Tombol pemicu filter versi HP --}}
-    <button type="button" class="filter-trigger-btn" data-bs-toggle="offcanvas" data-bs-target="#filterArusBarang">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05Zm-4.9 5a2.5 2.5 0 0 1 4.9 0H16v1H9.05a2.5 2.5 0 0 1-4.9 0H0V8h4.15Zm.9.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0ZM.5 12a2.5 2.5 0 0 1 4.9 0H16v1H5.4a2.5 2.5 0 0 1-4.9 0H0v-1h.5Z"/></svg> Filter
-    </button>
+    {{-- Search bar + tombol filter --}}
+    <div class="search-filter-bar">
+        <form method="GET" action="{{ route('laporan.arus') }}" class="search-bar-form">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+            <input type="text" name="search" placeholder="Cari nama/kode/pihak..." value="{{ request('search') }}" onchange="this.form.submit()">
+            @if(request('lokasi'))<input type="hidden" name="lokasi" value="{{ request('lokasi') }}">@endif
+        </form>
+        <button type="button" class="filter-icon-btn" data-bs-toggle="offcanvas" data-bs-target="#filterArusBarang" title="Filter">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05Zm-4.9 5a2.5 2.5 0 0 1 4.9 0H16v1H9.05a2.5 2.5 0 0 1-4.9 0H0V8h4.15Zm.9.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0ZM.5 12a2.5 2.5 0 0 1 4.9 0H16v1H5.4a2.5 2.5 0 0 1-4.9 0H0v-1h.5Z"/></svg>
+            @if(request('lokasi'))<span class="filter-dot"></span>@endif
+        </button>
+    </div>
 
     {{-- Panel filter bottom-sheet (khusus HP) --}}
     <div class="offcanvas offcanvas-bottom offcanvas-filter" tabindex="-1" id="filterArusBarang" style="height:auto; max-height:80vh; border-radius:20px 20px 0 0;">
