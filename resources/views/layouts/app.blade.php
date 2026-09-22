@@ -108,12 +108,77 @@
         }
         .mobile-card-item .mc-title { font-weight: 700; color: #1e293b; font-size: 15px; }
         .mobile-card-item .mc-sub { font-size: 12.5px; color: #6b7280; margin-top: 2px; }
-        .mobile-card-item .mc-badge { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; display: inline-block; margin-bottom: 4px; }
+        .mc-badge { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; display: inline-block; line-height: 1.5; vertical-align: middle; }
         .mc-badge.aman { background:#f0fdf4; color:#16a34a; }
         .mc-badge.rendah { background:#fff7ed; color:#ea580c; }
         .mc-badge.kritis { background:#fef2f2; color:#ef4444; }
+        .mc-badge.habis { background:#f1f5f9; color:#64748b; }
 
-        /* --- Panel filter bottom-sheet (offcanvas Bootstrap, muncul dari bawah di HP) --- */
+        /* --- Kartu laporan versi kaya: header+badge, divider, 3 kolom mini-stat --- */
+        .report-card { background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:14px 16px; margin-bottom:12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .report-card .rcard-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:3px; }
+        .report-card .rcard-title { font-weight:700; color:#1e293b; font-size:15px; }
+        .report-card .rcard-sub { font-size:12.5px; color:#6b7280; }
+        .report-card .rcard-divider { border-top:1px solid #f1f5f9; margin:10px 0; }
+        .report-card .rcard-stats { display:flex; justify-content:space-between; gap:8px; text-align:left; }
+        .report-card .rcard-stats > div { flex:1; }
+        .report-card .rcard-stats .stat-label { font-size:10.5px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.03em; margin-bottom:3px; }
+        .report-card .rcard-stats .stat-value { font-size:15px; font-weight:700; }
+        .report-card .rcard-stats .stat-sub { font-size:11px; color:#94a3b8; font-weight:500; }
+
+        /* --- Search bar + tombol filter bulat (menggantikan kotak filter lama, dipakai di semua section) --- */
+        .search-filter-bar { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; }
+        .search-bar-form {
+            flex: 1; display: flex; align-items: center; gap: 10px;
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 999px;
+            padding: 0 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: 0.2s;
+        }
+        .search-bar-form:focus-within { border-color: #f97316; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1); }
+        .search-bar-form svg { flex: none; color: #94a3b8; }
+        .search-bar-form input {
+            border: none; outline: none; background: transparent; flex: 1;
+            padding: 13px 0; font-size: 14.5px; color: #1e293b;
+        }
+        .filter-icon-btn {
+            flex: none; width: 48px; height: 48px; border-radius: 50%;
+            background: #fff; border: 1px solid #e2e8f0; color: #1e293b;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative; transition: 0.2s;
+        }
+        .filter-icon-btn:hover, .filter-icon-btn:focus { background: #1e293b; color: #fff; border-color: #1e293b; }
+        .filter-dot {
+            position: absolute; top: 4px; right: 4px; width: 9px; height: 9px;
+            border-radius: 50%; background: #f97316; border: 2px solid #fff;
+        }
+
+        /* --- Kartu ringkasan angka besar di Laporan (Total Aset, Total Omzet, dsb) --- */
+        .report-summary-card {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            border: 1px solid #fdba74; border-left: 4px solid #f97316;
+            border-radius: 14px; padding: 20px 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        }
+        .report-summary-card .rsc-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: #9a5b21; margin-bottom: 6px; }
+        .report-summary-card .rsc-value { font-size: 1.9rem; font-weight: 800; color: #1e293b; }
+        .report-summary-row { display: flex; flex-wrap: wrap; gap: 14px; }
+        .report-summary-row .report-summary-card { flex: 1 1 200px; }
+
+        /* --- Toggle pill Laporan Stok / Arus Barang --- */
+        .report-toggle { display: flex; width: 100%; background: #f1f5f9; border-radius: 999px; padding: 4px; gap: 4px; margin-bottom: 16px; }
+        .report-toggle-btn {
+            flex: 1; text-align: center; padding: 10px 14px; border-radius: 999px; font-weight: 700; font-size: 14px;
+            color: #64748b; text-decoration: none; transition: 0.2s;
+        }
+        .report-toggle-btn.active { background: #1e293b; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+        .report-toggle-btn:not(.active):hover { color: #ea580c; }
+
+        /* --- Baris ringkasan jumlah barang + tombol ekspor --- */
+        .report-count-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+        .report-count-row .rc-text { font-size: 13.5px; color: #475569; font-weight: 600; }
+        .report-count-row .rc-text strong { color: #1e293b; }
+        .report-count-row .rc-text .rc-warn { color: #ea580c; }
+
+        /* --- Panel filter bottom-sheet (offcanvas Bootstrap) --- */
         .filter-trigger-btn {
             display: none; align-items: center; gap: 8px;
             background: #fff; border: 1px solid #d1d5db; border-radius: 10px;
@@ -135,14 +200,15 @@
 
         /* --- Tombol submit form (Batal/Simpan) selalu 1 baris, termasuk di HP --- */
         .form-btn-row { display: flex; gap: 10px; flex-wrap: nowrap; }
-        .form-btn-row > * { flex: 1; text-align: center; white-space: nowrap; }
+        .form-btn-row > * { flex: 1 1 0; min-width: 0; text-align: center; white-space: nowrap; }
 
         @media (max-width: 768px) {
             .desktop-table-wrapper { display: none !important; }
             .mobile-card-list { display: block; }
-            .filter-trigger-btn { display: inline-flex; width: 100%; justify-content: center; }
-            .filter-form-inline { display: none !important; }
-            .form-btn-row > * { font-size: 14px; padding-left: 8px; padding-right: 8px; }
+            .form-btn-row { gap: 8px; }
+            .form-btn-row > * { font-size: 14px; }
+            .export-split .btn { padding: 7px 14px; font-size: 13.5px; }
+            .report-count-row { margin-bottom: 12px; }
         }
     </style>
 </head>
@@ -222,8 +288,7 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle {{ in_array($routeName, ['laporan', 'laporan.arus', 'omzet.index','aset.index']) ? 'active' : '' }}" href="#" id="laporanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Laporan</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item fw-medium {{ $routeName === 'laporan' ? 'active' : '' }}" href="{{ route('laporan') }}">Laporan Stok</a></li>
-                                    <li><a class="dropdown-item fw-medium {{ $routeName === 'laporan.arus' ? 'active' : '' }}" href="{{ route('laporan.arus') }}">Arus Barang</a></li>
+                                    <li><a class="dropdown-item fw-medium {{ in_array($routeName, ['laporan', 'laporan.arus']) ? 'active' : '' }}" href="{{ route('laporan') }}">Stok &amp; Arus Barang</a></li>
                                     <li><a class="dropdown-item fw-medium {{ $routeName === 'aset.index' ? 'active' : '' }}" href="{{ route('aset.index') }}">Laporan Aset</a></li>
                                     <li><a class="dropdown-item fw-medium {{ $routeName === 'omzet.index' ? 'active' : '' }}" href="{{ route('omzet.index') }}">Omzet Penjualan</a></li>
                                 </ul>

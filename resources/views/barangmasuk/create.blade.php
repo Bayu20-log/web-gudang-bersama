@@ -20,7 +20,7 @@
 </style>
 
 <div class="container mt-2 mb-5">
-    <h3 class="fw-bold mb-4" style="color: #374151;">Barang Masuk &rsaquo; Tambah Transaksi</h3>
+    <h3 class="fw-bold mb-4" style="color: #374151;">Tambah Transaksi</h3>
     
     @if(session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
@@ -137,7 +137,7 @@
 
         <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top form-btn-row">
             <a href="{{ route('barang-masuk.index') }}" class="btn btn-outline-secondary px-4 fw-medium">Batal</a>
-            <button type="submit" class="btn btn-orange px-5 fw-bold"><i class="bi bi-save me-2"></i>Simpan Barang Masuk</button>
+            <button type="submit" class="btn btn-orange px-5 fw-bold"><i class="bi bi-save me-2"></i>Simpan</button>
         </div>
     </form>
 </div>

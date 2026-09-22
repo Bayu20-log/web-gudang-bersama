@@ -56,7 +56,7 @@
 <div class="container mt-2 mb-5" style="max-width: 900px;">
     <!-- Judul & Tombol Kembali di Atas -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold mb-0" style="color: #374151;">Akun Saya &rsaquo; Pengaturan Profil</h3>
+        <h3 class="fw-bold mb-0" style="color: #374151;">Pengaturan Profil</h3>
     </div>
 
     @if(session('success'))

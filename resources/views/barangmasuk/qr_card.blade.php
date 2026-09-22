@@ -36,7 +36,7 @@
 
 <div class="container mt-2 mb-5" style="max-width: 950px;">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold mb-0" style="color: #374151;">Barang Masuk &rsaquo; Detail & QR Code</h3>
+        <h3 class="fw-bold mb-0" style="color: #374151;">Detail & QR Code</h3>
         <a href="{{ route('barang-masuk.index') }}" class="btn btn-outline-secondary px-4 fw-medium">Kembali</a>
     </div>
 

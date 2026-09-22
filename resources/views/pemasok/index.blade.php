@@ -31,7 +31,7 @@
 
 <div class="container-laporan mb-5">
     <div class="header">
-        <h4 class="fw-bold" style="color: #1e293b;">Master Data &rsaquo; Daftar Pemasok</h4>
+        <h4 class="fw-bold" style="color: #1e293b;">Daftar Pemasok</h4>
         <a href="{{ route('pemasok.create') }}" class="btn btn-orange fw-bold px-4 py-2 shadow-sm">+ Tambah Pemasok</a>
     </div>
 
@@ -42,42 +42,17 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    {{-- Filter versi desktop --}}
-    <form method="GET" action="{{ route('pemasok.index') }}" class="filter-form filter-form-inline">
-        <div class="form-group">
-            <label for="search">Cari Pemasok</label>
-            <input type="text" name="search" id="search" placeholder="Ketik nama pemasok, email, PIC, atau jenis..." value="{{ request('search') }}">
-        </div>
-        <div class="btn-action-group" style="display: flex; gap: 10px;">
-            <button type="submit" class="btn btn-orange fw-bold px-4">Filter</button>
-            <a href="{{ route('pemasok.index') }}" class="btn btn-outline-dark fw-bold px-4" style="display: inline-flex; align-items: center; justify-content: center;">Reset</a>
-        </div>
-    </form>
-
-    {{-- Tombol pemicu filter versi HP --}}
-    <button type="button" class="filter-trigger-btn" data-bs-toggle="offcanvas" data-bs-target="#filterPemasok">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05Zm-4.9 5a2.5 2.5 0 0 1 4.9 0H16v1H9.05a2.5 2.5 0 0 1-4.9 0H0V8h4.15Zm.9.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0ZM.5 12a2.5 2.5 0 0 1 4.9 0H16v1H5.4a2.5 2.5 0 0 1-4.9 0H0v-1h.5Z"/></svg> Filter
-        @if(request('search'))
-            <span class="badge" style="background:#f97316;">1</span>
-        @endif
-    </button>
-
-    {{-- Panel filter bottom-sheet (khusus HP) --}}
-    <div class="offcanvas offcanvas-bottom offcanvas-filter" tabindex="-1" id="filterPemasok" style="height:auto; max-height:80vh; border-radius:20px 20px 0 0;">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title">Filter Pemasok</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <form method="GET" action="{{ route('pemasok.index') }}" class="d-flex flex-column">
-            <div class="offcanvas-body">
-                <label>Cari Pemasok</label>
-                <input type="text" name="search" class="form-control" placeholder="Ketik nama pemasok, email, PIC, atau jenis..." value="{{ request('search') }}">
-            </div>
-            <div class="offcanvas-footer">
-                <a href="{{ route('pemasok.index') }}" class="btn btn-outline-dark fw-bold flex-fill">Reset</a>
-                <button type="submit" class="btn btn-orange fw-bold flex-fill">Terapkan</button>
-            </div>
+        {{-- Search bar ringkas --}}
+    <div class="search-filter-bar">
+        <form method="GET" action="{{ route('pemasok.index') }}" class="search-bar-form">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+            <input type="text" name="search" placeholder="Ketik nama pemasok, email, PIC, atau jenis..." value="{{ request('search') }}" onchange="this.form.submit()">
         </form>
+        @if(request('search'))
+            <a href="{{ route('pemasok.index') }}" class="filter-icon-btn" title="Reset pencarian">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.146.146a.5.5 0 0 1 .708 0L8 7.293 15.146.146a.5.5 0 1 1 .708.708L8.707 8l7.147 7.146a.5.5 0 0 1-.708.708L8 8.707l-7.146 7.147a.5.5 0 0 1-.708-.708L7.293 8 .146.854a.5.5 0 0 1 0-.708z"/></svg>
+            </a>
+        @endif
     </div>
 
     {{-- ================= TAMPILAN DESKTOP (tabel) ================= --}}

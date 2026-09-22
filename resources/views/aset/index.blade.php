@@ -25,106 +25,29 @@
     th { background-color: #1e293b !important; color: #ffffff !important; font-weight: 600; white-space: nowrap; border-bottom: 4px solid #f97316; letter-spacing: 0.5px; }     
     th a { color: #ffffff; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }     
     th a:hover { color: #f97316; }     
-    tr:hover { background-color: #f8fafc; }          
-    
-    /* TEMA TOTAL ROW ASLI */     
-    .total-row { background-color: #f1f5f9 !important; border-top: 2px solid #cbd5e1; }     
-    .total-row td { font-weight: bold; color: #1e293b; font-size: 1.05rem;}     
-
-    @media(max-width: 768px) {         
-        .header { flex-direction: column; align-items: flex-start; }         
-        .filter-form { flex-direction: column; }         
-        .filter-form .form-group, .btn-action-group { width: 100%; }         
-        .btn-action-group { display: flex; gap: 10px; }         
-        .btn-action-group button, .btn-action-group a { flex: 1; text-align: center; justify-content: center; }                  
-        table { min-width: 100%; }         
-        table, thead, tbody, th, td, tr { display: block; width: 100%; }         
-        thead { display: none; }         
-        tr { margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background-color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }         
-        td { border: none !important; text-align: left; padding: 8px 0 8px 45%; position: relative; }         
-        td:before { position: absolute; top: 8px; left: 0; width: 40%; white-space: nowrap; font-weight: 600; color: #4b5563; }                  
-        td:nth-of-type(1):before { content: "No"; }         
-        td:nth-of-type(2):before { content: "Nama Barang"; }         
-        td:nth-of-type(3):before { content: "Lokasi"; }         
-        td:nth-of-type(4):before { content: "Kondisi"; }         
-        td:nth-of-type(5):before { content: "Stok Akhir"; }         
-        td:nth-of-type(6):before { content: "Harga Beli"; }         
-        td:nth-of-type(7):before { content: "Jumlah Aset"; }         
-        
-        /* PERBAIKAN: Khusus baris total di HP */         
-        .total-row td[colspan] { display: none; }         
-        .total-row td:last-child { 
-            padding: 15px !important; 
-            text-align: center !important; 
-            font-size: 1.3rem !important; 
-            border-top: none !important;
-        }         
-        .total-row td:last-child:before { 
-            content: "TOTAL KESELURUHAN ASET" !important; 
-            position: static; 
-            display: block; 
-            width: 100%; /* Memperbaiki isu terpotong/setengah */
-            margin-bottom: 10px; 
-            color: #1e293b; 
-            font-size: 1rem;
-            text-align: center;
-            border-bottom: 2px dashed #cbd5e1;
-            padding-bottom: 10px;
-        }     
-    } 
+    tr:hover { background-color: #f8fafc; }
 </style> 
 
 <div class="container-laporan mb-5">     
     <div class="header">         
-        <h4 class="fw-bold" style="color: #1e293b;">Laporan &rsaquo; Total Aset</h4>     
+        <h4 class="fw-bold" style="color: #1e293b;">Total Aset</h4>     
     </div>     
     
-    {{-- Filter versi desktop --}}     
-    <form method="GET" class="filter-form filter-form-inline">         
-        <div class="form-group">             
-            <label>Tanggal Mulai</label>             
-            <input type="date" name="start_date" value="{{ request('start_date') }}">         
-        </div>         
-        <div class="form-group">             
-            <label>Tanggal Selesai</label>             
-            <input type="date" name="end_date" value="{{ request('end_date') }}">         
-        </div>         
-        <div class="form-group">             
-            <label>Lokasi</label>             
-            <select name="lokasi">                 
-                <option value="">-- Semua Lokasi --</option>                 
-                @foreach($listLokasi as $lokasi)                     
-                    <option value="{{ $lokasi }}" {{ request('lokasi') == $lokasi ? 'selected' : '' }}>                         
-                        {{ $lokasi }}                     
-                    </option>                 
-                @endforeach             
-            </select>         
-        </div>         
-        <div class="form-group">             
-            <label>Kondisi</label>             
-            <select name="kondisi">                 
-                <option value="">-- Semua Kondisi --</option>                 
-                @foreach($listKondisi as $kondisi)                     
-                    <option value="{{ $kondisi }}" {{ request('kondisi') == $kondisi ? 'selected' : '' }}>                         
-                        {{ $kondisi }}                     
-                    </option>                 
-                @endforeach             
-            </select>         
-        </div>         
-        <div class="form-group">             
-            <label>Nama Barang</label>             
-            <input type="text" name="nama_barang" placeholder="Ketik nama barang..." value="{{ request('nama_barang') }}">         
-        </div>         
-        <div class="btn-action-group" style="display: flex; gap: 10px;">             
-            <button type="submit" class="btn btn-orange fw-bold px-4">Filter</button>             
-            <a href="{{ route('aset.index') }}" class="btn btn-outline-dark fw-bold px-4" style="display: inline-flex; align-items: center; justify-content: center;">Reset</a>         
-        </div>     
-    </form>     
-
-    {{-- Tombol pemicu filter versi HP --}}
-    <button type="button" class="filter-trigger-btn" data-bs-toggle="offcanvas" data-bs-target="#filterAset">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05Zm-4.9 5a2.5 2.5 0 0 1 4.9 0H16v1H9.05a2.5 2.5 0 0 1-4.9 0H0V8h4.15Zm.9.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0ZM.5 12a2.5 2.5 0 0 1 4.9 0H16v1H5.4a2.5 2.5 0 0 1-4.9 0H0v-1h.5Z"/></svg> Filter
-    </button>
+    {{-- Search bar + tombol filter --}}     
+    <div class="search-filter-bar">
+        <form method="GET" class="search-bar-form">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+            <input type="text" name="nama_barang" placeholder="Cari nama barang..." value="{{ request('nama_barang') }}" onchange="this.form.submit()">
+            @if(request('start_date'))<input type="hidden" name="start_date" value="{{ request('start_date') }}">@endif
+            @if(request('end_date'))<input type="hidden" name="end_date" value="{{ request('end_date') }}">@endif
+            @if(request('lokasi'))<input type="hidden" name="lokasi" value="{{ request('lokasi') }}">@endif
+            @if(request('kondisi'))<input type="hidden" name="kondisi" value="{{ request('kondisi') }}">@endif
+        </form>
+        <button type="button" class="filter-icon-btn" data-bs-toggle="offcanvas" data-bs-target="#filterAset" title="Filter">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05Zm-4.9 5a2.5 2.5 0 0 1 4.9 0H16v1H9.05a2.5 2.5 0 0 1-4.9 0H0V8h4.15Zm.9.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0ZM.5 12a2.5 2.5 0 0 1 4.9 0H16v1H5.4a2.5 2.5 0 0 1-4.9 0H0v-1h.5Z"/></svg>
+            @if(request('start_date') || request('end_date') || request('lokasi') || request('kondisi'))<span class="filter-dot"></span>@endif
+        </button>
+    </div>
 
     {{-- Panel filter bottom-sheet (khusus HP) --}}
     <div class="offcanvas offcanvas-bottom offcanvas-filter" tabindex="-1" id="filterAset" style="height:auto; max-height:85vh; border-radius:20px 20px 0 0;">
@@ -168,37 +91,34 @@
         if (request('end_date')) $query['tanggal_selesai'] = request('end_date');     
     @endphp          
     
-    {{-- Tombol Ekspor ringkas: 1 tombol, terbuka jadi 2 pilihan --}}     
-    <div class="dropdown export-split mb-4">
-        <button class="btn btn-outline-dark fw-bold shadow-sm px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5Z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3Z"/></svg> Ekspor
-        </button>
-        <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ route('export.aset.pdf', $query) }}" target="_blank">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ef4444" class="me-2" viewBox="0 0 16 16"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2Z"/></svg> Sebagai PDF
-            </a></li>
-            <li><a class="dropdown-item" href="{{ route('export.aset.excel', $query) }}">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#16a34a" class="me-2" viewBox="0 0 16 16"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2Z"/></svg> Sebagai Excel
-            </a></li>
-        </ul>
-    </div>     
+    {{-- Ringkasan jumlah barang + tombol Ekspor --}}
+    <div class="report-count-row">
+        <div class="rc-text"><strong>{{ $grouped->total() }}</strong> barang</div>
+        <div class="dropdown export-split">
+            <button class="btn btn-outline-dark fw-bold shadow-sm px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5Z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3Z"/></svg> Ekspor
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ route('export.aset.pdf', $query) }}" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ef4444" class="me-2" viewBox="0 0 16 16"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2Z"/></svg> Sebagai PDF
+                </a></li>
+                <li><a class="dropdown-item" href="{{ route('export.aset.excel', $query) }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#16a34a" class="me-2" viewBox="0 0 16 16"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2Z"/></svg> Sebagai Excel
+                </a></li>
+            </ul>
+        </div>
+    </div>
 
-    {{-- Ringkasan Total Aset (Dipindah ke atas, gaya dipertahankan seperti aslinya) --}}
+    {{-- Ringkasan Total Aset --}}
     @if($grouped->count() > 0)
-    <div class="table-wrapper mb-4" style="border-radius: 12px; overflow: hidden;">
-        <table>
-            <tbody>
-                <tr class="total-row">
-                    <td colspan="6" class="text-end pe-4 text-uppercase" style="width: 80%;">Total Keseluruhan Aset</td>
-                    <td class="text-success fs-5 fw-bold" style="width: 20%;">Rp {{ number_format($totalAset, 0, ',', '.') }}</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="report-summary-card mb-4">
+        <div class="rsc-label">Total Keseluruhan Aset</div>
+        <div class="rsc-value">Rp {{ number_format($totalAset, 0, ',', '.') }}</div>
     </div>
     @endif
 
-    {{-- Tabel Utama --}}     
-    <div class="table-wrapper">         
+    {{-- ================= TAMPILAN DESKTOP (tabel) ================= --}}
+    <div class="table-wrapper desktop-table-wrapper">         
         <table>             
             <thead>                 
                 <tr>                     
@@ -219,9 +139,9 @@
                             <a href="{{ route('aset.index', array_merge(request()->all(), ['sort_by' => $key, 'sort_dir' => ($sortBy === $key && request('sort_dir') === 'asc') ? 'desc' : 'asc'])) }}">                                 
                                 {{ $label }}                                 
                                 @if($sortBy === $key)                                     
-                                    <i class="fa-solid fa-sort-{{ request('sort_dir') === 'asc' ? 'up' : 'down' }} ms-1"></i>                                 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="ms-1" viewBox="0 0 16 16">@if(request('sort_dir') === 'asc')<path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>@else<path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>@endif</svg>
                                 @else                                     
-                                    <i class="fa-solid fa-sort text-muted ms-1" style="opacity: 0.5;"></i>                                 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="ms-1" style="opacity:0.5" viewBox="0 0 16 16"><path d="M3.5 12.5a.5.5 0 0 1-.5-.5V3.707L1.354 5.354a.5.5 0 1 1-.708-.708l2.5-2.5a.5.5 0 0 1 .708 0l2.5 2.5a.5.5 0 1 1-.708.708L4 3.707V12a.5.5 0 0 1-.5.5Zm9-9a.5.5 0 0 1 .5.5v8.293l1.646-1.647a.5.5 0 0 1 .708.708l-2.5 2.5a.5.5 0 0 1-.708 0l-2.5-2.5a.5.5 0 1 1 .708-.708L12 12.293V4a.5.5 0 0 1 .5-.5Z"/></svg>
                                 @endif                             
                             </a>                         
                         </th>                     
@@ -240,10 +160,42 @@
                         <td class="fw-bold text-dark">Rp {{ number_format($row['jumlah_aset'], 0, ',', '.') }}</td>                     
                     </tr>                 
                 @empty                     
-                    <tr><td colspan="7" class="text-center py-5 text-muted fw-medium"><i class="fa-solid fa-folder-open fs-2 mb-2 d-block text-light"></i>Data laporan aset belum tersedia.</td></tr>                 
+                    <tr><td colspan="7" class="text-center py-5 text-muted fw-medium"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="mb-2" style="color: #cbd5e1;" viewBox="0 0 16 16"><path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"/></svg><br>Data laporan aset belum tersedia.</td></tr>                 
                 @endforelse                                  
             </tbody>         
         </table>     
+    </div>
+
+    {{-- ================= TAMPILAN HP (kartu) ================= --}}
+    <div class="mobile-card-list">
+        @forelse($grouped as $row)
+            <div class="report-card">
+                <div class="rcard-head">
+                    <span class="rcard-title">{{ $row['nama_barang'] }}</span>
+                </div>
+                <div class="rcard-sub">{{ $row['lokasi'] }} &middot; {{ $row['kondisi'] }}</div>
+                <div class="rcard-divider"></div>
+                <div class="rcard-stats">
+                    <div>
+                        <div class="stat-label">Stok Akhir</div>
+                        <div class="stat-value" style="color:#16a34a;">{{ $row['stok_akhir'] }}</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Harga Beli</div>
+                        <div class="stat-value" style="color:#1e293b; font-size:13.5px;">Rp {{ number_format($row['harga_beli'], 0, ',', '.') }}</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Jumlah Aset</div>
+                        <div class="stat-value" style="color:#1e293b; font-size:13.5px;">Rp {{ number_format($row['jumlah_aset'], 0, ',', '.') }}</div>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="text-center py-5 text-muted fw-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="mb-2" style="color: #cbd5e1;" viewBox="0 0 16 16"><path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"/></svg><br>
+                Data laporan aset belum tersedia.
+            </div>
+        @endforelse
     </div>     
     
     @if ($grouped instanceof \Illuminate\Pagination\LengthAwarePaginator)         

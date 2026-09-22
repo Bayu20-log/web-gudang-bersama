@@ -14,7 +14,7 @@
 
 <div class="container mt-2 mb-5" style="max-width: 900px;">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold mb-0" style="color: #1e293b;">Master Data &rsaquo; Tambah Pemasok</h4>
+        <h4 class="fw-bold mb-0" style="color: #1e293b;">Tambah Pemasok</h4>
     </div>
 
     @if(session('error'))
@@ -68,7 +68,7 @@
 
             <div class="d-flex justify-content-end gap-2 pt-3 border-top form-btn-row">
                 <a href="{{ route('pemasok.index') }}" class="btn btn-outline-dark px-4">Batal</a>
-                <button type="submit" class="btn btn-orange px-5 fw-bold"><i class="fa-solid fa-save me-1"></i> Simpan Pemasok</button>
+                <button type="submit" class="btn btn-orange px-5 fw-bold"><i class="fa-solid fa-save me-1"></i> Simpan</button>
             </div>
         </form>
     </div>
