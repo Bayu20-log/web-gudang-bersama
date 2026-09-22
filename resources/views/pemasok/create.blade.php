@@ -25,7 +25,7 @@
         <form method="POST" action="{{ route('pemasok.store') }}">
             @csrf
             
-            <div class="row g-4 mb-4">
+            <div class="row g-4 mb-4 form-grid-row">
                 <div class="col-md-6">
                     <label for="nama_pemasok" class="form-label">Nama Pemasok <span class="text-danger">*</span></label>
                     <input type="text" name="nama_pemasok" class="form-control @error('nama_pemasok') is-invalid @enderror" value="{{ old('nama_pemasok') }}" placeholder="Contoh: PT. Sumber Makmur" required autofocus>

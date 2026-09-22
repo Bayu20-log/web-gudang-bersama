@@ -20,7 +20,7 @@
     <!-- PERBAIKAN: onsubmit diganti memanggil event SweetAlert2 -->
     <form action="{{ route('barang-keluar.store') }}" method="POST" id="barangKeluarForm" onsubmit="confirmSimpan(event)">
         @csrf
-        <div class="row g-4">
+        <div class="row g-4 form-grid-row">
             
             <!-- KOLOM KIRI (Informasi Barang & Stok) -->
             <div class="col-md-6">

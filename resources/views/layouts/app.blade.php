@@ -209,6 +209,12 @@
             .form-btn-row > * { font-size: 14px; }
             .export-split .btn { padding: 7px 14px; font-size: 13.5px; }
             .report-count-row { margin-bottom: 12px; }
+            /* Kolom kiri/kanan FORM (col-md-6) yang bertumpuk di HP jangan dapat jarak
+               tambahan dari gutter baris -- cukup jarak antar field (mb-3) saja, supaya
+               jaraknya sama rata di semua field, bukan cuma di sambungan kolom.
+               (Class .form-grid-row sengaja ditandai khusus di form, tidak menyentuh
+               grid kartu/galeri lain yang juga kebetulan pakai row g-4.) */
+            .form-grid-row { --bs-gutter-y: 0; }
         }
     </style>
 </head>
