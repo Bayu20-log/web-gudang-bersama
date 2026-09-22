@@ -138,6 +138,18 @@
             border-radius: 50%; background: #f97316; border: 2px solid #fff;
         }
 
+        /* --- Kartu ringkasan angka besar di Laporan (Total Aset, Total Omzet, dsb) --- */
+        .report-summary-card {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            border: 1px solid #fdba74; border-left: 4px solid #f97316;
+            border-radius: 14px; padding: 20px 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        }
+        .report-summary-card .rsc-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: #9a5b21; margin-bottom: 6px; }
+        .report-summary-card .rsc-value { font-size: 1.9rem; font-weight: 800; color: #1e293b; }
+        .report-summary-row { display: flex; flex-wrap: wrap; gap: 14px; }
+        .report-summary-row .report-summary-card { flex: 1 1 200px; }
+
         /* --- Toggle pill Laporan Stok / Arus Barang --- */
         .report-toggle { display: inline-flex; background: #f1f5f9; border-radius: 999px; padding: 4px; gap: 4px; }
         .report-toggle-btn {
@@ -169,13 +181,13 @@
 
         /* --- Tombol submit form (Batal/Simpan) selalu 1 baris, termasuk di HP --- */
         .form-btn-row { display: flex; gap: 10px; flex-wrap: nowrap; }
-        .form-btn-row > * { flex: 1 1 0; min-width: 0; text-align: center; }
+        .form-btn-row > * { flex: 1 1 0; min-width: 0; text-align: center; white-space: nowrap; }
 
         @media (max-width: 768px) {
             .desktop-table-wrapper { display: none !important; }
             .mobile-card-list { display: block; }
             .form-btn-row { gap: 8px; }
-            .form-btn-row > * { font-size: 13.5px; padding-left: 6px; padding-right: 6px; white-space: normal; line-height: 1.2; }
+            .form-btn-row > * { font-size: 14px; }
         }
     </style>
 </head>

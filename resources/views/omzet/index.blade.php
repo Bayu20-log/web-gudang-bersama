@@ -25,54 +25,7 @@
     th { background-color: #1e293b !important; color: #ffffff !important; font-weight: 600; white-space: nowrap; border-bottom: 4px solid #f97316; letter-spacing: 0.5px; }     
     th a { color: #ffffff; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }     
     th a:hover { color: #f97316; }     
-    tr:hover { background-color: #f8fafc; }          
-    
-    /* TEMA TOTAL ROW */     
-    .total-row { background-color: #f1f5f9 !important; border-top: 2px solid #cbd5e1; }     
-    .total-row td { font-weight: bold; color: #1e293b; font-size: 1.05rem;}     
-    
-    @media(max-width: 768px) {         
-        .header { flex-direction: column; align-items: flex-start; }         
-        .filter-form { flex-direction: column; }         
-        .filter-form .form-group, .btn-action-group { width: 100%; }         
-        .btn-action-group { display: flex; gap: 10px; }         
-        .btn-action-group button, .btn-action-group a { flex: 1; text-align: center; justify-content: center; }                  
-        table { min-width: 100%; }         
-        table, thead, tbody, th, td, tr { display: block; width: 100%; }         
-        thead { display: none; }         
-        tr { margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background-color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }         
-        td { border: none !important; text-align: left; padding: 8px 0 8px 45%; position: relative; }         
-        td:before { position: absolute; top: 8px; left: 0; width: 40%; white-space: nowrap; font-weight: 600; color: #4b5563; }                  
-        td:nth-of-type(1):before { content: "No"; }         
-        td:nth-of-type(2):before { content: "Nama Barang"; }         
-        td:nth-of-type(3):before { content: "Tanggal"; }         
-        td:nth-of-type(4):before { content: "Lokasi"; }         
-        td:nth-of-type(5):before { content: "Kondisi"; }         
-        td:nth-of-type(6):before { content: "Jumlah Keluar"; }         
-        td:nth-of-type(7):before { content: "Harga Jual"; }         
-        td:nth-of-type(8):before { content: "Omzet"; }         
-        
-        /* PERBAIKAN: Khusus baris total di HP */         
-        .total-row td[colspan] { display: none; }         
-        .total-row td:last-child { 
-            padding: 15px !important; 
-            text-align: center !important; 
-            font-size: 1.3rem !important; 
-            border-top: none !important;
-        }         
-        .total-row td:last-child:before { 
-            content: "TOTAL OMZET KESELURUHAN" !important; 
-            position: static; 
-            display: block; 
-            width: 100%; /* Memperbaiki isu terpotong/setengah */
-            margin-bottom: 10px; 
-            color: #1e293b; 
-            font-size: 1rem;
-            text-align: center;
-            border-bottom: 2px dashed #cbd5e1;
-            padding-bottom: 10px;
-        }     
-    } 
+    tr:hover { background-color: #f8fafc; }
 </style> 
 
 <div class="container-laporan mb-5">     
@@ -147,22 +100,16 @@
         </ul>
     </div>     
 
-    {{-- Ringkasan Total Omzet (Dipindah ke atas, gaya dipertahankan) --}}
+    {{-- Ringkasan Total Omzet --}}
     @if(count($data) > 0)
-    <div class="table-wrapper mb-4" style="border-radius: 12px; overflow: hidden;">
-        <table>
-            <tbody>
-                <tr class="total-row">
-                    <td colspan="7" class="text-end pe-4 text-uppercase" style="width: 80%;">Total Omzet Keseluruhan</td>
-                    <td class="text-success fs-5 fw-bold" style="width: 20%;">Rp {{ number_format($total_omzet, 0, ',', '.') }}</td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="report-summary-card mb-4">
+        <div class="rsc-label">Total Omzet Keseluruhan</div>
+        <div class="rsc-value">Rp {{ number_format($total_omzet, 0, ',', '.') }}</div>
     </div>
     @endif
 
-    {{-- Table --}}     
-    <div class="table-wrapper">         
+    {{-- ================= TAMPILAN DESKTOP (tabel) ================= --}}
+    <div class="table-wrapper desktop-table-wrapper">         
         <table>             
             <thead>                 
                 <tr>                     
@@ -175,13 +122,13 @@
                         }                     
                     @endphp                     
                     <th>No</th>                     
-                    <th><a href="{{ sortUrlBlade('nama_barang') }}">Nama Barang @if(request('sort_by') === 'nama_barang')<i class="fa-solid fa-sort-{{ request('sort_dir') === 'asc' ? 'up' : 'down' }} ms-1"></i>@else<i class="fa-solid fa-sort text-muted ms-1" style="opacity: 0.5;"></i>@endif</a></th>                     
-                    <th><a href="{{ sortUrlBlade('tanggal') }}">Tanggal @if(request('sort_by') === 'tanggal')<i class="fa-solid fa-sort-{{ request('sort_dir') === 'asc' ? 'up' : 'down' }} ms-1"></i>@else<i class="fa-solid fa-sort text-muted ms-1" style="opacity: 0.5;"></i>@endif</a></th>                     
-                    <th><a href="{{ sortUrlBlade('lokasi') }}">Lokasi @if(request('sort_by') === 'lokasi')<i class="fa-solid fa-sort-{{ request('sort_dir') === 'asc' ? 'up' : 'down' }} ms-1"></i>@else<i class="fa-solid fa-sort text-muted ms-1" style="opacity: 0.5;"></i>@endif</a></th>                     
-                    <th><a href="{{ sortUrlBlade('kondisi') }}">Kondisi @if(request('sort_by') === 'kondisi')<i class="fa-solid fa-sort-{{ request('sort_dir') === 'asc' ? 'up' : 'down' }} ms-1"></i>@else<i class="fa-solid fa-sort text-muted ms-1" style="opacity: 0.5;"></i>@endif</a></th>                     
-                    <th><a href="{{ sortUrlBlade('jumlah_keluar') }}">Jml Keluar @if(request('sort_by') === 'jumlah_keluar')<i class="fa-solid fa-sort-{{ request('sort_dir') === 'asc' ? 'up' : 'down' }} ms-1"></i>@else<i class="fa-solid fa-sort text-muted ms-1" style="opacity: 0.5;"></i>@endif</a></th>                     
-                    <th><a href="{{ sortUrlBlade('harga_jual') }}">Harga Jual @if(request('sort_by') === 'harga_jual')<i class="fa-solid fa-sort-{{ request('sort_dir') === 'asc' ? 'up' : 'down' }} ms-1"></i>@else<i class="fa-solid fa-sort text-muted ms-1" style="opacity: 0.5;"></i>@endif</a></th>                     
-                    <th><a href="{{ sortUrlBlade('omzet_item') }}">Omzet @if(request('sort_by') === 'omzet_item')<i class="fa-solid fa-sort-{{ request('sort_dir') === 'asc' ? 'up' : 'down' }} ms-1"></i>@else<i class="fa-solid fa-sort text-muted ms-1" style="opacity: 0.5;"></i>@endif</a></th>                 
+                    <th><a href="{{ sortUrlBlade('nama_barang') }}">Nama Barang</a></th>                     
+                    <th><a href="{{ sortUrlBlade('tanggal') }}">Tanggal</a></th>                     
+                    <th><a href="{{ sortUrlBlade('lokasi') }}">Lokasi</a></th>                     
+                    <th><a href="{{ sortUrlBlade('kondisi') }}">Kondisi</a></th>                     
+                    <th><a href="{{ sortUrlBlade('jumlah_keluar') }}">Jml Keluar</a></th>                     
+                    <th><a href="{{ sortUrlBlade('harga_jual') }}">Harga Jual</a></th>                     
+                    <th><a href="{{ sortUrlBlade('omzet_item') }}">Omzet</a></th>                 
                 </tr>             
             </thead>             
             <tbody>                 
@@ -199,10 +146,32 @@
                         <td class="fw-bold text-success">Rp {{ number_format($item['omzet_item'], 0, ',', '.') }}</td>                     
                     </tr>                 
                 @empty                     
-                    <tr><td colspan="8" class="text-center py-5 text-muted fw-medium"><i class="fa-solid fa-folder-open fs-2 mb-2 d-block text-light"></i>Data laporan omzet belum tersedia.</td></tr>                 
+                    <tr><td colspan="8" class="text-center py-5 text-muted fw-medium"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="mb-2" style="color: #cbd5e1;" viewBox="0 0 16 16"><path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"/></svg><br>Data laporan omzet belum tersedia.</td></tr>                 
                 @endforelse                                  
             </tbody>         
         </table>     
+    </div>
+
+    {{-- ================= TAMPILAN HP (kartu) ================= --}}
+    <div class="mobile-card-list">
+        @forelse($data as $item)
+            <div class="mobile-card-item">
+                <div>
+                    <div class="mc-title">{{ $item['nama_barang'] }}</div>
+                    <div class="mc-sub">{{ $item['lokasi'] }} &middot; {{ $item['kondisi'] }}</div>
+                    <div class="mc-sub">{{ \Carbon\Carbon::parse($item['tanggal'])->format('d M Y, H:i') }}</div>
+                </div>
+                <div class="text-end">
+                    <div class="fw-bold mb-1" style="color:#ef4444;">-{{ $item['jumlah_keluar'] }}</div>
+                    <div class="fw-bold" style="color:#16a34a;">Rp {{ number_format($item['omzet_item'], 0, ',', '.') }}</div>
+                </div>
+            </div>
+        @empty
+            <div class="text-center py-5 text-muted fw-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="mb-2" style="color: #cbd5e1;" viewBox="0 0 16 16"><path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"/></svg><br>
+                Data laporan omzet belum tersedia.
+            </div>
+        @endforelse
     </div>     
     
     @php         
