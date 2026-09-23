@@ -6,23 +6,30 @@
     .bg-dark-header { background-color: #1e293b !important; color: #fff; border-bottom: 3px solid #f97316; }
     .box-stok { border: 2px solid #f97316; background-color: #fffaf5; border-radius: 8px; padding: 20px; text-align: center; }
     .box-min { border: 1px solid #e2e8f0; background-color: #f8fafc; border-radius: 8px; padding: 20px; text-align: center; }
-    .table-history { width: 100%; border-collapse: collapse; }
-    .table-history th, .table-history td { padding: 15px; text-align: center; border-bottom: 1px solid #e2e8f0; }
-    .table-history tr:hover { background-color: #f8fafc; }
     .img-box { width: 120px; height: 120px; object-fit: contain; border-radius: 8px; border: 1px solid #e2e8f0; background: #f8fafc; padding: 5px;}
-    
-    @media(max-width: 768px) {
-        .table-history, .table-history thead, .table-history tbody, .table-history th, .table-history td, .table-history tr { display: block; width: 100%; }
-        .table-history thead { display: none; }
-        .table-history tr { margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px; background-color: #fff; }
-        .table-history td { border: none !important; text-align: left; padding: 8px 12px 8px 50%; position: relative; }
-        .table-history td:before { position: absolute; top: 8px; left: 12px; width: 40%; white-space: nowrap; font-weight: bold; color: #4b5563; }
-        .table-history td:nth-of-type(1):before { content: "Tanggal"; }
-        .table-history td:nth-of-type(2):before { content: "Jenis"; }
-        .table-history td:nth-of-type(3):before { content: "Jumlah"; }
-        .table-history td:nth-of-type(4):before { content: "Lokasi"; }
-        .table-history td:nth-of-type(5):before { content: "Dicatat Oleh"; }
+
+    /* --- Riwayat Transaksi versi ringkas --- */
+    .riwayat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding: 0 4px; }
+    .riwayat-header .rh-title { text-transform: uppercase; font-size: 12px; font-weight: 700; color: #64748b; letter-spacing: .04em; }
+    .riwayat-header .rh-link { font-size: 13px; font-weight: 700; color: #f97316; text-decoration: none; }
+    .riwayat-header .rh-link:hover { color: #ea580c; text-decoration: underline; }
+    .riwayat-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 12px 4px; border-bottom: 1px solid #f1f5f9; }
+    .riwayat-item:last-child { border-bottom: none; }
+    .riwayat-item .ri-date { font-weight: 700; color: #1e293b; font-size: 14px; }
+    .riwayat-item .ri-sub { font-size: 12.5px; color: #6b7280; margin-top: 2px; }
+    .riwayat-item .ri-jumlah { font-weight: 700; font-size: 14.5px; white-space: nowrap; }
+    .riwayat-badge { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+    .riwayat-badge.masuk { background: #f0fdf4; color: #16a34a; }
+    .riwayat-badge.keluar { background: #fef2f2; color: #ef4444; }
+
+    /* --- Empty state Riwayat Transaksi --- */
+    .riwayat-empty { text-align: center; padding: 30px 20px; }
+    .riwayat-empty-icon {
+        width: 52px; height: 52px; border-radius: 50%; background: #f1f5f9; color: #94a3b8;
+        display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;
     }
+    .riwayat-empty .re-title { font-weight: 700; color: #1e293b; font-size: 15px; margin-bottom: 4px; }
+    .riwayat-empty .re-sub { color: #6b7280; font-size: 13px; max-width: 280px; margin: 0 auto; }
 </style>
 
 <div class="container mt-2 mb-5" style="max-width: 1000px;">
@@ -39,8 +46,8 @@
                 @if($item->foto)
                     <img src="{{ asset($item->foto) }}" class="img-box shadow-sm">
                 @else
-                    <div class="img-box d-flex align-items-center justify-content-center mx-auto">
-                        <span class="text-muted fw-medium" style="font-size:0.8rem;">Foto Produk</span>
+                    <div class="img-box d-flex align-items-center justify-content-center mx-auto text-secondary" style="opacity:0.5;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16"><path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/><path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-10zm10 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h10z"/></svg>
                     </div>
                 @endif
             </div>
@@ -67,34 +74,37 @@
         </div>
     </div>
 
-    {{-- Tabel Riwayat --}}
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
-        <table class="table-history">
-            <thead class="bg-dark-header">
-                <tr>
-                    <th>Tanggal</th>
-                    <th>Jenis</th>
-                    <th>Jumlah</th>
-                    <th>Lokasi</th>
-                    <th>Dicatat Oleh</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($riwayat as $trx)
-                <tr>
-                    <td class="fw-medium text-secondary">{{ \Carbon\Carbon::parse($trx['tanggal'])->format('d M Y') }}</td>
-                    <td class="fw-bold {{ $trx['jenis'] == 'Masuk' ? 'text-success' : 'text-danger' }}">{{ $trx['jenis'] }}</td>
-                    <td class="fw-bold {{ $trx['jenis'] == 'Masuk' ? 'text-success' : 'text-danger' }}">
-                        {{ $trx['jenis'] == 'Masuk' ? '+' : '-' }}{{ $trx['jumlah'] }} <span class="fw-normal">{{ $item->satuan->nama_satuan ?? '' }}</span>
-                    </td>
-                    <td>{{ $trx['lokasi'] }}</td>
-                    <td>{{ $trx['user'] }}</td>
-                </tr>
-                @empty
-                <tr><td colspan="5" class="text-center py-5 text-muted fw-medium">Belum ada riwayat transaksi.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
+    {{-- Riwayat Transaksi (versi ringkas) --}}
+    <div class="card border-0 shadow-sm rounded-4 p-3">
+        <div class="riwayat-header">
+            <span class="rh-title">Riwayat Transaksi</span>
+            @if($riwayat->count() > 0)
+                <a href="{{ route('laporan.arus', ['search' => $item->kode_barang]) }}" class="rh-link">Lihat semua</a>
+            @endif
+        </div>
+
+        @forelse($riwayat->take(5) as $trx)
+            <div class="riwayat-item">
+                <div>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <span class="ri-date">{{ \Carbon\Carbon::parse($trx['tanggal'])->format('d M Y') }}</span>
+                        <span class="riwayat-badge {{ $trx['jenis'] == 'Masuk' ? 'masuk' : 'keluar' }}">{{ strtoupper($trx['jenis']) }}</span>
+                    </div>
+                    <div class="ri-sub">{{ $trx['lokasi'] }} &middot; {{ $trx['user'] }}</div>
+                </div>
+                <div class="ri-jumlah {{ $trx['jenis'] == 'Masuk' ? 'text-success' : 'text-danger' }}">
+                    {{ $trx['jenis'] == 'Masuk' ? '+' : '-' }}{{ $trx['jumlah'] }} <span class="fw-normal" style="font-size:12px;">{{ $item->satuan->nama_satuan ?? '' }}</span>
+                </div>
+            </div>
+        @empty
+            <div class="riwayat-empty">
+                <div class="riwayat-empty-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/></svg>
+                </div>
+                <div class="re-title">Belum ada transaksi</div>
+                <div class="re-sub">Riwayat masuk dan keluar produk ini akan muncul di sini setelah dicatat.</div>
+            </div>
+        @endforelse
     </div>
 </div>
 
