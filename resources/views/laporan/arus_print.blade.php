@@ -5,11 +5,13 @@
     <title>Laporan Arus Barang</title>
     <style>
         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 10pt; color: #000; }
+        h2 { text-align: center; font-size: 14pt; margin-bottom: 5px; color: #000; text-transform: uppercase; font-weight: bold; }
+        .periode { text-align: center; margin-top: 0; margin-bottom: 20px; font-size: 10pt; color: #000; }
 
         /* --- KOP SURAT FORMAL --- */
         /* Padding dan margin diperkecil untuk merapatkan jarak tulisan dengan garis bawah */
-        .kop-surat-container { width: 100%; border-bottom: 3px solid #000; margin-bottom: 2px; padding-bottom: 6px; } 
-        .kop-surat-wrapper { border-bottom: 1px solid #000; padding-bottom: 2px; margin-bottom: 15px; } 
+        .kop-surat-container { width: 100%; padding-bottom: 6px; } 
+        .kop-surat-wrapper { border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 15px; } 
         .kop-table { width: 100%; border-collapse: collapse; }
         .kop-logo { width: 15%; text-align: left; vertical-align: middle; }
         
@@ -44,7 +46,7 @@
                     <td class="kop-logo">
                         <!-- Memanggil foto profil user, fallback ke logo default jika belum ada -->
                         @if(Auth::check() && Auth::user()->photo)
-                            <img src="{{ public_path('storage/' . Auth::user()->photo) }}" alt="Foto Profil">
+                            <img src="{{ public_path(Auth::user()->photo) }}" alt="Foto Profil">
                         @else
                             <img src="{{ public_path('images/logo_or.png') }}" alt="Logo Default">
                         @endif

@@ -161,8 +161,19 @@
         @endforelse
     </div>
     
-    <div class="mt-4 d-flex justify-content-center">
-        {{ $barangKeluars->appends(request()->query())->links('pagination::bootstrap-5') }}
+    @php
+        $total = $barangKeluars->total();
+        $first = $barangKeluars->firstItem() ?? ($total ? 1 : 0);
+        $last  = $barangKeluars->lastItem() ?? $total;
+    @endphp
+
+    <div class="mt-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <div class="small text-muted mb-2 mb-md-0 fw-medium">
+            Menampilkan {{ $first }} - {{ $last }} dari {{ $total }} data
+        </div>
+        <div>
+            {{ $barangKeluars->appends(request()->query())->links('pagination::bootstrap-5') }}
+        </div>
     </div>
 </div>
 @endsection

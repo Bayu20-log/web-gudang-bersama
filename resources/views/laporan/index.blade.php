@@ -151,23 +151,38 @@
                                 @endif
                             </a>
                         </th>
+                        @if($key === 'stok_akhir')
+                            <th>Status</th>
+                        @endif
                     @endforeach
                 </tr>
             </thead>
             <tbody>
                 @forelse ($data as $item)
+                    @php
+                        $min = $item['stok_minimum'] ?? 0;
+                        $stokAkhir = $item['stok_akhir'];
+                        if ($stokAkhir <= 0) { $status = 'HABIS'; $badgeClass = 'habis'; }
+                        elseif ($min > 0 && $stokAkhir < $min) { $status = 'KRITIS'; $badgeClass = 'kritis'; }
+                        elseif ($min > 0 && $stokAkhir < $min * 1.5) { $status = 'RENDAH'; $badgeClass = 'rendah'; }
+                        else { $status = 'AMAN'; $badgeClass = 'aman'; }
+                    @endphp
                     <tr>
                         <td class="fw-medium text-secondary">{{ $item['kode_barang'] }}</td>
                         <td class="fw-bold text-dark">{{ $item['nama_barang'] }}</td>
                         <td>Rp {{ number_format($item['harga_dasar'], 0, ',', '.') }}</td>
                         <td class="text-success fw-bold">+{{ $item['total_masuk'] }}</td>
                         <td class="text-danger fw-bold">-{{ $item['total_keluar'] }}</td>
-                        <td><span class="badge bg-stok-akhir px-3 py-2 rounded-pill fs-6">{{ $item['stok_akhir'] }}</span></td>
+                        <td>
+                            {{ $stokAkhir }}
+                            @if($min > 0)<span class="text-muted" style="font-size:12px;"> / min.{{ $min }}</span>@endif
+                        </td>
+                        <td><span class="mc-badge {{ $badgeClass }}">{{ $status }}</span></td>
                         <td>{{ is_array($item['lokasi']) ? ($item['lokasi']['nama_lokasi'] ?? '-') : $item['lokasi'] }}</td>
                         <td>{{ $item['username'] }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="8" class="text-center py-5 text-muted fw-medium"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="mb-2" style="color: #cbd5e1;" viewBox="0 0 16 16"><path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"/></svg><br>Data laporan stok belum tersedia.</td></tr>
+                    <tr><td colspan="9" class="text-center py-5 text-muted fw-medium"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="mb-2" style="color: #cbd5e1;" viewBox="0 0 16 16"><path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"/></svg><br>Data laporan stok belum tersedia.</td></tr>
                 @endforelse
             </tbody>
         </table>

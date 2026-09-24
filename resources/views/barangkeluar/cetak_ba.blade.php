@@ -8,8 +8,8 @@
 
         /* --- KOP SURAT FORMAL --- */
         /* Padding dan margin diperkecil untuk merapatkan jarak tulisan dengan garis bawah */
-        .kop-surat-container { width: 100%; border-bottom: 3px solid #000; margin-bottom: 2px; padding-bottom: 6px; } 
-        .kop-surat-wrapper { border-bottom: 1px solid #000; padding-bottom: 2px; margin-bottom: 15px; } 
+        .kop-surat-container { width: 100%; padding-bottom: 6px; } 
+        .kop-surat-wrapper { border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 15px; }
         .kop-table { width: 100%; border-collapse: collapse; }
         .kop-logo { width: 15%; text-align: left; vertical-align: middle; }
         
