@@ -1,6 +1,5 @@
-@extends('layouts.app')
-@section('content')
-
+@extends('layouts.app') 
+@section('content') 
 <style>
     body { padding-top: 40px; }
     .detail-label { font-weight: 600; color: #64748b; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;}
@@ -12,7 +11,6 @@
     .btn-orange:hover { background-color: #ea580c; color: #fff; }
     .btn-outline-dark { border: 2px solid #1e293b; color: #1e293b; transition: 0.3s; background: transparent; font-weight: 600;}
     .btn-outline-dark:hover { background-color: #1e293b; color: #fff; }
-
     .photo-container {
         width: 100%;
         max-width: 280px;
@@ -32,8 +30,7 @@
         height: 100%;
         object-fit: cover;
     }
-</style>
-
+</style> 
 <div class="container mt-2 mb-5" style="max-width: 950px;">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold mb-0" style="color: #374151;">Detail & QR Code</h3>
@@ -47,7 +44,8 @@
             <div class="col-md-4 text-center">
                 <div class="mb-3 detail-label text-center">Foto Barang</div>
                 <div class="photo-container">
-                    @if($barangMasuk->item && $barangMasuk->item->foto && Storage::disk('public')->exists($barangMasuk->item->foto))
+                    <!-- Perbaikan pengecekan file foto -->
+                    @if($barangMasuk->item && $barangMasuk->item->foto && file_exists(public_path($barangMasuk->item->foto)))
                         <img src="{{ asset($barangMasuk->item->foto) }}" alt="Foto Barang">
                     @else
                         <div class="text-muted fst-italic d-flex flex-column align-items-center">
@@ -102,7 +100,7 @@
                     
                     <!-- Kotak QR -->
                     <div class="qr-box text-center shadow-sm d-flex flex-column align-items-center justify-content-center">
-                        @if($barangMasuk->qr_code && Storage::disk('public')->exists($barangMasuk->qr_code))
+                        @if($barangMasuk->qr_code && file_exists(public_path($barangMasuk->qr_code)))
                             <img src="{{ asset($barangMasuk->qr_code) }}" alt="QR Code" style="width: 120px; height: 120px; mix-blend-mode: multiply;">
                         @else
                             <div class="text-muted fst-italic p-3">QR Code belum digenerate</div>
@@ -121,7 +119,6 @@
                             <i class="fa-solid fa-file-signature me-1"></i> Cetak BA
                         </a>
                     </div>
-
                 </div>
             </div>
         </div>
