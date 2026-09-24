@@ -86,10 +86,6 @@
         </form>
     </div>
 
-    <div class="mb-3 text-muted fw-medium">
-        Total Data: <span class="badge bg-secondary">{{ $barangKeluars->total() }}</span>
-    </div>
-
     {{-- ================= TAMPILAN DESKTOP (tabel) ================= --}}
     <div class="table-wrapper desktop-table-wrapper">
         <table>

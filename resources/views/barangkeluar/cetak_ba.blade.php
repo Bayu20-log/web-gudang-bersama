@@ -43,7 +43,7 @@
                     <td class="kop-logo">
                         <!-- Memanggil foto profil user, fallback ke logo default jika belum ada -->
                         @if(Auth::check() && Auth::user()->photo)
-                            <img src="{{ public_path('storage/' . Auth::user()->photo) }}" alt="Foto Profil">
+                            <img src="{{ public_path(Auth::user()->photo) }}" alt="Foto Profil">
                         @else
                             <img src="{{ public_path('images/logo_or.png') }}" alt="Logo Default">
                         @endif
