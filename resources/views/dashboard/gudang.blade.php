@@ -4,11 +4,12 @@
 <style>
 
     .pagehead {
-      display: flex;
+    display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
     gap: 16px;
+    margin-top: 12px;
     margin-bottom: 24px;
   }
 
@@ -50,21 +51,26 @@
   /* Tombol Terapkan Filter */
   .btn-apply-date {
     background: #f5921b;
-    color: #ffffff;
+    color: #ffffff !important;
     border: none;
     border-radius: 6px;
-    padding: 7px 14px;
+    padding: 8px 16px;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.1s;
+    white-space: nowrap;
   }
 
   .btn-apply-date:hover {
     background: #d97706;
   }
 
-    .dbg-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 16px; background-color: #f4f6f9; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+  .btn-apply-date:active {
+    transform: scale(0.98);
+  }
+
+    .dbg-wrap { max-width: 1200px; margin: 0 auto; padding: 32px 16px 24px; background-color: #f4f6f9; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
     .dbg-title { font-size: 24px; font-weight: 800; margin: 0 0 2px; color: #1f2430; }
     .dbg-subtitle { font-size: 13px; color: #8a8f9c; margin-bottom: 22px; }
 
@@ -186,7 +192,7 @@
 
 <div class="pagehead">
     <div>
-      <h1 style="margin: 0; font-size: 24px; font-weight: 700;">Dashboard Gudang</h1>
+      <h1 style="margin: 0; font-size: 24px; font-weight: 800; color: #1f2430;">Dashboard Gudang</h1>
       <p style="margin: 4px 0 0; font-size: 13px; color: #6b7280;">Update terakhir: Hari ini, {{ date('H:i') }} WITA</p>
     </div>
 
@@ -198,7 +204,7 @@
             <label>
                 <span>Sampai:</span>
                 <input type="date" name="date_to" value="{{ is_object($dateTo) ? $dateTo->format('Y-m-d') : $dateTo }}">            </label>
-            <button type="submit" class="btn primary">Terapkan Filter</button>
+            <button type="submit" class="btn-apply-date">Terapkan Filter</button>
         </form>
     </div>
     </div>
@@ -369,8 +375,11 @@
                                                 {{ \Carbon\Carbon::parse($item->tanggal_kadaluarsa)->format('d/m/Y') }}
                                             </td>
                                             <td style="padding: 8px; text-align: right;">
-                                                <a href="{{ route('barang-keluar.create', ['kode_barang' => $item->kode_barang]) }}" 
-                                                   title="Proses Barang Keluar"
+                                                <a href="{{ route('barang-keluar.create', [
+                                                'kode_barang' => $item->kode_barang,
+                                                    'id_lokasi'   => $item->id_lokasi,
+                                                    'id_kondisi'  => $item->id_kondisi                                                ]) }}"                                                   
+                                                    title="Proses Barang Keluar"
                                                    style="padding: 4px 8px; background: #ef4444; color: #ffffff; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: 600; white-space: nowrap; display: inline-block;">
                                                     Keluar &rarr;
                                                 </a>
@@ -388,7 +397,6 @@
                 </div>
             </div>
 
-            <!-- Paginasi (Margin top auto agar selalu di dasar card) -->
             @if(isset($kadaluarsa) && $kadaluarsa->hasPages())
                 <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b;">
                     <div>
@@ -666,18 +674,18 @@
           plugins: {
             datalabels: { display: false } 
           },
-            scales: {
-                y: {
-                beginAtZero: true,
-                min: 0, 
-                ticks: {
-                    precision: 0, 
-                    }
-                }
+          scales: {
+            y: {
+              beginAtZero: true,
+              min: 0, 
+              ticks: {
+                precision: 0, 
+              }
             }
+          }
         }
-    });
-}
+      });
+    }
 
     // 2. Chart Top Keluar
     const topKeluarData = @json($topKeluar ?? []);
@@ -724,7 +732,7 @@
 
       new Chart(pemasokCanvas, {
         type: 'doughnut',
-        plugins: [ChartDataLabels], 
+        plugins: typeof ChartDataLabels !== 'undefined' ? [ChartDataLabels] : [], 
         data: {
           labels: pemasokData.map(s => s.nama_pemasok ?? s.nama ?? 'Unknown'),
           datasets: [{
@@ -763,35 +771,40 @@
       });
     }
 
-    // Filter Interaktif Prioritas Tindakan
+    // 4. Filter Interaktif Prioritas Tindakan
     const filterPrioSelect = document.getElementById('filterStatusPrio');
     const prioContainer = document.getElementById('prioTableContainer');
 
-
     if (filterPrioSelect) {
-        filterPrioSelect.addEventListener('change', function () {
-            const selectedStatus = this.value.toLowerCase();
-            let url = new URL(window.location.href);
+      filterPrioSelect.addEventListener('change', function () {
+        const selectedStatus = this.value.toLowerCase();
+        let url = new URL(window.location.href);
 
-            if (selectedStatus && selectedStatus !== 'semua') {
-                url.searchParams.set('filter_status', selectedStatus);
-            } else {
-                url.searchParams.delete('filter_status');
-            }
+        if (selectedStatus && selectedStatus !== 'semua') {
+          url.searchParams.set('filter_status', selectedStatus);
+        } else {
+          url.searchParams.delete('filter_status');
+        }
 
-            url.searchParams.delete('prio_page');
-
-            window.location.href = url.toString();
-        });
+        url.searchParams.delete('prio_page');
+        window.location.href = url.toString();
+      });
     }
 
-    // Filter Interaktif Idle Stock
-   function updateIdleExportLink(days) {
-        const btn = document.getElementById('btnExportIdle');
-        if (btn) {
-            const baseUrl = "{{ route('idle-stock.export-pdf') }}";
-            btn.href = baseUrl + '?idle_days=' + days;
-        }
+    // 5. Filter Interaktif Idle Stock
+    const filterIdleSelect = document.getElementById('filterIdleDays');
+    if (filterIdleSelect) {
+      filterIdleSelect.addEventListener('change', function() {
+        updateIdleExportLink(this.value);
+      });
+    }
+
+    function updateIdleExportLink(days) {
+      const btn = document.getElementById('btnExportIdle');
+      if (btn) {
+        const baseUrl = "{{ route('idle-stock.export-pdf') }}";
+        btn.href = baseUrl + '?idle_days=' + days;
+      }
     }
   });
 </script>

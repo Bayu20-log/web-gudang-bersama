@@ -55,18 +55,34 @@ class DashboardGudangController extends Controller
         // 2. Segera Kadaluarsa (dalam 30 hari)
         $sortKadaluarsa = strtolower($request->input('sort_kadaluarsa', 'asc')) === 'desc' ? 'desc' : 'asc';
 
+        $barangKeluarSub = DB::table('barang_keluars')
+            ->select('kode_barang', DB::raw('SUM(jumlah_keluar) as total_keluar'))
+            ->groupBy('kode_barang');
+
         $kadaluarsa = DB::table('barang_masuks')
             ->leftJoin('items', 'barang_masuks.kode_barang', '=', 'items.kode_barang')
+            ->leftJoinSub($barangKeluarSub, 'bk', function ($join) {
+                $join->on('barang_masuks.kode_barang', '=', 'bk.kode_barang');
+            })
             ->where('barang_masuks.user_id', '=', $userId)
             ->whereNotNull('barang_masuks.tanggal_kadaluarsa')
             ->select(
-                'barang_masuks.id',
+                DB::raw('MAX(barang_masuks.id) as id'),
                 'barang_masuks.kode_barang',
+                DB::raw('MAX(barang_masuks.id_lokasi) as id_lokasi'),
+                DB::raw('MAX(barang_masuks.id_kondisi) as id_kondisi'),
                 DB::raw('COALESCE(items.nama_barang, barang_masuks.kode_barang) as nama_barang'),
-                'barang_masuks.jumlah',
-                'barang_masuks.tanggal_kadaluarsa'
+                // Sisa Stok Riil = (Total Masuk - Total Keluar)
+                DB::raw('GREATEST(SUM(barang_masuks.jumlah) - COALESCE(MAX(bk.total_keluar), 0), 0) as jumlah'),
+                DB::raw('MIN(barang_masuks.tanggal_kadaluarsa) as tanggal_kadaluarsa')
             )
-            ->orderBy('barang_masuks.tanggal_kadaluarsa', $sortKadaluarsa)
+            ->groupBy(
+                'barang_masuks.kode_barang',
+                DB::raw('COALESCE(items.nama_barang, barang_masuks.kode_barang)')
+            )
+            // Filter hanya tampilkan jika sisa stok masih ada (> 0)
+            ->havingRaw('GREATEST(SUM(barang_masuks.jumlah) - COALESCE(MAX(bk.total_keluar), 0), 0) > 0')
+            ->orderBy('tanggal_kadaluarsa', $sortKadaluarsa)
             ->paginate(5, ['*'], 'kadaluarsa_page')
             ->withQueryString();
 
@@ -160,30 +176,33 @@ class DashboardGudangController extends Controller
         ];
 
         // 8. Prioritas Tindakan
-        $dateFrom = $request->input('date_from', date('Y-m-01'));
-        $dateTo = $request->input('date_to', date('Y-m-d'));
         $filterStatus = strtolower($request->input('filter_status', 'semua'));
+        $userId = \Illuminate\Support\Facades\Auth::id();
 
-        $allItems = \App\Models\Item::all();
+        // Ambil semua item milik user yang sedang login
+        $allItems = \App\Models\Item::where('user_id', '=', $userId)->get();
 
+        // Hitung TOTAL kumulatif barang masuk (tanpa dibatasi rentang tanggal)
         $barangMasuk = \DB::table('barang_masuks') 
             ->select('kode_barang', \DB::raw('SUM(jumlah) as total_masuk'))
-            ->whereBetween('tanggal_masuk', [$dateFrom, $dateTo])
+            ->where('user_id', '=', $userId)
             ->groupBy('kode_barang')
             ->pluck('total_masuk', 'kode_barang');
 
+        // Hitung TOTAL kumulatif barang keluar (tanpa dibatasi rentang tanggal)
         $barangKeluar = \DB::table('barang_keluars') 
             ->select('kode_barang', \DB::raw('SUM(jumlah_keluar) as total_keluar'))
-            ->whereBetween('tanggal_keluar', [$dateFrom, $dateTo])
+            ->where('user_id', '=', $userId)
             ->groupBy('kode_barang')
             ->pluck('total_keluar', 'kode_barang');
 
         $dataPrioritas = $allItems->map(function ($item) use ($barangMasuk, $barangKeluar) {
             $kode = $item->kode_barang;
-        
+
             $masuk = $barangMasuk[$kode] ?? 0;
             $keluar = $barangKeluar[$kode] ?? 0;
 
+            // Stok Akhir Riil
             $stokAkhir = $masuk - $keluar;
             if ($stokAkhir < 0) {
                 $stokAkhir = 0; 
@@ -206,12 +225,12 @@ class DashboardGudangController extends Controller
                 $urgensi = 4;
             }
 
-        return [
+            return [
                 'kode_barang' => $item->kode_barang,
-                'nama'       => $item->nama_barang,
-                'tag'        => $tag,
-                'keterangan' => "Stok {$stokAkhir} / Minimum {$minStok}",
-                'urgensi'    => $urgensi,
+                'nama'        => $item->nama_barang,
+                'tag'         => $tag,
+                'keterangan'  => "Stok {$stokAkhir} / Minimum {$minStok}",
+                'urgensi'     => $urgensi,
             ];
         });
 
@@ -238,7 +257,6 @@ class DashboardGudangController extends Controller
         );
 
         $prioritasTindakan->appends($request->all());
-
         // 9. Top Pemasok
         $topPemasok = DB::table('pemasoks')
             ->join('barang_masuks', 'pemasoks.id', '=', 'barang_masuks.id_pemasok')
@@ -418,81 +436,86 @@ class DashboardGudangController extends Controller
 
             return $paginatedItems->appends($request->all());
         }
+public function exportPrioritasPdf(Request $request)
+{
+    $dateFrom     = $request->input('date_from', date('Y-m-01'));
+    $dateTo       = $request->input('date_to', date('Y-m-d'));
+    $filterStatus = strtolower($request->input('filter_status', 'semua'));
+    $userId       = \Illuminate\Support\Facades\Auth::id();
 
-        public function exportPrioritasPdf(Request $request)
-        {
-            $dateFrom       = $request->input('date_from', date('Y-m-01'));
-            $dateTo         = $request->input('date_to', date('Y-m-d'));
-            $filterStatus   = strtolower($request->input('filter_status', 'semua'));
+    // 1. Ambil barang milik user login
+    $allItems = \App\Models\Item::where('user_id', '=', $userId)->get();
 
-            $allItems   = \App\Models\Item::all();
+    // 2. Hitung TOTAL kumulatif barang masuk
+    $barangMasuk = DB::table('barang_masuks')
+        ->select('kode_barang', DB::raw('SUM(jumlah) as total_masuk'))
+        ->where('user_id', '=', $userId)
+        ->groupBy('kode_barang')
+        ->pluck('total_masuk', 'kode_barang');
 
-            $barangMasuk = DB::table('barang_masuks')
-                ->select('kode_barang', DB::raw('SUM(jumlah) as total_masuk'))
-                ->whereBetween('tanggal_masuk', [$dateFrom, $dateTo])
-                ->groupBy('kode_barang')
-                ->pluck('total_masuk', 'kode_barang');
+    // 3. Hitung TOTAL kumulatif barang keluar
+    $barangKeluar = DB::table('barang_keluars')
+        ->select('kode_barang', DB::raw('SUM(jumlah_keluar) as total_keluar'))
+        ->where('user_id', '=', $userId)
+        ->groupBy('kode_barang')
+        ->pluck('total_keluar', 'kode_barang');
 
-            $barangKeluar = DB::table('barang_keluars')
-                ->select('kode_barang', DB::raw('SUM(jumlah_keluar) as total_keluar'))
-                ->whereBetween('tanggal_keluar', [$dateFrom, $dateTo])
-                ->groupBy('kode_barang')
-                ->pluck('total_keluar', 'kode_barang');
+    // 4. Kalkulasi Stok Akhir & Tag Status
+    $dataPrioritas = $allItems->map(function ($item) use ($barangMasuk, $barangKeluar) {
+        $kode = $item->kode_barang;
 
-            $dataPrioritas = $allItems->map(function ($item) use ($barangMasuk, $barangKeluar) {
-            $kode = $item->kode_barang;
+        $masuk = $barangMasuk[$kode] ?? 0;
+        $keluar = $barangKeluar[$kode] ?? 0;
 
-            $masuk = $barangMasuk[$kode] ?? 0;
-            $keluar = $barangKeluar[$kode] ?? 0;
+        $stokAkhir = $masuk - $keluar;
+        if ($stokAkhir < 0) { $stokAkhir = 0; }
 
-            $stokAkhir = $masuk - $keluar;
-            if ($stokAkhir < 0) { $stokAkhir = 0; }
+        $minStok = $item->stok_minimum ?? 5;
 
-            $minStok = $item->stok_minimum ?? 5;
+        if ($stokAkhir == 0) {
+            $tag = 'Habis';
+            $urgensi = 1;
+        } elseif ($stokAkhir <= $minStok) {
+            $tag = 'Kritis';
+            $urgensi = 2;
+        } elseif ($stokAkhir <= ($minStok * 1.5)) {
+            $tag = 'Rendah';
+            $urgensi = 3;
+        } else {
+            $tag = 'Aman';
+            $urgensi = 4;
+        }
 
-            if ($stokAkhir == 0) {
-                $tag = 'Habis';
-                $urgensi = 1;
-            } elseif ($stokAkhir <= $minStok) {
-                $tag = 'Kritis';
-                $urgensi = 2;
-            } elseif ($stokAkhir <= ($minStok * 1.5)) {
-                $tag = 'Rendah';
-                $urgensi = 3;
-            } else {
-                $tag = 'Aman';
-                $urgensi = 4;
-            }
+        return [
+            'kode_barang'  => $item->kode_barang,
+            'nama'         => $item->nama_barang,
+            'stok_akhir'   => $stokAkhir,
+            'stok_minimum' => $minStok,
+            'tag'          => $tag,
+            'urgensi'      => $urgensi,
+        ];
+    });
 
-            return [
-                'kode_barang'  => $item->kode_barang,
-                'nama'         => $item->nama_barang,
-                'stok_akhir'   => $stokAkhir,
-                'stok_minimum' => $minStok,
-                'tag'          => $tag,
-                'urgensi'      => $urgensi,
-            ];
+    // 5. Filter berdasarkan status yang dipilih
+    if ($filterStatus !== 'semua') {
+        $dataPrioritas = $dataPrioritas->filter(function ($item) use ($filterStatus) {
+            return strtolower($item['tag']) === $filterStatus;
         });
+    }
 
-        if ($filterStatus !== 'semua') {
-            $dataPrioritas = $dataPrioritas->filter(function ($item) use ($filterStatus) {
-                return strtolower($item['tag']) === $filterStatus;
-            });
-        }
+    $prioritasItems = $dataPrioritas->sortBy('urgensi')->values();
 
-        $prioritasItems = $dataPrioritas->sortBy('urgensi')->values();
+    // 6. Generate PDF (Sertakan $dateFrom dan $dateTo)
+    $pdf = Pdf::loadView('dashboard.prioritas_pdf', [
+        'items'        => $prioritasItems,
+        'dateFrom'     => $dateFrom,
+        'dateTo'       => $dateTo,
+        'filterStatus' => ucfirst($filterStatus),
+        'printedBy'    => Auth::check() ? Auth::user()->name : 'Gudang',
+    ])->setPaper('a4', 'portrait');
 
-        // Memanggil view di folder dashboard/prioritas_pdf.blade.php
-        $pdf = Pdf::loadView('dashboard.prioritas_pdf', [
-            'items'        => $prioritasItems,
-            'dateFrom'     => $dateFrom,
-            'dateTo'       => $dateTo,
-            'filterStatus' => ucfirst($filterStatus),
-            'printedBy'    => Auth::check() ? Auth::user()->name : 'Gudang',
-        ])->setPaper('a4', 'portrait');
-
-        return $pdf->stream('laporan_prioritas_tindakan_' . date('Ymd_His') . '.pdf');
-        }
+    return $pdf->stream('laporan_prioritas_tindakan_' . date('Ymd_His') . '.pdf');
+}
 
         public function exportIdleStockPdf (Request $request)
         {
