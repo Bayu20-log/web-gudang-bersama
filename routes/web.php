@@ -65,7 +65,10 @@ Route::middleware(['auth', 'auto.logout'])->group(function () {
     Route::get('/dashboard/superadmin', [App\Http\Controllers\UserController::class, 'dashboardSuperadmin'])->name('dashboard.superadmin');
 
     Route::get('/dashboard/gudang', [DashboardGudangController::class, 'index'])->name('dashboard.gudang');
-
+    Route::get('/pemasok/detail-pasokan', [PemasokController::class, 'detailPasokan'])->name('pemasok.detail-pasokan');
+    Route::get('/pemasok/export-pdf', [PemasokController::class, 'exportPdf'])->name('pemasok.export-pdf');
+    Route::get('/prioritas-tindakan/export-pdf', [DashboardGudangController::class, 'exportPrioritasPdf'])->name('prioritas-tindakan.export-pdf');
+    Route::get('/idle-stock/export-pdf', [DashboardGudangController::class, 'exportIdleStockPdf'])->name('idle-stock.export-pdf');
 
     Route::get('/dashboard/viewer', function () {
         return view('dashboard.viewer');
@@ -111,6 +114,7 @@ Route::middleware(['auth', 'auto.logout'])->group(function () {
         Route::get('/laporan/arus/excel', [ExportController::class, 'exportArusExcel'])->name('laporan.arus.excel');
         Route::get('/export/omzet/pdf', [ExportController::class, 'exportOmzetPdf'])->name('export.omzet.pdf');
         Route::get('/export/omzet/excel', [ExportController::class, 'exportOmzetExcel'])->name('export.omzet.excel');
+        Route::get('/laporan/aset', [LaporanAsetController::class, 'index'])->name('laporan.aset');
         Route::get('/laporan/aset', [LaporanAsetController::class, 'index'])->name('laporan.aset');
         Route::get('/export-aset-excel', [ExportController::class, 'exportAsetExcel'])->name('export.aset.excel');
         Route::get('/export-aset-pdf', [ExportController::class, 'exportAsetPdf'])->name('export.aset.pdf');

@@ -55,9 +55,13 @@ class BarangKeluarController extends Controller
     }
 
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('barangkeluar.create');
+        $selectedKodeBarang = $request->query('kode_barang');
+
+        $barangs = Item::all();
+
+        return view('barangkeluar.create', compact('barangs', 'selectedKodeBarang'));
     }
 
 

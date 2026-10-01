@@ -30,6 +30,54 @@
 
 
     <style>
+        .pagehead {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .global-date-filter {
+            background: var(--card, #ffffff);
+            border: 1px solid var(--border, #e2e6ec);
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+
+        .filter-inputs {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 0;
+        }
+
+        .filter-inputs label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--muted, #6b7280);
+        }
+
+        .filter-inputs input[type="date"] {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border, #e2e6ec);
+            color: var(--text, #1f2430);
+            background: #f8f9fb;
+        }
+
+        @media (max-width: 640px) {
+            .pagehead {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
          body { padding-top: 40px; }
         .nav-link.active, .dropdown-item.active {
             background-color: #272626 !important;

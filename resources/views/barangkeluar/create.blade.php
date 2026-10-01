@@ -18,9 +18,19 @@
 
 
         <div class="mb-3">
-            <label for="kode_lokasi_kondisi">Pilih Barang (Kode - Lokasi - Kondisi)</label>
-            <select name="kode_lokasi_kondisi" id="kode_lokasi_kondisi" class="form-control @error('kode_lokasi_kondisi') is-invalid @enderror" required>
-                <option value="" disabled selected>-- Pilih Barang --</option>
+            <label for="kode_lokasi_kondisi">Pilih Barang</label>
+            <select name="kode_barang" id="kode_barang" class="form-control" required>
+                <option value="" disabled {{ !old('kode_barang') && !request('kode_barang') && !($selectedItemId ?? null) ? 'selected' : '' }}>-- Pilih Barang --</option>
+                @foreach($barangs as $barang)
+                  @php
+                    $targetKode = request('kode_barang') ?? ($selectedItemId ?? null) ?? old('kode_barang');
+                    $selected = (!empty($targetKode) && ((string)$targetKode === (string)$barang->kode_barang || (string)$targetKode === (string)($barang->id ?? '')));
+                  @endphp
+
+                  <option value="{{ $barang->kode_barang }}" {{ $selected ? 'selected' : '' }}>
+                      {{ $barang->kode_barang }} - {{ $barang->nama_barang }}
+                  </option>
+                @endforeach
             </select>
             @error('kode_lokasi_kondisi') <div class="text-danger">{{ $message }}</div> @enderror
         </div>

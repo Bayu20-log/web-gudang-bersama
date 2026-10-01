@@ -1,57 +1,23 @@
 <?php
 
-
 namespace Database\Seeders;
 
-
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
-
+use App\Models\Kategori;
 
 class KategoriSeeder extends Seeder
 {
+    protected int $userId = 2;
+
     public function run(): void
     {
-        $now = Carbon::now();
+        $kategoris = ['12oz', '16oz', 'Syrup & Bahan Lainnya', 'Dessert'];
 
-
-        // ✅ Data utama
-        DB::table('kategoris')->insert([
-            [
-                'kategori' => 'Alat Tulis',
-                'deskripsi' => 'Perlengkapan tulis-menulis seperti pulpen, buku, penghapus.',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ],
-            [
-                'kategori' => 'Elektronik',
-                'deskripsi' => 'Barang elektronik seperti laptop, printer, dan kabel.',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ],
-            [
-                'kategori' => 'Kebersihan',
-                'deskripsi' => 'Alat dan bahan kebersihan kantor seperti pel, sabun, dan tisu.',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ],
-            [
-                'nama_kategori' => 'Makanan',
-                'deskripsi' => 'Stok makanan ringan dan kebutuhan pantry.',
-                'created_at' => $now,
-                'updated_at' => $now,
-            ],
-        ]);
-
-
-        // ✅ Data dummy tambahan
-        for ($i = 1; $i <= 15; $i++) {
-            DB::table('kategoris')->insert([
-                'kategori' => 'Dummy ' . $i,
-                'deskripsi' => 'Deskripsi kategori dummy ke-' . $i,
-                'created_at' => $now,
-                'updated_at' => $now,
+        foreach ($kategoris as $nama) {
+            Kategori::create([
+                'user_id'   => $this->userId,
+                'kategori'  => $nama,
+                'deskripsi' => "Kategori {$nama} (hasil import dari Log Stok RAKSAKTI)",
             ]);
         }
     }

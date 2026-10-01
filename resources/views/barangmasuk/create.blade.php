@@ -19,13 +19,16 @@
     <form method="POST" action="{{ route('barang-masuk.store') }}" onsubmit="return confirmSimpan();">
         @csrf
 
-
         <div class="mb-3">
             <label for="kode_barang">Pilih Item</label>
             <select name="kode_barang" class="form-control @error('kode_barang') is-invalid @enderror" required>
-                <option value="" disabled selected>-- Pilih Item --</option>
+                <option value="" disabled {{ !old('kode_barang') && !request('kode_barang') && !($selectedItemId ?? null) ? 'selected' : '' }}>-- Pilih Item --</option>                
                 @foreach ($items as $item)
-                    <option value="{{ $item->kode_barang }}" {{ old('kode_barang') == $item->kode_barang ? 'selected' : '' }}>
+                    @php
+                        $targetKode = request('kode_barang') ?? ($selectedItemId ?? null) ?? old('kode_barang');                        
+                        $selected = (!empty($targetKode) && ((string)$targetKode === (string)$item->kode_barang || (string)$targetKode === (string)$item->id));                    
+                    @endphp
+                    <option value="{{ $item->kode_barang }}" {{ $selected ? 'selected' : '' }}>                        
                         {{ $item->kode_barang }} - {{ $item->nama_barang }}
                     </option>
                 @endforeach
@@ -120,8 +123,26 @@
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelector('input[name="jumlah"]').addEventListener('input', updateTotalHarga);
         document.querySelector('input[name="harga_satuan"]').addEventListener('input', updateTotalHarga);
+
+        const selectedId = "{{ $selectedItemId ?? '' }}";
+        const selectElem = document.getElementById('item_id');
+
+        if (selectedId && selectElem) {
+            selectElem.value = selectedId;
+
+            // Jika menggunakan plugin Select2
+            if (typeof $ !== 'undefined' && $(selectElem).data('select2')) {
+                $(selectElem).val(selectedId).trigger('change');
+            } 
+            // Jika menggunakan event change standar
+            else {
+                selectElem.dispatchEvent(new Event('change'));
+            }
+        }
+
     });
 
+    
 
     function confirmSimpan() {
         return confirm("Apakah Anda yakin ingin menyimpan data barang masuk ini?");

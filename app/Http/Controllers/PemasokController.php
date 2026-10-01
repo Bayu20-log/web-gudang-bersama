@@ -8,6 +8,9 @@ use App\Models\Pemasok;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 
 
@@ -131,5 +134,107 @@ class PemasokController extends Controller
         return back()->with('error', 'Terjadi kesalahan saat menghapus data.');
     }
 }
+
+    public function detailPasokan(Request $request)
+    {
+        $userId = Auth::id();
+
+        $formattedDateFrom = $request->input('date_from', date('Y-m-01'));
+        $formattedDateTo   = $request->input('date_to', date('Y-m-d'));
+        $selectedPemasokId = $request->input('pemasok_id');
+
+        $dateFrom = Carbon::parse($formattedDateFrom)->startOfDay();
+        $dateTo   = Carbon::parse($formattedDateTo)->endOfDay();
+
+        $listPemasok = DB::table('pemasoks')
+            ->where('user_id', '=', $userId)
+            ->select('id', 'nama_pemasok')
+            ->orderBy('nama_pemasok', 'asc')
+            ->get();
+
+        $query = DB::table('pemasoks')
+            ->where('pemasoks.user_id', '=', $userId)
+            ->leftJoin('barang_masuks', function ($join) use ($userId, $dateFrom, $dateTo) {
+                $join->on('pemasoks.id', '=', 'barang_masuks.id_pemasok')
+                    ->where('barang_masuks.user_id', '=', $userId)
+                    ->where('barang_masuks.tanggal_masuk', '>=', $dateFrom)
+                    ->where('barang_masuks.tanggal_masuk', '<=', $dateTo);
+            });
+
+        if (!empty($selectedPemasokId)) {
+            $query->where('pemasoks.id', '=', $selectedPemasokId);
+        }
+
+        $pemasoks = $query->select(
+                'pemasoks.id',
+                'pemasoks.nama_pemasok',
+                'pemasoks.nama_pic',
+                'pemasoks.no_telepon',
+                'pemasoks.email',
+                DB::raw('COUNT(barang_masuks.id) as total_transaksi'),
+                DB::raw('IFNULL(SUM(barang_masuks.jumlah), 0) as total_barang_masuk'),
+                DB::raw('IFNULL(SUM(barang_masuks.total_harga), 0) as total_nominal')
+            )
+            ->groupBy('pemasoks.id', 'pemasoks.nama_pemasok', 'pemasoks.nama_pic', 'pemasoks.no_telepon', 'pemasoks.email')
+            ->orderByDesc('total_barang_masuk')
+            ->get();
+
+        return view('pemasok.detail_pasokan', compact(
+            'pemasoks', 
+            'listPemasok',
+            'selectedPemasokId',
+            'formattedDateFrom', 
+            'formattedDateTo', 
+            'dateFrom', 
+            'dateTo'
+        ));
+    }
+
+    public function exportPdf(Request $request)
+{
+        $userId = Auth::id();
+
+        $formattedDateFrom = $request->input('date_from', date('Y-m-01'));
+        $formattedDateTo   = $request->input('date_to', date('Y-m-d'));
+        $selectedPemasokId = $request->input('pemasok_id');
+
+        $dateFrom = Carbon::parse($formattedDateFrom)->startOfDay();
+        $dateTo   = Carbon::parse($formattedDateTo)->endOfDay();
+
+        // Query mengambil item transaksi barang masuk secara detail (No, Tanggal, Pemasok, Nama Barang, Qty)
+        $query = DB::table('pemasoks')
+            ->leftJoin('barang_masuks', function($join) use ($userId, $dateFrom, $dateTo) {
+                $join->on('pemasoks.id', '=', 'barang_masuks.id_pemasok')
+                ->where('barang_masuks.user_id', '=', $userId)
+                ->whereBetween('barang_masuks.tanggal_masuk', [$dateFrom, $dateTo]);
+            })
+            ->select(
+                'pemasoks.nama_pemasok',
+                'pemasoks.email',
+                'pemasoks.nama_pic as pic',
+                'pemasoks.no_telepon as no_hp',
+                DB::raw('COUNT(barang_masuks.id) as frekuensi'),
+                DB::raw('COALESCE(SUM(barang_masuks.jumlah), 0) as total_barang_masuk'),
+                DB::raw('COALESCE(SUM(barang_masuks.total_harga), 0) as total_nominal')
+            )
+            ->groupBy('pemasoks.id', 'pemasoks.nama_pemasok', 'pemasoks.email', 'pemasoks.nama_pic', 'pemasoks.no_telepon');
+
+
+        if (!empty($selectedPemasokId)) {
+            $query->where('pemasoks.id', '=', $selectedPemasokId);
+        }
+
+        $pemasoks = $query->get();
+
+        $pdf = Pdf::loadView('pemasok.pemasok_pdf', [
+            'pemasoks' => $pemasoks,
+            'dateFrom' => $formattedDateFrom,
+            'dateTo'   => $formattedDateTo,
+            'printedBy' => Auth::check() ? Auth::user()->name : 'Gudang',
+        ])->setPaper('a4', 'portrait');
+
+        // Kirim data ke view cetak PDF (sesuaikan dengan nama file template PDF-mu nanti)
+        return $pdf->stream('pemasok.pemasok_pdf' . date('Ymd_His') . '.pdf');
+    }
 
 }
