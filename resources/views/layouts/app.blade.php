@@ -338,14 +338,20 @@
                                 </svg>
                                 
                                 @php
-                                    $unreadCount = 0;
-                                    if (\Illuminate\Support\Facades\Schema::hasTable('notifications') && class_exists(\App\Models\Notification::class)) {
-                                        $unreadCount = \App\Models\Notification::where('user_id', Auth::id())->where('is_read', false)->count();
-                                    }
+                                    // Notifikasi stok adaptif (Judul 3) yang belum dibaca.
+                                    // Filter per user lewat join ke items karena
+                                    // stock_notifications tidak punya kolom user_id sendiri.
+                                    // Sistem Notification lama (stok_minimum tetap) sudah
+                                    // digantikan penuh oleh sistem ini per 6 Sep 2026.
+                                    $unreadStockCount = \Illuminate\Support\Facades\DB::table('stock_notifications')
+                                                    ->join('items', 'items.kode_barang', '=', 'stock_notifications.item_id')
+                                                    ->where('items.user_id', Auth::id())
+                                                    ->where('stock_notifications.is_read', false)
+                                                    ->count();
                                 @endphp
-                                @if($unreadCount > 0)
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-danger border border-2 border-dark d-flex align-items-center justify-content-center text-white" style="width: 18px; height: 18px; font-size: 0.65rem; padding: 0;">
-                                        {{ $unreadCount > 99 ? '99+' : $unreadCount }}
+                                @if($unreadStockCount > 0)
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        {{ $unreadStockCount }}
                                     </span>
                                 @endif
                             </a>
@@ -362,50 +368,7 @@
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Modal Notifikasi Auto-Popup -->
-    @if(Auth::check() && session('show_notification_popup'))
-        @php
-            session()->forget('show_notification_popup');
-            $notifications = collect();
-            if (\Illuminate\Support\Facades\Schema::hasTable('notifications') && class_exists(\App\Models\Notification::class)) {
-                $notifications = \App\Models\Notification::where('user_id', Auth::id())->where('is_read', false)->get();
-            }
-        @endphp
-        @if($notifications->count() > 0)
-        <div class="modal fade" id="notifModalAuto" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content border-0 shadow-lg rounded-4">
-                    <div class="modal-header bg-dark text-white border-bottom border-warning border-3">
-                        <h5 class="modal-title fw-bold"><i class="fa-solid fa-bell text-warning me-2"></i>Notifikasi Stok</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body p-4 bg-light">
-                        <ul class="list-group list-group-flush rounded-3 shadow-sm">
-                            @foreach($notifications as $notif)
-                                <li class="list-group-item bg-white border-bottom fw-medium text-secondary py-3">
-                                    <i class="fa-solid fa-circle-exclamation text-danger me-2"></i> {{ $notif->message }}
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    <div class="modal-footer border-0 pb-4 pe-4 bg-light">
-                        <form method="POST" action="{{ route('notifications.markRead') ?? '#' }}">
-                            @csrf
-                            <button type="submit" class="btn btn-warning fw-bold px-4 shadow-sm text-dark"><i class="fa-solid fa-check-double me-1"></i> Tandai Dibaca</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var notifModalAuto = new bootstrap.Modal(document.getElementById('notifModalAuto'));
-                notifModalAuto.show();
-            });
-        </script>
-        @endif
-    @endif
-    
-    @include('layouts.footer')
+
+@include('layouts.footer')
 </body>
 </html>
