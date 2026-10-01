@@ -1,300 +1,223 @@
-@extends('layouts.app')
+@extends('layouts.app') 
 
+@section('content') 
+<style>     
+    body { padding-top: 40px; }     
+    .btn-orange { background-color: #f97316; color: #fff; border: none; transition: 0.3s; }     
+    .btn-orange:hover { background-color: #ea580c; color: #fff; }     
+    .btn-outline-dark { border: 1px solid #1e293b; color: #1e293b; transition: 0.3s; background: transparent; font-weight: 600;}     
+    .btn-outline-dark:hover { background-color: #1e293b; color: #fff; }          
+    
+    .container-laporan { max-width: 1200px; margin: auto; padding: 30px 20px; font-family: 'Segoe UI', sans-serif; }     
+    .header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }     
+    
+    /* TEMA FILTER */     
+    form.filter-form { background-color: #ffffff; border: none; border-radius: 12px; padding: 20px 25px; margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }     
+    .filter-form .form-group { display: flex; flex-direction: column; min-width: 180px; flex-grow: 1; }     
+    .filter-form label { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #374151;}     
+    .filter-form input, .filter-form select { padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; background-color: #f8fafc; transition: 0.3s; }     
+    .filter-form input:focus, .filter-form select:focus { border-color: #f97316; outline: none; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1); }          
+    
+    /* TEMA TABEL */     
+    .table-wrapper { width: 100%; overflow-x: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: white; }     
+    table { width: 100%; border-collapse: collapse; min-width: 900px; }     
+    th, td { padding: 16px 20px; text-align: center; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }     
+    th { background-color: #1e293b !important; color: #ffffff !important; font-weight: 600; white-space: nowrap; border-bottom: 4px solid #f97316; letter-spacing: 0.5px; }     
+    th a { color: #ffffff; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }     
+    th a:hover { color: #f97316; }     
+    tr:hover { background-color: #f8fafc; }
+</style> 
 
-
-
-@section('content')
-<style>
-    .container-laporan {
-        max-width: 1200px;
-        margin: 42px auto 24px;;
-        padding: 30px 20px;
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-
-
-
-    .header {
-        margin-bottom: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-
-
-
-    /* Filter Form */
-    .filter-form {
-        background-color: #f9fafb;
-        border: 1px solid #d1d5db;
-        border-radius: 10px;
-        padding: 15px 20px;
-        margin-bottom: 25px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        align-items: flex-end;
-    }
-    .filter-form .form-group {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        min-width: 160px;
-    }
-    .filter-form label {
-        font-size: 14px;
-        font-weight: 500;
-        margin-bottom: 4px;
-    }
-    .filter-form input,
-    .filter-form select {
-        padding: 6px 10px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 14px;
-    }
-
-
-
-
-    /* Tombol */
-    .filter-form .action-group {
-        display: flex;
-        flex-direction: row;
-        gap: 10px;
-        flex-shrink: 0;
-    }
-    .filter-form button {
-        padding: 8px 16px;
-        background-color: #3b82f6;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background 0.2s ease;
-    }
-    .filter-form button:hover { background-color: #2563eb; }
-    .back-button {
-        padding: 8px 14px;
-        background-color: #e5e7eb;
-        color: #111827;
-        border-radius: 6px;
-        font-size: 14px;
-        text-decoration: none;
-        transition: background 0.2s ease;
-        text-align: center;
-    }
-    .back-button:hover { background-color: #d1d5db; }
-
-
-
-
-    /* Export */
-    .export-buttons { margin-bottom: 20px; }
-    .export-buttons a {
-        padding: 8px 12px;
-        background-color: #2563eb;
-        color: #fff;
-        border-radius: 6px;
-        margin-right: 10px;
-        text-decoration: none;
-        font-size: 14px;
-    }
-    .export-buttons a:hover { background-color: #1d4ed8; }
-
-
-
-
-    /* Table */
-    .table-wrapper { overflow-x: auto; }
-    table {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0 10px;
-        min-width: 900px;
-    }
-    th, td {
-        padding: 12px;
-        background-color: white;
-        text-align: center;
-    }
-    th {
-        background-color: #f3f4f6;
-        font-weight: 600;
-        border-bottom: 1px solid #ddd;
-    }
-    th a { color: inherit; text-decoration: none; }
-    th a:hover { text-decoration: underline; }
-    tr { box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.05); border-radius: 8px; }
-    .total-row { background-color: yellow; font-weight: bold; }
-
-
-
-
-    /* Responsif */
-    @media(max-width: 768px) {
-        .filter-form { flex-direction: column; gap: 12px; align-items: stretch; }
-        .filter-form .form-group,
-        .filter-form .action-group { width: 100%; }
-        .filter-form .action-group { flex-direction: column; }
-        .filter-form .action-group .back-button,
-        .filter-form .action-group button { width: 100%; }
-        .container-laporan { padding: 15px 10px; }
-    }
-</style>
-
-
-
-
-<div class="container-laporan">
-    <div class="header">
-        <h2>Laporan Omzet</h2>
+<div class="container-laporan mb-5">     
+    <div class="header">         
+        <h4 class="fw-bold" style="color: #1e293b;">Omzet Penjualan</h4>     
+    </div>     
+    
+    {{-- Search bar + tombol filter --}}     
+    <div class="search-filter-bar">
+        <form method="GET" class="search-bar-form">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+            <input type="text" name="search" placeholder="Cari kode atau nama barang..." value="{{ request('search') }}" onchange="this.form.submit()">
+            @if(request('start_date'))<input type="hidden" name="start_date" value="{{ request('start_date') }}">@endif
+            @if(request('end_date'))<input type="hidden" name="end_date" value="{{ request('end_date') }}">@endif
+            @if(request('lokasi'))<input type="hidden" name="lokasi" value="{{ request('lokasi') }}">@endif
+            @if(request('kondisi'))<input type="hidden" name="kondisi" value="{{ request('kondisi') }}">@endif
+        </form>
+        <button type="button" class="filter-icon-btn" data-bs-toggle="offcanvas" data-bs-target="#filterOmzet" title="Filter">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05Zm-4.9 5a2.5 2.5 0 0 1 4.9 0H16v1H9.05a2.5 2.5 0 0 1-4.9 0H0V8h4.15Zm.9.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0ZM.5 12a2.5 2.5 0 0 1 4.9 0H16v1H5.4a2.5 2.5 0 0 1-4.9 0H0v-1h.5Z"/></svg>
+            @if(request('start_date') || request('end_date') || request('lokasi') || request('kondisi'))<span class="filter-dot"></span>@endif
+        </button>
     </div>
 
-
-
-
-    {{-- Filter --}}
-    <form method="GET" class="filter-form">
-        <div class="form-group">
-            <label>Tanggal Mulai:</label>
-            <input type="date" name="start_date" value="{{ request('start_date') }}">
+    {{-- Panel filter bottom-sheet (khusus HP) --}}
+    <div class="offcanvas offcanvas-bottom offcanvas-filter" tabindex="-1" id="filterOmzet" style="height:auto; max-height:85vh; border-radius:20px 20px 0 0;">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Filter Omzet Penjualan</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
-        <div class="form-group">
-            <label>Tanggal Selesai:</label>
-            <input type="date" name="end_date" value="{{ request('end_date') }}">
-        </div>
-        <div class="form-group">
-            <label>Cari Barang (Kode/Nama):</label>
-            <input type="text" name="search" placeholder="Cari kode atau nama barang..." value="{{ request('search') }}">
-        </div>
-        <div class="form-group">
-            <label>Lokasi:</label>
-            <select name="lokasi">
-                <option value="">-- Semua Lokasi --</option>
-                @foreach($lokasis as $lokasi)
-                    <option value="{{ $lokasi->id }}" {{ request('lokasi') == $lokasi->id ? 'selected' : '' }}>
-                        {{ $lokasi->nama_lokasi }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Kondisi:</label>
-            <select name="kondisi">
-                <option value="">-- Semua Kondisi --</option>
-                @foreach($kondisis as $kondisi)
-                    <option value="{{ $kondisi->id }}" {{ request('kondisi') == $kondisi->id ? 'selected' : '' }}>
-                        {{ $kondisi->nama_kondisi }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        <div class="action-group">
-            <button type="submit">Terapkan Filter</button>
-            <a href="{{ route('omzet.index') }}" class="back-button">Reset Filter</a>
-        </div>
-    </form>
-
-
-
-
-    {{-- Export Buttons --}}
-    <div class="export-buttons">
-        <a href="{{ route('export.omzet.pdf', request()->query()) }}" target="_blank">📄 Cetak PDF</a>
-        <a href="{{ route('export.omzet.excel', request()->query()) }}">📊 Export Excel</a>
+        <form method="GET" class="d-flex flex-column">
+            <div class="offcanvas-body">
+                <label>Tanggal Mulai</label>
+                <input type="date" name="start_date" class="form-control" value="{{ request('start_date') }}">
+                <label>Tanggal Selesai</label>
+                <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}">
+                <label>Cari Barang</label>
+                <input type="text" name="search" class="form-control" placeholder="Ketik kode atau nama..." value="{{ request('search') }}">
+                <label>Lokasi</label>
+                <select name="lokasi" class="form-select">
+                    <option value="">-- Semua Lokasi --</option>
+                    @foreach($lokasis as $lokasi)
+                        <option value="{{ $lokasi->id }}" {{ request('lokasi') == $lokasi->id ? 'selected' : '' }}>{{ $lokasi->nama_lokasi }}</option>
+                    @endforeach
+                </select>
+                <label>Kondisi</label>
+                <select name="kondisi" class="form-select">
+                    <option value="">-- Semua Kondisi --</option>
+                    @foreach($kondisis as $kondisi)
+                        <option value="{{ $kondisi->id }}" {{ request('kondisi') == $kondisi->id ? 'selected' : '' }}>{{ $kondisi->nama_kondisi }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="offcanvas-footer">
+                <a href="{{ route('omzet.index') }}" class="btn btn-outline-dark fw-bold flex-fill">Reset</a>
+                <button type="submit" class="btn btn-orange fw-bold flex-fill">Terapkan</button>
+            </div>
+        </form>
     </div>
-
-
-
-
-    {{-- Table --}}
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    @php
-                        function sortUrlBlade($field) {
-                            return route('omzet.index', array_merge(request()->all(), [
-                                'sort_by' => $field,
-                                'sort_dir' => (request('sort_by') === $field && request('sort_dir') === 'asc') ? 'desc' : 'asc'
-                            ]));
-                        }
-                    @endphp
-                    <th>No</th>
-                    <th><a href="{{ sortUrlBlade('nama_barang') }}">Nama Barang {!! request('sort_by') === 'nama_barang' ? (request('sort_dir') === 'asc' ? '↑' : '↓') : '▲▼' !!}</a></th>
-                    <th><a href="{{ sortUrlBlade('tanggal') }}">Tanggal {!! request('sort_by') === 'tanggal' ? (request('sort_dir') === 'asc' ? '↑' : '↓') : '▲▼' !!}</a></th>
-                    <th><a href="{{ sortUrlBlade('lokasi') }}">Lokasi {!! request('sort_by') === 'lokasi' ? (request('sort_dir') === 'asc' ? '↑' : '↓') : '▲▼' !!}</a></th>
-                    <th><a href="{{ sortUrlBlade('kondisi') }}">Kondisi {!! request('sort_by') === 'kondisi' ? (request('sort_dir') === 'asc' ? '↑' : '↓') : '▲▼' !!}</a></th>
-                    <th><a href="{{ sortUrlBlade('jumlah_keluar') }}">Jumlah Keluar {!! request('sort_by') === 'jumlah_keluar' ? (request('sort_dir') === 'asc' ? '↑' : '↓') : '▲▼' !!}</a></th>
-                    <th><a href="{{ sortUrlBlade('harga_jual') }}">Harga Jual {!! request('sort_by') === 'harga_jual' ? (request('sort_dir') === 'asc' ? '↑' : '↓') : '▲▼' !!}</a></th>
-                    <th><a href="{{ sortUrlBlade('omzet_item') }}">Omzet {!! request('sort_by') === 'omzet_item' ? (request('sort_dir') === 'asc' ? '↑' : '↓') : '▲▼' !!}</a></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($data as $index => $item)
-                    <tr>
-                        {{-- nomor urut mengikuti halaman jika paginator --}}
-                        <td>
-                            {{ ($data instanceof \Illuminate\Pagination\LengthAwarePaginator)
-                                ? (($data->firstItem() ?? 0) + $index)
-                                : ($loop->iteration) }}
-                        </td>
-                        <td>{{ $item['nama_barang'] }}</td>
-                        <td>{{ \Carbon\Carbon::parse($item['tanggal'])->format('j/n/Y H:i:s') }}</td>
-                        <td>{{ $item['lokasi'] }}</td>
-                        <td>{{ $item['kondisi'] }}</td>
-                        <td>{{ $item['jumlah_keluar'] }}</td>
-                        <td>Rp {{ number_format($item['harga_jual'], 0, ',', '.') }}</td>
-                        <td>Rp {{ number_format($item['omzet_item'], 0, ',', '.') }}</td>
-                    </tr>
-                @endforeach
-                <tr class="total-row">
-                    <td colspan="7">Total Omzet</td>
-                    <td>Rp {{ number_format($total_omzet, 0, ',', '.') }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-
-
-
-    {{-- Pagination + summary (selalu tampil) --}}
+    
     @php
-        $isPaginator = $data instanceof \Illuminate\Pagination\LengthAwarePaginator;
-        $total = $isPaginator ? $data->total() : (is_countable($data) ? count($data) : collect($data)->count());
-        $first = $isPaginator ? ($data->firstItem() ?? ($total ? 1 : 0)) : ($total ? 1 : 0);
-        $last  = $isPaginator ? ($data->lastItem()  ?? $total) : $total;
+        $totalOmzetItems = $data instanceof \Illuminate\Pagination\LengthAwarePaginator ? $data->total() : collect($data)->count();
     @endphp
-    <div style="margin-top:20px; text-align:center;">
-        <div class="small text-muted">
-            Showing {{ $first }} to {{ $last }} of {{ $total }} results
-        </div>
-        <div class="ms-auto">
-            @if($isPaginator)
-                {!! $data->appends(request()->query())->links('pagination::bootstrap-5') !!}
-            @endif
+
+    {{-- Ringkasan jumlah transaksi + tombol Ekspor --}}
+    <div class="report-count-row">
+        <div class="rc-text"><strong>{{ $totalOmzetItems }}</strong> transaksi</div>
+        <div class="dropdown export-split">
+            <button class="btn btn-outline-dark fw-bold shadow-sm px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="me-1" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5Z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3Z"/></svg> Ekspor
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ route('export.omzet.pdf', request()->query()) }}" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ef4444" class="me-2" viewBox="0 0 16 16"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2Z"/></svg> Sebagai PDF
+                </a></li>
+                <li><a class="dropdown-item" href="{{ route('export.omzet.excel', request()->query()) }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#16a34a" class="me-2" viewBox="0 0 16 16"><path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5Zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2Z"/></svg> Sebagai Excel
+                </a></li>
+            </ul>
         </div>
     </div>
-</div>
-@endsection
 
+    {{-- Ringkasan Total Omzet --}}
+    @if(count($data) > 0)
+    <div class="report-summary-card mb-4">
+        <div class="rsc-label">Total Omzet Keseluruhan</div>
+        <div class="rsc-value">Rp {{ number_format($total_omzet, 0, ',', '.') }}</div>
+    </div>
+    @endif
 
+    {{-- ================= TAMPILAN DESKTOP (tabel) ================= --}}
+    <div class="table-wrapper desktop-table-wrapper">         
+        <table>             
+            <thead>                 
+                <tr>                     
+                    @php                         
+                        function sortUrlBlade($field) {                             
+                            return route('omzet.index', array_merge(request()->all(), [                                 
+                                'sort_by' => $field,                                 
+                                'sort_dir' => (request('sort_by') === $field && request('sort_dir') === 'asc') ? 'desc' : 'asc'                             
+                            ]));                         
+                        }                     
+                    @endphp                     
+                    <th>No</th>                     
+                    <th><a href="{{ sortUrlBlade('nama_barang') }}">Nama Barang</a></th>                     
+                    <th><a href="{{ sortUrlBlade('tanggal') }}">Tanggal</a></th>                     
+                    <th><a href="{{ sortUrlBlade('lokasi') }}">Lokasi</a></th>                     
+                    <th><a href="{{ sortUrlBlade('kondisi') }}">Kondisi</a></th>                     
+                    <th><a href="{{ sortUrlBlade('jumlah_keluar') }}">Jml Keluar</a></th>                     
+                    <th><a href="{{ sortUrlBlade('harga_jual') }}">Harga Jual</a></th>                     
+                    <th><a href="{{ sortUrlBlade('omzet_item') }}">Omzet</a></th>                 
+                </tr>             
+            </thead>             
+            <tbody>                 
+                @forelse($data as $index => $item)                     
+                    <tr>                         
+                        <td class="fw-medium text-secondary">                             
+                            {{ ($data instanceof \Illuminate\Pagination\LengthAwarePaginator) ? (($data->firstItem() ?? 0) + $index) : ($loop->iteration) }}                         
+                        </td>                         
+                        <td class="fw-bold text-dark">{{ $item['nama_barang'] }}</td>                         
+                        <td>{{ \Carbon\Carbon::parse($item['tanggal'])->format('d M Y, H:i') }}</td>                         
+                        <td>{{ $item['lokasi'] }}</td>                         
+                        <td>{{ $item['kondisi'] }}</td>                         
+                        <td class="text-danger fw-bold">{{ $item['jumlah_keluar'] }}</td>                         
+                        <td>Rp {{ number_format($item['harga_jual'], 0, ',', '.') }}</td>                         
+                        <td class="fw-bold text-success">Rp {{ number_format($item['omzet_item'], 0, ',', '.') }}</td>                     
+                    </tr>                 
+                @empty                     
+                    <tr><td colspan="8" class="text-center py-5 text-muted fw-medium"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="mb-2" style="color: #cbd5e1;" viewBox="0 0 16 16"><path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"/></svg><br>Data laporan omzet belum tersedia.</td></tr>                 
+                @endforelse                                  
+            </tbody>         
+        </table>     
+    </div>
 
+    {{-- ================= TAMPILAN HP (kartu) ================= --}}
+    <div class="mobile-card-list">
+        @forelse($data as $item)
+            <div class="report-card">
+                <div class="rcard-head">
+                    <span class="rcard-title">{{ $item['nama_barang'] }}</span>
+                </div>
+                <div class="rcard-sub">{{ $item['lokasi'] }} &middot; {{ $item['kondisi'] }}</div>
+                <div class="rcard-sub">{{ \Carbon\Carbon::parse($item['tanggal'])->format('d M Y, H:i') }}</div>
+                <div class="rcard-divider"></div>
+                <div class="rcard-stats">
+                    <div>
+                        <div class="stat-label">Jml Keluar</div>
+                        <div class="stat-value text-danger">-{{ $item['jumlah_keluar'] }}</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Harga Jual</div>
+                        <div class="stat-value" style="color:#1e293b; font-size:13.5px;">Rp {{ number_format($item['harga_jual'], 0, ',', '.') }}</div>
+                    </div>
+                    <div>
+                        <div class="stat-label">Omzet</div>
+                        <div class="stat-value" style="color:#16a34a; font-size:13.5px;">Rp {{ number_format($item['omzet_item'], 0, ',', '.') }}</div>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="text-center py-5 text-muted fw-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="mb-2" style="color: #cbd5e1;" viewBox="0 0 16 16"><path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"/></svg><br>
+                Data laporan omzet belum tersedia.
+            </div>
+        @endforelse
+    </div>     
+    
+    @php         
+        $isPaginator = $data instanceof \Illuminate\Pagination\LengthAwarePaginator;         
+        $total = $isPaginator ? $data->total() : (is_countable($data) ? count($data) : collect($data)->count());         
+        $first = $isPaginator ? ($data->firstItem() ?? ($total ? 1 : 0)) : ($total ? 1 : 0);         
+        $last  = $isPaginator ? ($data->lastItem()  ?? $total) : $total;     
+    @endphp     
+    
+    <div class="mt-4 d-flex flex-column flex-md-row justify-content-between align-items-center">         
+        <div class="small text-muted mb-2 mb-md-0 fw-medium">             
+            Menampilkan {{ $first }} - {{ $last }} dari {{ $total }} data         
+        </div>         
+        <div>             
+            @if($isPaginator)                 
+                {!! $data->appends(request()->query())->links('pagination::bootstrap-5') !!}             
+            @endif         
+        </div>     
+    </div> 
+</div> 
+@endsection 
 
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        flatpickr("input[type=date]", {
-            dateFormat: "d/m/Y",
-            locale: "id"
-        });
-    });
-</script>
+@push('scripts') 
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> 
+<script>     
+    document.addEventListener('DOMContentLoaded', function() {         
+        flatpickr("input[name='start_date']", { dateFormat: "Y-m-d" });         
+        flatpickr("input[name='end_date']", { dateFormat: "Y-m-d" });     
+    }); 
+</script> 
 @endpush

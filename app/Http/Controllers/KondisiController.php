@@ -1,13 +1,12 @@
 <?php
 
-
 namespace App\Http\Controllers;
-
 
 use App\Models\Kondisi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Validator;
 
 class KondisiController extends Controller
 {
@@ -21,24 +20,17 @@ class KondisiController extends Controller
                   ->orWhere('deskripsi', 'like', '%' . $request->search . '%');
         }
 
-
-        // ✅ Tambah pagination
         $kondisis = $query->paginate(10);
-
-
         return view('kondisi.index', compact('kondisis'));
     }
-
 
     public function create()
     {
         return view('kondisi.create');
     }
 
-
     public function store(Request $request)
     {
-        // ✅ Validasi input dan beri pesan khusus
         $request->validate([
             'nama_kondisi' => 'required|unique:kondisis',
             'deskripsi' => 'nullable',
@@ -46,7 +38,6 @@ class KondisiController extends Controller
             'nama_kondisi.required' => 'Nama kondisi wajib diisi.',
             'nama_kondisi.unique' => 'Nama kondisi ini sudah ada.',
         ]);
-
 
         try {
             Kondisi::create([
@@ -61,16 +52,52 @@ class KondisiController extends Controller
         }
     }
 
+    // ==========================================
+    // FUNGSI BARU UNTUK AJAX QUICK-ADD
+    // ==========================================
+    public function storeAjax(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nama_kondisi' => 'required|unique:kondisis,nama_kondisi',
+            'deskripsi'    => 'nullable|string',
+        ], [
+            'nama_kondisi.required' => 'Nama kondisi wajib diisi.',
+            'nama_kondisi.unique'   => 'Kondisi ini sudah ada di database.',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first()
+            ], 400); 
+        }
+
+        try {
+            $kondisi = Kondisi::create([
+                'nama_kondisi' => $request->nama_kondisi,
+                'deskripsi'    => $request->deskripsi,
+                'user_id'      => Auth::id(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'data'    => $kondisi
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan sistem di server.'
+            ], 500);
+        }
+    }
 
     public function edit(Kondisi $kondisi)
     {
         return view('kondisi.edit', compact('kondisi'));
     }
 
-
     public function update(Request $request, Kondisi $kondisi)
     {
-        // ✅ Validasi update (dengan pengecualian id sendiri)
         $request->validate([
             'nama_kondisi' => 'required|unique:kondisis,nama_kondisi,' . $kondisi->id,
             'deskripsi' => 'nullable',
@@ -78,7 +105,6 @@ class KondisiController extends Controller
             'nama_kondisi.required' => 'Nama kondisi wajib diisi.',
             'nama_kondisi.unique' => 'Nama kondisi ini sudah ada.',
         ]);
-
 
         try {
             $kondisi->update($request->only('nama_kondisi', 'deskripsi'));
@@ -88,11 +114,9 @@ class KondisiController extends Controller
         }
     }
 
-
     public function destroy(Kondisi $kondisi)
     {
         try {
-            // Pre-check relasi agar user dapat pesan yang jelas
             $dipakaiDiMasuk  = method_exists($kondisi, 'barangMasuks')   && $kondisi->barangMasuks()->exists();
             $dipakaiDiKeluar = method_exists($kondisi, 'barangKeluars')  && $kondisi->barangKeluars()->exists();
 
@@ -104,15 +128,13 @@ class KondisiController extends Controller
             }
 
             $kondisi->delete();
-
             return redirect()
                 ->route('kondisi.index')
                 ->with('success', 'Kondisi berhasil dihapus.');
         } catch (QueryException $e) {
-            // FK violation (MySQL: 1451 / SQLSTATE 23000, Postgres: 23503)
-            $mysqlCode = $e->errorInfo[1] ?? null; // 1451
-            $sqlState  = $e->errorInfo[0] ?? null; // 23000
-            $pgCode    = $e->getCode();            // 23503
+            $mysqlCode = $e->errorInfo[1] ?? null; 
+            $sqlState  = $e->errorInfo[0] ?? null; 
+            $pgCode    = $e->getCode();            
 
             if ($sqlState === '23000' || $mysqlCode == 1451 || $pgCode == '23503') {
                 return back()->with(
@@ -125,5 +147,4 @@ class KondisiController extends Controller
             return back()->with('error', 'Terjadi kesalahan saat menghapus data.');
         }
     }
-    
 }

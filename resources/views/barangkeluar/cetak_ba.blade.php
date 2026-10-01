@@ -2,14 +2,14 @@
 <html lang="id">
 <head>
     <meta charset="utf-8">
-    <title>Berita Acara Penerimaan Barang</title>
+    <title>Berita Acara Pengeluaran Barang</title>
     <style>
         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 10pt; color: #000; }
 
         /* --- KOP SURAT FORMAL --- */
         /* Padding dan margin diperkecil untuk merapatkan jarak tulisan dengan garis bawah */
         .kop-surat-container { width: 100%; padding-bottom: 6px; } 
-        .kop-surat-wrapper { border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 15px; } 
+        .kop-surat-wrapper { border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 15px; }
         .kop-table { width: 100%; border-collapse: collapse; }
         .kop-logo { width: 15%; text-align: left; vertical-align: middle; }
         
@@ -21,7 +21,7 @@
         .kop-text h3 { margin: 3px 0; font-size: 12pt; color: #000; font-weight: bold; text-transform: uppercase; }
         .kop-text p { margin: 2px 0; color: #000; font-size: 10pt; }
         .kop-spacer { width: 15%; }
-
+        
         .judul { text-align: center; font-size: 14pt; font-weight: bold; text-decoration: underline; margin-bottom: 5px; text-transform: uppercase; color: #000; }
         .nomor { text-align: center; font-size: 11pt; margin-bottom: 30px; color: #000; }
         table { width: 100%; border-collapse: collapse; }
@@ -35,7 +35,7 @@
     </style>
 </head>
 <body>
-   <!-- KOP SURAT BARU -->
+    <!-- KOP SURAT BARU -->
     <div class="kop-surat-wrapper">
         <div class="kop-surat-container">
             <table class="kop-table">
@@ -65,61 +65,61 @@
     </div>
     <!-- END KOP SURAT -->
 
-    <div class="judul">BERITA ACARA PENERIMAAN BARANG</div>
-    <div class="nomor">Nomor : BA-PB/{{ str_pad($barangMasuk->id, 4, '0', STR_PAD_LEFT) }}/{{ \Carbon\Carbon::parse($barangMasuk->tanggal_masuk)->format('m/Y') }}</div>
+    <div class="judul">BERITA ACARA PENGELUARAN BARANG</div>
+    <div class="nomor">Nomor : BA-KB/{{ str_pad($barangKeluar->id, 4, '0', STR_PAD_LEFT) }}/{{ \Carbon\Carbon::parse($barangKeluar->tanggal_keluar)->format('m/Y') }}</div>
 
     <p style="text-align: justify;">
-        Pada hari ini <strong>{{ \Carbon\Carbon::parse($barangMasuk->tanggal_masuk)->locale('id')->isoFormat('dddd') }}</strong>,
-        tanggal <strong>{{ \Carbon\Carbon::parse($barangMasuk->tanggal_masuk)->locale('id')->isoFormat('D MMMM YYYY') }}</strong>,
-        pukul <strong>{{ \Carbon\Carbon::parse($barangMasuk->tanggal_masuk)->format('H:i') }}</strong>,
-        bertempat di lokasi <strong>{{ $barangMasuk->lokasi->nama_lokasi ?? '-' }}</strong>,
-        telah dilakukan penerimaan barang dari:
+        Pada hari ini <strong>{{ \Carbon\Carbon::parse($barangKeluar->tanggal_keluar)->locale('id')->isoFormat('dddd') }}</strong>,
+        tanggal <strong>{{ \Carbon\Carbon::parse($barangKeluar->tanggal_keluar)->locale('id')->isoFormat('D MMMM YYYY') }}</strong>,
+        pukul <strong>{{ \Carbon\Carbon::parse($barangKeluar->tanggal_keluar)->format('H:i') }}</strong>,
+        bertempat di lokasi <strong>{{ $barangKeluar->lokasi->nama_lokasi ?? '-' }}</strong>,
+        telah dilakukan pengeluaran/penyerahan barang kepada:
     </p>
 
     <table class="table-info" style="width: 80%; margin-left: 20px;">
-        <tr><td style="width: 25%;"><strong>Nama Pemasok</strong></td><td style="width: 3%;">:</td><td>{{ $barangMasuk->pemasok->nama_pemasok ?? '-' }}</td></tr>
-        <tr><td><strong>PIC Pemasok</strong></td><td>:</td><td>{{ $barangMasuk->pemasok->nama_pic ?? '-' }}</td></tr>
-        <tr><td><strong>No. Telepon</strong></td><td>:</td><td>{{ $barangMasuk->pemasok->no_telepon ?? '-' }}</td></tr>
+        <tr><td style="width: 25%;"><strong>Nama Penerima</strong></td><td style="width: 3%;">:</td><td>{{ $barangKeluar->penerima ?? '-' }}</td></tr>
+        <tr><td><strong>Tujuan / Divisi</strong></td><td>:</td><td>{{ $barangKeluar->lokasi_tujuan ?? '-' }}</td></tr>
+        <tr><td><strong>Lokasi Asal</strong></td><td>:</td><td>{{ $barangKeluar->lokasi->nama_lokasi ?? '-' }}</td></tr>
     </table>
 
-    <p>Adapun rincian barang yang diterima adalah sebagai berikut:</p>
+    <p>Adapun rincian barang yang diserahkan adalah sebagai berikut:</p>
 
     <table class="table-data">
         <thead>
             <tr>
                 <th style="width: 5%;">No</th>
                 <th style="width: 20%;">Kode Produk</th>
-                <th style="width: 35%;">Nama Produk</th>
+                <th style="width: 45%;">Nama Produk</th>
                 <th style="width: 15%;">Jumlah</th>
-                <th style="width: 25%;">Kondisi</th>
+                <th style="width: 15%;">Kondisi</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>1</td>
-                <td>{{ $barangMasuk->kode_barang }}</td>
-                <td style="text-align: left;">{{ $barangMasuk->item->nama_barang ?? '-' }}</td>
-                <td><strong>{{ $barangMasuk->jumlah }}</strong> {{ $barangMasuk->item->satuan->nama_satuan ?? '' }}</td>
-                <td>{{ $barangMasuk->kondisi->nama_kondisi ?? '-' }}</td>
+                <td>{{ $barangKeluar->kode_barang }}</td>
+                <td style="text-align: left;">{{ $barangKeluar->item->nama_barang ?? '-' }}</td>
+                <td><strong>{{ $barangKeluar->jumlah_keluar }}</strong> {{ $barangKeluar->item->satuan->nama_satuan ?? '' }}</td>
+                <td>{{ $barangKeluar->kondisi->nama_kondisi ?? '-' }}</td>
             </tr>
         </tbody>
     </table>
 
-    <p><strong>Catatan Tambahan:</strong><br>
-    <span style="font-style: italic;">"{{ $barangMasuk->catatan ?: 'Tidak ada catatan khusus.' }}"</span></p>
+    <p><strong>Catatan Pengeluaran:</strong><br>
+    <span style="font-style: italic;">"{{ $barangKeluar->catatan ?: 'Tidak ada catatan khusus.' }}"</span></p>
 
     <p style="text-align: justify; margin-top: 30px;">
-        Demikian berita acara ini dibuat dengan sebenar-benarnya untuk dapat dipergunakan sebagaimana mestinya.
+        Demikian berita acara ini dibuat untuk dijadikan bukti pengeluaran barang yang sah.
     </p>
 
     <div class="ttd-container">
         <div class="ttd-box">
-            Pihak Pengirim,<br>
-            <div class="ttd-name">{{ $barangMasuk->pemasok->nama_pemasok ?? '-' }}</div>
+            Petugas Gudang,<br>
+            <div class="ttd-name">{{ $barangKeluar->user->name ?? $barangKeluar->user->username ?? '-' }}</div>
         </div>
         <div class="ttd-box">
-            Petugas Gudang,<br>
-            <div class="ttd-name">{{ $barangMasuk->user->name ?? '-' }}</div>
+            Pihak Penerima,<br>
+            <div class="ttd-name">{{ $barangKeluar->penerima ?? '-' }}</div>
         </div>
     </div>
 </body>

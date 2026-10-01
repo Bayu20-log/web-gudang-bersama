@@ -770,9 +770,21 @@ public function exportExcel(Request $request)
 
 
 
-    // Gunakan variabel yang benar untuk parsing tanggal
-    $tanggalMulai = $request->filled('start_date') ? Carbon::parse($request->start_date)->format('d/m/Y') : '-';
-    $tanggalSelesai = $request->filled('end_date') ? Carbon::parse($request->end_date)->format('d/m/Y') : '-';
+    // Kalau user tidak pilih filter tanggal, ambil rentang tanggal dari data aslinya
+    // (supaya Periode Transaksi tidak kosong/strip saat cetak langsung tanpa filter)
+    if ($request->filled('start_date')) {
+        $tanggalMulai = Carbon::parse($request->start_date)->format('d/m/Y');
+    } else {
+        $minTanggal = $data->min('tanggal');
+        $tanggalMulai = $minTanggal ? Carbon::parse($minTanggal)->format('d/m/Y') : now('Asia/Makassar')->format('d/m/Y');
+    }
+
+    if ($request->filled('end_date')) {
+        $tanggalSelesai = Carbon::parse($request->end_date)->format('d/m/Y');
+    } else {
+        $maxTanggal = $data->max('tanggal');
+        $tanggalSelesai = $maxTanggal ? Carbon::parse($maxTanggal)->format('d/m/Y') : now('Asia/Makassar')->format('d/m/Y');
+    }
    
     $filters = [
         'Tanggal Mulai' => $tanggalMulai,

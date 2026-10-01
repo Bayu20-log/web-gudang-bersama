@@ -50,6 +50,7 @@ class LaporanController extends Controller
                     'kode_barang' => $bm->item->kode_barang,
                     'nama_barang' => $bm->item->nama_barang,
                     'harga_dasar' => $bm->item->harga_dasar ?? 0,
+                    'stok_minimum'=> $bm->item->stok_minimum ?? 0,
                     'lokasi'      => [
                         'id' => $bm->lokasi->id ?? null,
                         'nama_lokasi' => $bm->lokasi->nama_lokasi ?? '-',
@@ -78,6 +79,7 @@ class LaporanController extends Controller
                     'kode_barang' => $bk->item->kode_barang,
                     'nama_barang' => $bk->item->nama_barang,
                     'harga_dasar' => $bk->item->harga_dasar ?? 0,
+                    'stok_minimum'=> $bk->item->stok_minimum ?? 0,
                     'lokasi'      => [
                         'id' => $bk->lokasi->id ?? null,
                         'nama_lokasi' => $bk->lokasi->nama_lokasi ?? '-',
@@ -112,6 +114,7 @@ class LaporanController extends Controller
                 'kode_barang'  => $rows->first()['kode_barang'],
                 'nama_barang'  => $rows->first()['nama_barang'],
                 'harga_dasar'  => $rows->first()['harga_dasar'],
+                'stok_minimum' => $rows->first()['stok_minimum'] ?? 0,
                 'total_masuk'  => $rows->where('jenis', 'Masuk')->sum('jumlah'),
                 'total_keluar' => $rows->where('jenis', 'Keluar')->sum('jumlah'),
                 'stok_akhir'   => $rows->where('jenis', 'Masuk')->sum('jumlah') - $rows->where('jenis', 'Keluar')->sum('jumlah'),
@@ -142,6 +145,18 @@ class LaporanController extends Controller
 
 
 
+        // Ringkasan: total barang & yang perlu perhatian (kritis/rendah/habis)
+        $totalBarang = $collection->count();
+        $perluTindakan = $collection->filter(function ($item) {
+            $min = $item['stok_minimum'] ?? 0;
+            if ($item['stok_akhir'] <= 0) return true;
+            if ($min > 0 && $item['stok_akhir'] < $min * 1.5) return true;
+            return false;
+        })->count();
+
+
+
+
         // Pagination (stok)
         $perPage = 10;
         $page = LengthAwarePaginator::resolveCurrentPage('page');
@@ -167,6 +182,8 @@ class LaporanController extends Controller
         return view('laporan.index', [
             'data' => $paginator,
             'lokasis' => $lokasiList,
+            'totalBarang' => $totalBarang,
+            'perluTindakan' => $perluTindakan,
         ]);
     }
 

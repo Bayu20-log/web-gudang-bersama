@@ -4,281 +4,339 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web Gudang</title>
-
-
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-bxgU4WZzP5YzvFQXbztTxV2K/v5zvnXdGV0N+vH8JbYmNcrwVyoAfCq4S+fzO3B92TxQJ5mFUCULN31hz/1Fbw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-
     <!-- Bootstrap core -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-
     <!-- Custom styles -->
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
-
-
-    <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
-
-
     <style>
-         body { padding-top: 40px; }
-        .nav-link.active, .dropdown-item.active {
-            background-color: #272626 !important;
-            color: #fff !important;
-            font-weight: 600;
-            border-radius: 0.375rem;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.2s ease-in-out;
+        body { padding-top: 40px; }
+        
+        /* NAVBAR GELAP */
+        .navbar-custom {
+            background-color: #1a1e23 !important;
         }
-
-
-        .nav-link:hover:not(.active), .dropdown-item:hover:not(.active) {
-            background-color: #f0f4ff;
-            color: #edd078;
-        }
-
-
         .navbar-nav .nav-link {
+            color: #d1d5db !important;
             padding: 0.5rem 1rem;
             transition: all 0.2s;
             border-radius: 0.375rem;
         }
-
-
-        .dropdown-menu {
-            border-radius: 0.5rem;
-            box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.08);
-        }
-
-
-        .dropdown-item {
+        .nav-link.active, .dropdown-item.active {
+            background-color: #f97316 !important;
+            color: #ffffff !important;
+            font-weight: 600;
             border-radius: 0.375rem;
-            transition: background-color 0.2s, color 0.2s;
+            box-shadow: 0 2px 6px rgba(249, 115, 22, 0.3);
+        }
+        .nav-link:hover:not(.active) {
+            color: #f97316 !important;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .dropdown-menu {
+            border-radius: 0.75rem;
+            box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .dropdown-item { transition: 0.2s; }
+        .dropdown-item:hover:not(.active) {
+            background-color: #fffaf5;
+            color: #f97316;
         }
 
-
+        /* Foto Profil & Ikon Lonceng SVG */
         .user-photo {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             object-fit: cover;
             border-radius: 50%;
+            border: 2px solid #374151;
+            transition: 0.3s;
         }
-        html, body {
-            height: 100%;
-            margin: 0;
+        .user-photo:hover { border-color: #f97316; }
+        
+        .bell-icon { 
+            color: #ffffff; 
+            transition: transform 0.2s, color 0.2s; 
+            cursor: pointer;
         }
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+        .bell-icon:hover { 
+            transform: scale(1.15) rotate(10deg); 
+            color: #f97316; 
         }
-        main {
-            flex: 1; /* isi konten fleksibel */
+        .notif-badge {
+            width: 18px; 
+            height: 18px; 
+            font-size: 0.65rem; 
+            padding: 0;
+            background-color: #ef4444; 
         }
-        footer {
-            background: #f8f9fa;
-            padding: 15px 0;
-            text-align: center;
-            color: #666;
-            font-size: 14px;
+
+        html, body { height: 100%; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        main { flex: 1; }
+        footer { background: #f8f9fa; padding: 15px 0; text-align: center; color: #666; font-size: 14px; }
+
+        /* ======================================================
+           KOMPONEN BERSAMA — dipakai di Master Data & Barang
+           (kartu list HP, menu aksi titik tiga, panel filter,
+            tombol submit 1 baris)
+           ====================================================== */
+
+        /* --- Menu aksi titik tiga (pengganti tombol Edit/Hapus yang berjejer) --- */
+        .btn-action-menu {
+            width: 36px; height: 36px; border-radius: 8px;
+            border: 1px solid #e2e8f0; background: #f8fafc; color: #1e293b;
+            display: inline-flex; align-items: center; justify-content: center;
+            transition: 0.2s;
         }
-    </style>
+        .btn-action-menu:hover, .btn-action-menu:focus { background: #1e293b; color: #fff; }
+        .btn-action-menu::after { display: none; }
+        .action-dropdown-menu { min-width: 170px; padding: 6px; }
+        .action-dropdown-menu .dropdown-item { border-radius: 8px; padding: 8px 12px; font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .action-dropdown-menu .dropdown-item.text-danger:hover { background-color: #fef2f2; }
+        .action-dropdown-menu .dropdown-item:hover:not(.text-danger) { background-color: #fff7ed; color: #f97316; }
+
+        /* --- Kartu list bergaya mobile (dipakai menggantikan tabel di layar kecil) --- */
+        .mobile-card-list { display: none; }
+        .mobile-card-item {
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 14px;
+            padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+        }
+        .mobile-card-item .mc-title { font-weight: 700; color: #1e293b; font-size: 15px; }
+        .mobile-card-item .mc-sub { font-size: 12.5px; color: #6b7280; margin-top: 2px; }
+        .mc-badge { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; display: inline-block; line-height: 1.5; vertical-align: middle; }
+        .mc-badge.aman { background:#f0fdf4; color:#16a34a; }
+        .mc-badge.rendah { background:#fff7ed; color:#ea580c; }
+        .mc-badge.kritis { background:#fef2f2; color:#ef4444; }
+        .mc-badge.habis { background:#f1f5f9; color:#64748b; }
+
+        /* --- Kartu laporan versi kaya: header+badge, divider, 3 kolom mini-stat --- */
+        .report-card { background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:14px 16px; margin-bottom:12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .report-card .rcard-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:3px; }
+        .report-card .rcard-title { font-weight:700; color:#1e293b; font-size:15px; }
+        .report-card .rcard-sub { font-size:12.5px; color:#6b7280; }
+        .report-card .rcard-divider { border-top:1px solid #f1f5f9; margin:10px 0; }
+        .report-card .rcard-stats { display:flex; justify-content:space-between; gap:8px; text-align:left; }
+        .report-card .rcard-stats > div { flex:1; }
+        .report-card .rcard-stats .stat-label { font-size:10.5px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.03em; margin-bottom:3px; }
+        .report-card .rcard-stats .stat-value { font-size:15px; font-weight:700; }
+        .report-card .rcard-stats .stat-sub { font-size:11px; color:#94a3b8; font-weight:500; }
+
+        /* --- Search bar + tombol filter bulat (menggantikan kotak filter lama, dipakai di semua section) --- */
+        .search-filter-bar { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; }
+        .search-bar-form {
+            flex: 1; display: flex; align-items: center; gap: 10px;
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 999px;
+            padding: 0 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: 0.2s;
+        }
+        .search-bar-form:focus-within { border-color: #f97316; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1); }
+        .search-bar-form svg { flex: none; color: #94a3b8; }
+        .search-bar-form input {
+            border: none; outline: none; background: transparent; flex: 1;
+            padding: 13px 0; font-size: 14.5px; color: #1e293b;
+        }
+        .filter-icon-btn {
+            flex: none; width: 48px; height: 48px; border-radius: 50%;
+            background: #fff; border: 1px solid #e2e8f0; color: #1e293b;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative; transition: 0.2s;
+        }
+        .filter-icon-btn:hover, .filter-icon-btn:focus { background: #1e293b; color: #fff; border-color: #1e293b; }
+        .filter-dot {
+            position: absolute; top: 4px; right: 4px; width: 9px; height: 9px;
+            border-radius: 50%; background: #f97316; border: 2px solid #fff;
+        }
+
+        /* --- Kartu ringkasan angka besar di Laporan (Total Aset, Total Omzet, dsb) --- */
+        .report-summary-card {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            border: 1px solid #fdba74; border-left: 4px solid #f97316;
+            border-radius: 14px; padding: 20px 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        }
+        .report-summary-card .rsc-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: #9a5b21; margin-bottom: 6px; }
+        .report-summary-card .rsc-value { font-size: 1.9rem; font-weight: 800; color: #1e293b; }
+        .report-summary-row { display: flex; flex-wrap: wrap; gap: 14px; }
+        .report-summary-row .report-summary-card { flex: 1 1 200px; }
+
+        /* --- Toggle pill Laporan Stok / Arus Barang --- */
+        .report-toggle { display: flex; width: 100%; background: #f1f5f9; border-radius: 999px; padding: 4px; gap: 4px; margin-bottom: 16px; }
+        .report-toggle-btn {
+            flex: 1; text-align: center; padding: 10px 14px; border-radius: 999px; font-weight: 700; font-size: 14px;
+            color: #64748b; text-decoration: none; transition: 0.2s;
+        }
+        .report-toggle-btn.active { background: #1e293b; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+        .report-toggle-btn:not(.active):hover { color: #ea580c; }
+
+        /* --- Baris ringkasan jumlah barang + tombol ekspor --- */
+        .report-count-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+        .report-count-row .rc-text { font-size: 13.5px; color: #475569; font-weight: 600; }
+        .report-count-row .rc-text strong { color: #1e293b; }
+        .report-count-row .rc-text .rc-warn { color: #ea580c; }
+
+        /* --- Panel filter bottom-sheet (offcanvas Bootstrap) --- */
+        .filter-trigger-btn {
+            display: none; align-items: center; gap: 8px;
+            background: #fff; border: 1px solid #d1d5db; border-radius: 10px;
+            padding: 10px 16px; font-weight: 600; color: #1e293b; margin-bottom: 16px;
+        }
+        .offcanvas-filter .offcanvas-header { border-bottom: 1px solid #f1f5f9; }
+        .offcanvas-filter .offcanvas-title { font-weight: 700; color: #1e293b; }
+        .offcanvas-filter label { font-size: 13px; font-weight: 700; color: #374151; text-transform: uppercase; letter-spacing: 0.03em; margin: 14px 0 8px; display: block; }
+        .filter-chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+        .filter-chip {
+            border: 1px solid #d1d5db; border-radius: 999px; padding: 7px 16px;
+            font-size: 14px; background: #fff; color: #374151; cursor: pointer; transition: 0.15s;
+        }
+        .filter-chip.active, .filter-chip:hover { border-color: #f97316; color: #f97316; background: #fff7ed; }
+        .offcanvas-filter .offcanvas-footer { display: flex; gap: 10px; padding: 16px; border-top: 1px solid #f1f5f9; }
+
+        /* --- Tombol export ringkas (Ekspor ▾ → PDF / Excel) --- */
+        .export-split .dropdown-menu { min-width: 160px; }
+
+        /* --- Tombol submit form (Batal/Simpan) selalu 1 baris, termasuk di HP --- */
+        .form-btn-row { display: flex; gap: 10px; flex-wrap: nowrap; }
+        .form-btn-row > * { flex: 1 1 0; min-width: 0; text-align: center; white-space: nowrap; }
+
+        @media (max-width: 768px) {
+            .desktop-table-wrapper { display: none !important; }
+            .mobile-card-list { display: block; }
+            .form-btn-row { gap: 8px; }
+            .form-btn-row > * { font-size: 14px; }
+            .export-split .btn { padding: 7px 14px; font-size: 13.5px; }
+            .report-count-row { margin-bottom: 12px; }
+            /* Kolom kiri/kanan FORM (col-md-6) yang bertumpuk di HP jangan dapat jarak
+               tambahan dari gutter baris -- cukup jarak antar field (mb-3) saja, supaya
+               jaraknya sama rata di semua field, bukan cuma di sambungan kolom.
+               (Class .form-grid-row sengaja ditandai khusus di form, tidak menyentuh
+               grid kartu/galeri lain yang juga kebetulan pakai row g-4.) */
+            .form-grid-row { --bs-gutter-y: 0; }
+        }
     </style>
 </head>
-
-
 @if(Auth::check())
 <script>
     (function () {
-        const IDLE_TIMEOUT = 900; // 15 menit
+        const IDLE_TIMEOUT = 900;
         let idleTime = 0;
-
-
-        function resetIdleTime() {
-            idleTime = 0;
-        }
-
-
+        function resetIdleTime() { idleTime = 0; }
         function logoutViaPost() {
             fetch('{{ route('logout') }}', {
                 method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json'
-                },
-            })
-            .then(response => {
-                window.location.href = '{{ route('welcome') }}';
-            })
-            .catch(error => {
-                console.error('Logout error:', error);
-            });
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' },
+            }).then(() => { window.location.href = '{{ route('welcome') }}'; });
         }
-
-
         setInterval(() => {
             idleTime++;
             if (idleTime >= IDLE_TIMEOUT) {
                 Swal.fire({
                     title: 'Auto Logout',
                     text: 'Anda telah logout otomatis karena tidak aktif selama 15 menit.',
-                    icon: 'warning',
-                    confirmButtonText: 'OK',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        logoutViaPost();
-                    }
-                });
+                    icon: 'warning', confirmButtonText: 'OK', allowOutsideClick: false, allowEscapeKey: false,
+                    confirmButtonColor: '#f97316'
+                }).then((result) => { if (result.isConfirmed) { logoutViaPost(); } });
             }
         }, 1000);
-
-
-        // Reset idle timer saat ada aktivitas
-        window.onload = resetIdleTime;
-        document.onmousemove = resetIdleTime;
-        document.onkeypress = resetIdleTime;
-        document.onclick = resetIdleTime;
-        document.onscroll = resetIdleTime;
+        window.onload = resetIdleTime; document.onmousemove = resetIdleTime; document.onkeypress = resetIdleTime; document.onclick = resetIdleTime; document.onscroll = resetIdleTime;
     })();
 </script>
 @endif
-
-
-
-
 <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-white bg-white shadow-sm fixed-top">
-
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow-sm fixed-top">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{{ url('/') }}">
-                <span style="color: #edd078">RAK</span><span style="color: #020705">SAKTI</span>
+                <span style="color: #f97316">RAK</span><span class="text-white">SAKTI</span>
             </a>
+            
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
-
+            
             <div class="collapse navbar-collapse" id="mainNavbar">
                 @auth
-                    @php $role = Auth::user()->role; $routeName = Route::currentRouteName(); @endphp
-
-
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-2">
-                        <li class="nav-item">
-                            <a class="nav-link {{ $routeName === 'home' ? 'active' : '' }}" href="{{ route('welcome') }}">Home</a>
+                    @php $role = strtolower(Auth::user()->role); $routeName = Route::currentRouteName(); @endphp
+                    
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-2 mt-3 mt-lg-0">
+                       <li class="nav-item">
+                            <a class="nav-link {{ $routeName === 'home' ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
                         </li>
-                       
-
-
+                        
                         @if($role == 'superadmin')
-                            <li class="nav-item">
-                            <a class="nav-link {{ $routeName === 'dashboard.' . $role ? 'active' : '' }}" href="{{ route('dashboard.' . $role) }}">Dashboard</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ $routeName === 'user.index' ? 'active' : '' }}" href="{{ route('user.index') }}">Kelola User</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ $routeName === 'laporan.stok.admin' ? 'active' : '' }}" href="{{ route('laporan.stok.admin') }}">LaporanStok</a>
-                            </li>
-                            
-
-
+                            <li class="nav-item"><a class="nav-link {{ $routeName === 'dashboard.' . $role ? 'active' : '' }}" href="{{ route('dashboard.' . $role) }}">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link {{ $routeName === 'user.index' ? 'active' : '' }}" href="{{ route('user.index') }}">Kelola User</a></li>
+                            <li class="nav-item"><a class="nav-link {{ $routeName === 'laporan.stok.admin' ? 'active' : '' }}" href="{{ route('laporan.stok.admin') }}">Laporan Stok</a></li>
+                        
                         @elseif($role == 'gudang')
-                            <li class="nav-item">
-                            <a class="nav-link {{ $routeName === 'dashboard.' . $role ? 'active' : '' }}" href="{{ route('dashboard.' . $role) }}">Dashboard</a>
-                            </li>
+                            <li class="nav-item"><a class="nav-link {{ $routeName === 'dashboard.' . $role ? 'active' : '' }}" href="{{ route('dashboard.' . $role) }}">Dashboard</a></li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle {{ in_array($routeName, ['kondisi.index', 'lokasi.index', 'kategori.index', 'satuan.index','pemasok.index']) ? 'active' : '' }}" href="#" id="masterDataDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Master Data
-                                </a>
+                                <a class="nav-link dropdown-toggle {{ in_array($routeName, ['kondisi.index', 'lokasi.index', 'kategori.index', 'satuan.index', 'pemasok.index']) ? 'active' : '' }}" href="#" id="masterDataDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Master Data</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item {{ $routeName === 'kondisi.index' ? 'active' : '' }}" href="{{ route('kondisi.index') }}">Kondisi Barang</a></li>
-                                    <li><a class="dropdown-item {{ $routeName === 'lokasi.index' ? 'active' : '' }}" href="{{ route('lokasi.index') }}">Lokasi</a></li>
-                                    <li><a class="dropdown-item {{ $routeName === 'kategori.index' ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a></li>
-                                    <li><a class="dropdown-item {{ $routeName === 'satuan.index' ? 'active' : '' }}" href="{{ route('satuan.index') }}">Satuan</a></li>
-                                    <li><a class="dropdown-item {{ $routeName === 'pemasok.index' ? 'active' : '' }}" href="{{ route('pemasok.index') }}">Pemasok</a></li>
+                                    <li><a class="dropdown-item fw-medium {{ $routeName === 'kondisi.index' ? 'active' : '' }}" href="{{ route('kondisi.index') }}">Kondisi Barang</a></li>
+                                    <li><a class="dropdown-item fw-medium {{ $routeName === 'lokasi.index' ? 'active' : '' }}" href="{{ route('lokasi.index') }}">Lokasi</a></li>
+                                    <li><a class="dropdown-item fw-medium {{ $routeName === 'kategori.index' ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a></li>
+                                    <li><a class="dropdown-item fw-medium {{ $routeName === 'satuan.index' ? 'active' : '' }}" href="{{ route('satuan.index') }}">Satuan</a></li>
+                                    <li><a class="dropdown-item fw-medium {{ $routeName === 'pemasok.index' ? 'active' : '' }}" href="{{ route('pemasok.index') }}">Pemasok</a></li>
                                 </ul>
                             </li>
-
-
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle {{ in_array($routeName, ['item.index', 'barang-masuk.index', 'barang-keluar.index']) ? 'active' : '' }}" href="#" id="barangDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Barang
-                                </a>
+                                <a class="nav-link dropdown-toggle {{ in_array($routeName, ['item.index', 'item.create', 'barang-masuk.index', 'barang-keluar.index']) ? 'active' : '' }}" href="#" id="barangDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Barang</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item {{ $routeName === 'item.index' ? 'active' : '' }}" href="{{ route('item.index') }}">Item</a></li>
-                                    <li><a class="dropdown-item {{ $routeName === 'barang-masuk.index' ? 'active' : '' }}" href="{{ route('barang-masuk.index') }}">Barang Masuk</a></li>
-                                    <li><a class="dropdown-item {{ $routeName === 'barang-keluar.index' ? 'active' : '' }}" href="{{ route('barang-keluar.index') }}">Barang Keluar</a></li>
+                                    <!-- PERUBAHAN: Daftar Item menjadi Daftar Produk -->
+                                    <li><a class="dropdown-item fw-medium {{ in_array($routeName, ['item.index', 'item.create']) ? 'active' : '' }}" href="{{ route('item.index') }}">Daftar Produk</a></li>
+                                    <li><a class="dropdown-item fw-medium {{ $routeName === 'barang-masuk.index' ? 'active' : '' }}" href="{{ route('barang-masuk.index') }}">Barang Masuk</a></li>
+                                    <li><a class="dropdown-item fw-medium {{ $routeName === 'barang-keluar.index' ? 'active' : '' }}" href="{{ route('barang-keluar.index') }}">Barang Keluar</a></li>
                                 </ul>
                             </li>
-
-
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle {{ in_array($routeName, ['laporan.stok', 'laporan.arus', 'omzet.index','aset.index']) ? 'active' : '' }}" href="#" id="laporanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Laporan
-                                </a>
+                                <a class="nav-link dropdown-toggle {{ in_array($routeName, ['laporan', 'laporan.arus', 'omzet.index','aset.index']) ? 'active' : '' }}" href="#" id="laporanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Laporan</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item {{ $routeName === 'laporan.stok' ? 'active' : '' }}" href="{{ route('laporan') }}">Laporan Stok</a></li>
-                                    <li><a class="dropdown-item {{ $routeName === 'laporan.arus' ? 'active' : '' }}" href="{{ route('laporan.arus') }}">Arus Barang</a></li>
-                                    <li><a class="dropdown-item {{ $routeName === 'aset.index' ? 'active' : '' }}" href="{{ route('aset.index') }}">Laporan Aset</a></li>
-                                    <li><a class="dropdown-item {{ $routeName === 'omzet.index' ? 'active' : '' }}" href="{{ route('omzet.index') }}">Omzet</a></li>
+                                    <li><a class="dropdown-item fw-medium {{ in_array($routeName, ['laporan', 'laporan.arus']) ? 'active' : '' }}" href="{{ route('laporan') }}">Stok &amp; Arus Barang</a></li>
+                                    <li><a class="dropdown-item fw-medium {{ $routeName === 'aset.index' ? 'active' : '' }}" href="{{ route('aset.index') }}">Laporan Aset</a></li>
+                                    <li><a class="dropdown-item fw-medium {{ $routeName === 'omzet.index' ? 'active' : '' }}" href="{{ route('omzet.index') }}">Omzet Penjualan</a></li>
                                 </ul>
                             </li>
-
-
-
-
-
-
                         @elseif($role == 'viewer')
-                        <li class="nav-item">
-                                <a class="nav-link {{ $routeName === 'laporan.stok.viewer' ? 'active' : '' }}" href="{{ route('laporan.stok.viewer') }}">📦 Stok</a>
-                            </li>
-
+                            <li class="nav-item"><a class="nav-link {{ $routeName === 'laporan.stok.viewer' ? 'active' : '' }}" href="{{ route('laporan.stok.viewer') }}">Stok</a></li>
                         @endif
                     </ul>
+                    
+                    <!-- SUSUNAN KANAN: Teks -> Foto Profil -> Lonceng SVG -->
+                    <ul class="navbar-nav mb-2 mb-lg-0 d-flex flex-row align-items-center mt-3 mt-lg-0 border-lg-start border-secondary ps-lg-4 gap-3">
+                        
+                        <!-- 1. Teks Info Akun -->
+                        <li class="nav-item text-start text-lg-end">
+                            <span class="text-white">Hi, <strong>{{ Auth::user()->name }}</strong></span><br>
+                            <small style="color: #9ca3af; font-size:0.75rem;">Anda berperan sebagai {{ ucfirst(Auth::user()->role) }}</small>
+                        </li>
 
-
-                    <ul class="navbar-nav mb-2 mb-lg-0 d-flex align-items-center">
-                        <li class="nav-item dropdown d-flex align-items-center me-3">
-                            <a href="{{ route('profile.show') }}" class="me-2 fw-medium text-decoration-none">
-                                <span style="color: #edd078">Hi,</span> <span style="color: #000000"><strong>{{ Auth::user()->name }}</strong>,</span> <span style="color: #edd078">Anda berperan sebagai</span> <span style="color: #000000"><strong>{{ ucfirst(Auth::user()->role) }}</strong></span>
-                            </a>
-                            <img
-                                src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : 'https://placehold.co/50x50' }}"
-                                class="user-photo"
-                                alt="Avatar"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                                style="cursor:pointer;">
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{{ route('profile.show') }}">Profil</a></li>
-                                <li><hr class="dropdown-divider"></li>
+                        <!-- 2. Foto Profil (Dropdown) -->
+                        <li class="nav-item dropdown d-flex align-items-center">
+                            <img src="{{ Auth::user()->photo ? asset(Auth::user()->photo) : 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) . '&background=f97316&color=fff' }}" 
+                                 class="user-photo dropdown-toggle shadow-sm" alt="Avatar" data-bs-toggle="dropdown" aria-expanded="false" style="cursor:pointer;">
+                            
+                            <ul class="dropdown-menu dropdown-menu-end mt-3 border-0 py-2 shadow">
+                                <li><a class="dropdown-item fw-medium py-2" href="{{ route('profile.show') }}"><i class="fa-solid fa-user-gear me-2 text-secondary"></i> Pengaturan Profil</a></li>
+                                <li><hr class="dropdown-divider my-1"></li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
-                                        <button class="dropdown-item" type="submit">Logout</button>
+                                        <button class="dropdown-item text-danger fw-bold py-2" type="submit"><i class="fa-solid fa-power-off me-2"></i> Logout</button>
                                     </form>
                                 </li>
                             </ul>
                         </li>
 
-
-                    @if(Auth::user()->role === 'gudang')
-                        <li class="nav-item position-relative">
-                            <a href="{{ route('notifications.index') }}" class="text-dark" style="font-size: 20px;">
-                                <i class="fa-solid fa-bell"></i>
+                        <!-- 3. Ikon Lonceng SVG -->
+                        <li class="nav-item position-relative d-flex align-items-center ms-1">
+                            <a href="{{ route('notifications.index') }}" class="nav-link p-0 text-decoration-none position-relative" title="Lihat Notifikasi">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bell-icon" viewBox="0 0 16 16">
+                                  <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/>
+                                </svg>
+                                
                                 @php
                                     // Notifikasi stok adaptif (Judul 3) yang belum dibaca.
                                     // Filter per user lewat join ke items karena
@@ -298,22 +356,16 @@
                                 @endif
                             </a>
                         </li>
-                    @endif
-
                     </ul>
-
-
                 @endauth
             </div>
         </div>
     </nav>
 
-
     <main class="container py-4" style="padding-top: 80px;">
         @yield('content')
     </main>
-
-
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 

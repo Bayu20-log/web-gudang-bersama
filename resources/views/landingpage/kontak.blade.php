@@ -15,8 +15,8 @@
     </div>
 
     <!-- Kotak konten biru lembut tanpa garis tepi -->
-    <div class="rounded p-4 shadow-sm bg-opacity-10" style="background-color: #79b687;" data-aos="fade-up" data-aos-delay="200">
-        <h2 class="text-center fw-bold mb-4">Kontak Kami</h2>
+    <div class="rounded p-4 shadow-sm hero-band-brand" data-aos="fade-up" data-aos-delay="200">
+        <h2 class="text-center fw-bold mb-4" style="color:#1e293b">Kontak Kami</h2>
         <p class="text-center fs-5 text-muted mb-4">
             Hubungi kami untuk pertanyaan, dukungan, atau kerjasama lebih lanjut.
         </p>
@@ -25,10 +25,10 @@
         <div class="col-md-6">
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-body text-center">
-                    <i class="bi bi-envelope-fill text-primary mb-3" style="font-size: 3rem;"></i>
+                    <i class="bi bi-envelope-fill text-brand mb-3" style="font-size: 3rem;"></i>
                     <h5 class="fw-bold">Email Kami</h5>
                     <p class="text-muted">Klik tombol di bawah untuk mengirim email langsung ke kami.</p>
-                    <a href="https://mail.google.com/mail/?view=cm&to=admin@gudangku.id" target="_blank" class="btn btn-outline-primary btn-lg">
+                    <a href="https://mail.google.com/mail/?view=cm&to=admin@gudangku.id" target="_blank" class="btn btn-outline-brand btn-lg">
                         <i class="bi bi-send-fill me-2"></i>admin@gudangku.id
                     </a>
                 </div>

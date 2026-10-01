@@ -75,7 +75,7 @@ class UserController extends Controller
 
         $photoPath = null;
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('user_photos', 'public');
+            $photoPath = $request->file('photo')->store('user_photos', 'public_direct');
         }
 
         User::create([
@@ -122,7 +122,7 @@ class UserController extends Controller
 
 
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('user_photos', 'public');
+            $photoPath = $request->file('photo')->store('user_photos', 'public_direct');
             $user->photo = $photoPath;
         }
 

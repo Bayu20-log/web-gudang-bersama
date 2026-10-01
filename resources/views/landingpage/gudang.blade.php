@@ -13,11 +13,11 @@
     </div>
 
     <!-- Kotak konten biru lembut tanpa garis tepi -->
-    <div class="rounded p-4 shadow-sm bg-opacity-10" style="background-color: #79b687;" data-aos="fade-up" data-aos-delay="200">
+    <div class="rounded p-4 shadow-sm hero-band-brand" data-aos="fade-up" data-aos-delay="200">
 
         <div class="container py-5">
             <div class="text-center mb-5">
-                <h2 class="fw-bold" data-aos="fade-down">📦 Peran Gudang</h2>
+                <h2 class="fw-bold" style="color:#1e293b" data-aos="fade-down">📦 Peran Gudang</h2>
                 <p class="text-muted" data-aos="fade-down" data-aos-delay="100">
                     Pengguna Gudang bertugas mencatat dan mengelola aktivitas keluar masuk barang, serta menyusun berita acara.
                 </p>
