@@ -113,6 +113,13 @@ class BarangKeluarController extends Controller
         ]);
 
 
+        // Evaluasi ulang status stok barang ini supaya notifikasi langsung muncul (tanpa email).
+        try {
+            app(\App\Services\AdaptiveThresholdService::class)->evaluateWithoutEmail((string) $kodeBarang, 'transaksi');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Evaluasi otomatis gagal: ' . $e->getMessage());
+        }
+
         return redirect()->route('barang-keluar.index')->with('success', 'Barang keluar berhasil ditambahkan.');
     }
 

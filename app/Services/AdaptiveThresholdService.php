@@ -472,7 +472,7 @@ class AdaptiveThresholdService
         $item = DB::table('items')->where('kode_barang', $kodeBarang)->first();
         $user = $item ? DB::table('users')->where('id', $item->user_id)->first() : null;
 
-        if ($user && $user->email_notifications_enabled && $user->email) {
+        if (!$this->skipEmail && $user && $user->email_notifications_enabled && $user->email) {
             // Catat dulu sebagai 'pending' SEBELUM benar-benar mengirim.
             $deliveryId = DB::table('notification_deliveries')->insertGetId([
                 'notification_id' => $notificationId,
@@ -522,4 +522,22 @@ class AdaptiveThresholdService
 
         return $channelsDelivered;
     }
+    /**
+     * Dipakai setelah transaksi barang masuk/keluar: hitung ulang threshold dan
+     * evaluasi status satu barang, TANPA mengirim email (supaya proses simpan
+     * transaksi tidak tertahan SMTP). Notifikasi in-app tetap dibuat.
+     */
+    private bool $skipEmail = false;
+
+    public function evaluateWithoutEmail(string $kodeBarang, string $triggerSource = 'transaksi'): array
+    {
+        $this->skipEmail = true;
+        try {
+            $this->calculateAndSaveThreshold($kodeBarang);
+            return $this->evaluateAndLogStatus($kodeBarang, $triggerSource);
+        } finally {
+            $this->skipEmail = false;
+        }
+    }
+
 }

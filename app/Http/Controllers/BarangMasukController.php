@@ -102,6 +102,13 @@ class BarangMasukController extends Controller
             Storage::disk('public_direct')->put($qrPath, $qrCode);
             $barang->update(['qr_code' => $qrPath]);
 
+            // Evaluasi ulang status stok barang ini supaya notifikasi langsung muncul (tanpa email).
+            try {
+                app(\App\Services\AdaptiveThresholdService::class)->evaluateWithoutEmail((string) $validated['kode_barang'], 'transaksi');
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('Evaluasi otomatis gagal: ' . $e->getMessage());
+            }
+
             return redirect()->route('barang-masuk.index')->with('success', 'Barang masuk berhasil ditambahkan beserta QR Code.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
