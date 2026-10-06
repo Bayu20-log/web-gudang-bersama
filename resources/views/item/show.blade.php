@@ -67,8 +67,9 @@
                     <h2 class="fw-bold mb-0" style="color: #f97316;">{{ $stokSaatIni }} <span class="fs-5">{{ $item->satuan->nama_satuan ?? '' }}</span></h2>
                 </div>
                 <div class="box-min flex-fill shadow-sm">
-                    <h6 class="text-muted fw-bold mb-2">Stok Minimum</h6>
-                    <h2 class="fw-bold text-dark mb-0">{{ $item->stok_minimum }} <span class="fs-5">{{ $item->satuan->nama_satuan ?? '' }}</span></h2>
+                    <h6 class="text-muted fw-bold mb-2">Batas Minimum Rendah</h6>
+                    @php $batasRendah = \Illuminate\Support\Facades\DB::table('stock_thresholds')->where('item_id', $item->kode_barang)->value('low_threshold'); @endphp
+                    <h2 class="fw-bold text-dark mb-0 {{ $batasRendah > 0 ? '' : 'fs-5' }}">{{ $batasRendah === null ? 'Belum dihitung' : ($batasRendah > 0 ? number_format($batasRendah, 0, ',', '.') : 'Belum ada pemakaian') }} @if($batasRendah > 0)<span class="fs-5">{{ $item->satuan->nama_satuan ?? '' }}</span>@endif</h2>
                 </div>
             </div>
         </div>

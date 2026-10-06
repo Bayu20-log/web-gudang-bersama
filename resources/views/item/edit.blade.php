@@ -93,11 +93,6 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="stok_minimum" class="form-label">Stok Minimum <span class="text-danger">*</span></label>
-                    <input type="number" name="stok_minimum" id="stok_minimum" class="form-control bg-light" value="{{ old('stok_minimum', $item->stok_minimum) }}" required>
-                </div>
-
-                <div class="mb-3">
                     <label for="foto" class="form-label">Foto Produk</label>
                     <div class="d-flex gap-3 align-items-start flex-column flex-sm-row">
                         <div class="preview-box w-100" id="previewBox" style="max-width: 300px;">
@@ -450,7 +445,47 @@
                     font-style: italic;
                     margin-top: 0.5rem;
                 }
-            </style>
+            
+                /* ===== Kartu angka berwarna (desktop dan HP), tanpa lingkaran ikon ===== */
+                .tc-stats { grid-template-columns: repeat(3, 1fr); }
+                .tc-stats .tc-stat-card {
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    text-align: center;
+                    padding: 1.1rem 0.75rem;
+                }
+                .tc-stats .tc-stat-icon { display: none; }
+                .tc-stats .tc-stat-card:nth-child(1) { background: #e0f7fa; }
+                .tc-stats .tc-stat-card:nth-child(2) { background: #ffedd5; }
+                .tc-stats .tc-stat-card:nth-child(3) { background: #fee2e2; }
+                .tc-stats .tc-stat-card:nth-child(1) .tc-stat-value,
+                .tc-stats .tc-stat-card:nth-child(1) .tc-stat-label { color: #0e7490; }
+                .tc-stats .tc-stat-card:nth-child(2) .tc-stat-value,
+                .tc-stats .tc-stat-card:nth-child(2) .tc-stat-label { color: #9a3412; }
+                .tc-stats .tc-stat-card:nth-child(3) .tc-stat-value,
+                .tc-stats .tc-stat-card:nth-child(3) .tc-stat-label { color: #b91c1c; }
+
+                /* ===== Tampilan HP ===== */
+                @media (max-width: 576px) {
+                    #editItemTab {
+                        flex-wrap: nowrap;
+                        overflow-x: auto;
+                        overflow-y: hidden;
+                        white-space: nowrap;
+                        -webkit-overflow-scrolling: touch;
+                    }
+                    #editItemTab .nav-item { flex: 0 0 auto; }
+                    #editItemTab .nav-link { font-size: 0.85rem; padding: 0.5rem 0.9rem; }
+
+                    .tc-stats { gap: 0.6rem; }
+                    .tc-stats .tc-stat-card { padding: 0.85rem 0.35rem; border-radius: 16px; }
+                    .tc-stats .tc-stat-value { font-size: 1.35rem; }
+                    .tc-stats .tc-stat-label { font-size: 0.68rem; line-height: 1.25; }
+
+                    .tc-submit { width: 100%; }
+                }
+</style>
 
             <div class="tc-wrap">
 

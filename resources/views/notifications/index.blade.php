@@ -297,6 +297,56 @@
         color: #0f172a;
         margin-bottom: 0.25rem;
     }
+
+    /* ===== Kartu ringkasan berwarna (desktop dan HP) ===== */
+    .notif-summary-card {
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        background: var(--accent-soft, #fff);
+        padding: 1.1rem 0.75rem;
+    }
+    .notif-summary-card .count { color: var(--accent-text, #0f172a); }
+    .notif-summary-card .label { color: var(--accent-text, #64748b); }
+    .notif-summary-card .icon-circle { display: none; }
+
+    /* ===== Tampilan HP ===== */
+    @media (max-width: 576px) {
+        .notif-page-header { padding: 1.25rem 1.25rem; border-radius: 20px; }
+
+        .notif-summary { grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+        .notif-summary-card {
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            padding: 0.85rem 0.4rem;
+            border-radius: 16px;
+        }
+        .notif-summary-card .count { font-size: 1.6rem; }
+        .notif-summary-card .label { font-size: 0.72rem; }
+        .notif-summary-card { background: var(--accent-soft, #fff); }
+        .notif-summary-card .count { color: var(--accent-text, #0f172a); }
+        .notif-summary-card .label { color: var(--accent-text, #64748b); }
+
+        .notif-item { padding: 1rem 1.1rem; }
+        .notif-item > div:first-child { width: 100%; }
+        .notif-item-actions {
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: stretch;
+            width: 100%;
+            gap: 0.5rem;
+        }
+        .notif-item-actions > a,
+        .notif-item-actions > form { flex: 1 1 130px; margin: 0; }
+        .notif-item-actions > a,
+        .notif-item-actions button {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 0.6rem 0.9rem;
+        }
+    }
 </style>
 
 <div class="notif-page-wrapper">
