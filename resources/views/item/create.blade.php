@@ -54,11 +54,6 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="stok_minimum" class="form-label">Stok Minimum <span class="text-danger">*</span></label>
-                    <input type="number" name="stok_minimum" id="stok_minimum" class="form-control bg-light" value="{{ old('stok_minimum') }}" placeholder="0" required>
-                </div>
-
-                <div class="mb-3">
                     <label for="foto" class="form-label">Foto Produk</label>
                     <div class="d-flex gap-3 align-items-start flex-column flex-sm-row">
                         <div class="preview-box w-100" id="previewBox" style="max-width: 300px;">

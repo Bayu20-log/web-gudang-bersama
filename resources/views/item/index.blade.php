@@ -101,7 +101,7 @@
             <thead>
                 <tr>
                     <th>Kode Produk</th><th>Nama Produk</th><th>Kategori</th>
-                    <th>Satuan</th><th>Stok Min.</th><th>Foto</th><th>Aksi</th>
+                    <th>Satuan</th><th>Batas Min.</th><th>Foto</th><th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -111,7 +111,7 @@
                         <td class="fw-bold" style="color: #1e293b;">{{ $item->nama_barang }}</td>
                         <td>{{ $item->kategori->kategori }}</td>
                         <td>{{ $item->satuan->nama_satuan ?? '-' }}</td>
-                        <td><span class="badge bg-secondary px-3 py-2 rounded-pill">{{ $item->stok_minimum }}</span></td>
+                        <td><span class="badge bg-secondary px-3 py-2 rounded-pill">{{ $item->batas_rendah === null ? "Belum dihitung" : ($item->batas_rendah > 0 ? number_format($item->batas_rendah, 0, ",", ".") : "Belum ada pemakaian") }}</span></td>
                         <td>
                             @if ($item->foto)
                                 <img src="{{ asset($item->foto) }}" alt="Foto" class="img-thumbnail-custom shadow-sm"
@@ -160,7 +160,7 @@
                 <div class="flex-grow-1">
                     <div class="mc-title">{{ $item->nama_barang }}</div>
                     <div class="mc-sub">{{ $item->kode_barang }} &middot; {{ $item->kategori->kategori }}</div>
-                    <div class="mc-sub">Satuan {{ $item->satuan->nama_satuan ?? '-' }} &middot; Stok Min. {{ $item->stok_minimum }}</div>
+                    <div class="mc-sub">Satuan {{ $item->satuan->nama_satuan ?? '-' }} &middot; Batas Min. {{ $item->batas_rendah === null ? "Belum dihitung" : ($item->batas_rendah > 0 ? number_format($item->batas_rendah, 0, ",", ".") : "Belum ada pemakaian") }}</div>
                 </div>
                 <div class="dropdown">
                     <button class="btn-action-menu" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Menu Aksi">

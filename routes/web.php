@@ -16,6 +16,9 @@ use App\Http\Controllers\OmzetController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\DashboardGudangController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\StockNotificationController;
+use App\Http\Controllers\StockThresholdController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -47,6 +50,13 @@ Route::middleware(['auth', 'auto.logout'])->group(function () {
     Route::get('/dashboard/viewer', function () {
         return view('dashboard.viewer');
     })->name('dashboard.viewer');
+    Route::middleware(['auth', 'role:gudang'])->group(function () {
+    Route::get('/stock-notifications', [StockNotificationController::class, 'index'])->name('stock-notifications.index');
+    Route::post('/stock-notifications/evaluate', [StockNotificationController::class, 'evaluate'])->name('stock-notifications.evaluate');
+    Route::post('/stock-notifications/mark-all-read', [StockNotificationController::class, 'markAllRead'])->name('stock-notifications.markAllRead');
+    Route::post('/stock-notifications/{id}/read', [StockNotificationController::class, 'markRead'])->name('stock-notifications.markRead');
+    Route::post('/stock-notifications/{id}/unread', [StockNotificationController::class, 'markUnread'])->name('stock-notifications.markUnread');
+    });
     
     Route::get('/stok-terpakai', [BarangKeluarController::class, 'cekStok'])->name('barang-keluar.cekStok');
     Route::get('/barang-keluar/detail-barang', [BarangKeluarController::class, 'getDetailBarang'])->name('barang-keluar.detail-barang');
@@ -92,6 +102,8 @@ Route::middleware(['auth', 'auto.logout'])->group(function () {
         Route::resource('kondisi', KondisiController::class);
         Route::resource('satuan', SatuanController::class);
         Route::resource('item', ItemController::class);
+        Route::put('/item/{item}/threshold', [StockThresholdController::class, 'update'])
+            ->name('item.threshold.update');
         Route::resource('lokasi', LokasiController::class);
         Route::resource('kategori', KategoriController::class);
         Route::resource('aset', LaporanAsetController::class);

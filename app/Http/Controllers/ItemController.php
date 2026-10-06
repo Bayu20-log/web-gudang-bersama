@@ -7,6 +7,7 @@ use App\Models\Item;
 use App\Models\Kategori;
 use App\Models\Satuan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ItemController extends Controller
 {
@@ -26,6 +27,15 @@ class ItemController extends Controller
         $items = $query->orderBy('created_at', 'desc')
                        ->paginate(10)
                        ->withQueryString();
+
+        // Batas Minimum Rendah dari sistem threshold adaptif (menggantikan stok_minimum manual)
+        $thresholds = DB::table('stock_thresholds')
+            ->whereIn('item_id', $items->pluck('kode_barang'))
+            ->pluck('low_threshold', 'item_id');
+        $items->getCollection()->transform(function ($item) use ($thresholds) {
+            $item->batas_rendah = $thresholds[$item->kode_barang] ?? null;
+            return $item;
+        });
 
         $kategoris = Kategori::where('user_id', Auth::id())->get(); 
         
@@ -49,7 +59,6 @@ class ItemController extends Controller
             'nama_barang' => 'required|string|max:255',
             'id_kategori' => 'required|exists:kategoris,id',
             'id_satuan'   => 'required|exists:satuans,id',
-            'stok_minimum'=> 'required|integer|min:0',
             'harga_dasar' => 'required|numeric|min:0',
             'deskripsi'   => 'nullable|string|max:500',
             'foto'        => 'nullable|image|max:2048',
@@ -59,7 +68,6 @@ class ItemController extends Controller
             'nama_barang.required' => 'Nama barang wajib diisi.',
             'id_kategori.required' => 'Kategori wajib dipilih.',
             'id_satuan.required'   => 'Satuan wajib dipilih.',
-            'stok_minimum.required'=> 'Stok minimum wajib diisi.',
             'harga_dasar.required' => 'Harga dasar wajib diisi.',
             'foto.image'           => 'File foto harus berupa gambar.',
             'foto.max'             => 'Ukuran foto maksimal 2MB.',
@@ -72,7 +80,6 @@ class ItemController extends Controller
         $item->nama_barang = $request->nama_barang;
         $item->id_kategori = $request->id_kategori;
         $item->id_satuan   = $request->id_satuan;
-        $item->stok_minimum= $request->stok_minimum;
         $item->harga_dasar = $request->harga_dasar;
         $item->deskripsi   = $request->deskripsi;
         $item->user_id     = Auth::id(); 
@@ -112,7 +119,6 @@ class ItemController extends Controller
         $rules = [
             'id_kategori' => 'required|exists:kategoris,id',
             'id_satuan'   => 'required|exists:satuans,id',
-            'stok_minimum'=> 'required|integer|min:0',
             'harga_dasar' => 'required|numeric|min:0',
             'deskripsi'   => 'nullable|string|max:500',
             'foto'        => 'nullable|image|max:2048',
@@ -121,7 +127,6 @@ class ItemController extends Controller
         $messages = [
             'id_kategori.required' => 'Kategori wajib dipilih.',
             'id_satuan.required'   => 'Satuan wajib dipilih.',
-            'stok_minimum.required'=> 'Stok minimum wajib diisi.',
             'harga_dasar.required' => 'Harga dasar wajib diisi.',
             'foto.image'           => 'File foto harus berupa gambar.',
             'foto.max'             => 'Ukuran foto maksimal 2MB.',
@@ -132,7 +137,6 @@ class ItemController extends Controller
         $item->nama_barang = $request->nama_barang;
         $item->id_kategori = $request->id_kategori;
         $item->id_satuan   = $request->id_satuan;
-        $item->stok_minimum= $request->stok_minimum;
         $item->harga_dasar = $request->harga_dasar;
         $item->deskripsi   = $request->deskripsi;
 

@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('users:deactivate-inactive')->everyMinute();
+        $schedule->command('stock:evaluate-thresholds')->daily();
     }
 
     /**
