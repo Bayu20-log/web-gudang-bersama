@@ -354,9 +354,10 @@
         </div>
 
         <!-- Kategori 4: FITUR TAMBAHAN -->
-        <div class="category-wrapper">
+        <div id="tour-tambahan" class="category-wrapper">
                 <div class="section-title">
                         <div><i class="bi bi-grid-fill text-purple me-2 fs-5"></i> Fitur Tambahan</div>
+                        <i class="bi bi-info-circle info-icon fs-5" onclick="showInfo('tambahan')" title="Info Kontainer"></i>
                 </div>
                 <div class="grid-container">
                         <a href="/public/notifications" class="grid-item">
@@ -366,6 +367,10 @@
                         <a href="/public/prediksi" class="grid-item">
                                 <div class="icon-box purple"><i class="bi bi-magic"></i></div>
                                 <span class="icon-text">Prediksi</span>
+                        </a>
+                        <a href="/public/prediksi/create" class="grid-item">
+                                <div class="icon-box purple"><i class="bi bi-plus-circle"></i></div>
+                                <span class="icon-text">Tambah Prediksi</span>
                         </a>
                 </div>
         </div>
@@ -420,6 +425,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     side: "top",
                     align: 'start'
                 }
+            },
+            {
+                element: '#tour-tambahan',
+                popover: {
+                    title: 'Fitur Tambahan',
+                    description: 'Pantau notifikasi stok yang perlu perhatian, lihat hasil prediksi, atau buat prediksi baru lewat Tambah Prediksi.',
+                    side: "top",
+                    align: 'start'
+                }
             }
         ]
     });
@@ -450,6 +464,11 @@ document.addEventListener('DOMContentLoaded', function() {
             stepConfig = {
                 element: '#tour-laporan',
                 popover: { title: 'Ekspor & Pantau Laporan', description: 'Lacak arus pergerakan barang, omzet harian, dan aset gudang, serta ekspor langsung ke PDF/Excel.', side: "top", align: 'start' }
+            };
+        } else if (section === 'tambahan') {
+            stepConfig = {
+                element: '#tour-tambahan',
+                popover: { title: 'Fitur Tambahan', description: 'Pantau notifikasi stok yang perlu perhatian, lihat hasil prediksi, atau buat prediksi baru lewat Tambah Prediksi.', side: "top", align: 'start' }
             };
         }
 
