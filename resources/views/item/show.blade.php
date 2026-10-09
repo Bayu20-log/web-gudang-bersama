@@ -72,6 +72,13 @@
                 </div>
             </div>
         </div>
+
+        @if($item->deskripsi)
+            <div class="mt-4 pt-3" style="border-top: 1px solid #f1f5f9;">
+                <h6 class="text-muted fw-bold mb-2" style="font-size:12px; text-transform:uppercase; letter-spacing:.03em;">Catatan / Deskripsi</h6>
+                <p class="mb-0" style="color:#374151; white-space: pre-line;">{{ $item->deskripsi }}</p>
+            </div>
+        @endif
     </div>
 
     {{-- Riwayat Transaksi (versi ringkas) --}}

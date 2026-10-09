@@ -13,6 +13,8 @@ class ItemController extends Controller
     public function index(Request $request)
     {
         $query = Item::with(['kategori', 'satuan'])
+                     ->withSum('barangMasuk', 'jumlah')
+                     ->withSum('barangKeluar', 'jumlah_keluar')
                      ->where('user_id', Auth::id()); 
 
         if ($request->filled('search')) {

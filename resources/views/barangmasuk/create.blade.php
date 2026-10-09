@@ -42,7 +42,7 @@
                         <option value=""></option>
                         <option value="ADD_NEW">Buat Produk Baru</option>
                         @foreach ($items as $item)
-                            <option value="{{ $item->kode_barang }}" {{ old('kode_barang') == $item->kode_barang ? 'selected' : '' }}>
+                            <option value="{{ $item->kode_barang }}" {{ (old('kode_barang') ?: request('kode_barang')) == $item->kode_barang ? 'selected' : '' }}>
                                 {{ $item->kode_barang }} - {{ $item->nama_barang }}
                             </option>
                         @endforeach

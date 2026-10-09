@@ -101,16 +101,21 @@
             <thead>
                 <tr>
                     <th>Kode Produk</th><th>Nama Produk</th><th>Kategori</th>
-                    <th>Satuan</th><th>Stok Min.</th><th>Foto</th><th>Aksi</th>
+                    <th>Satuan</th><th>Stok Saat Ini</th><th>Stok Min.</th><th>Foto</th><th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($items as $item)
+                    @php
+                        $qtySaatIni = ($item->barang_masuk_sum_jumlah ?? 0) - ($item->barang_keluar_sum_jumlah_keluar ?? 0);
+                        $qtyColor = $qtySaatIni <= 0 ? '#64748b' : ($qtySaatIni < $item->stok_minimum ? '#ef4444' : '#16a34a');
+                    @endphp
                     <tr>
                         <td class="fw-medium text-secondary">{{ $item->kode_barang }}</td>
                         <td class="fw-bold" style="color: #1e293b;">{{ $item->nama_barang }}</td>
                         <td>{{ $item->kategori->kategori }}</td>
                         <td>{{ $item->satuan->nama_satuan ?? '-' }}</td>
+                        <td><span class="fw-bold" style="color: {{ $qtyColor }};">{{ $qtySaatIni }}</span></td>
                         <td><span class="badge bg-secondary px-3 py-2 rounded-pill">{{ $item->stok_minimum }}</span></td>
                         <td>
                             @if ($item->foto)
@@ -140,7 +145,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="7" class="text-center py-5 text-muted fw-medium"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="mb-2" style="color: #cbd5e1;" viewBox="0 0 16 16"><path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"/></svg><br>Data produk belum tersedia.</td></tr>
+                    <tr><td colspan="8" class="text-center py-5 text-muted fw-medium"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="mb-2" style="color: #cbd5e1;" viewBox="0 0 16 16"><path d="M.54 3.87.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31zM2.19 4a1 1 0 0 0-.996 1.09l.637 7a1 1 0 0 0 .995.91h10.348a1 1 0 0 0 .995-.91l.637-7A1 1 0 0 0 13.81 4H2.19zm4.69-1.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707z"/></svg><br>Data produk belum tersedia.</td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -157,10 +162,17 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/><path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-10zm10 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h10z"/></svg>
                     </div>
                 @endif
+                @php
+                    $qtySaatIni = ($item->barang_masuk_sum_jumlah ?? 0) - ($item->barang_keluar_sum_jumlah_keluar ?? 0);
+                    $qtyColor = $qtySaatIni <= 0 ? '#64748b' : ($qtySaatIni < $item->stok_minimum ? '#ef4444' : '#16a34a');
+                @endphp
                 <div class="flex-grow-1">
                     <div class="mc-title">{{ $item->nama_barang }}</div>
                     <div class="mc-sub">{{ $item->kode_barang }} &middot; {{ $item->kategori->kategori }}</div>
-                    <div class="mc-sub">Satuan {{ $item->satuan->nama_satuan ?? '-' }} &middot; Stok Min. {{ $item->stok_minimum }}</div>
+                    <div class="mc-sub">
+                        Stok: <span class="fw-bold" style="color: {{ $qtyColor }};">{{ $qtySaatIni }}</span>
+                        {{ $item->satuan->nama_satuan ?? '' }} &middot; Min. {{ $item->stok_minimum }}
+                    </div>
                 </div>
                 <div class="dropdown">
                     <button class="btn-action-menu" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Menu Aksi">

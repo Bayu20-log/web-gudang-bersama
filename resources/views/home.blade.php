@@ -359,11 +359,11 @@
                         <div><i class="bi bi-grid-fill text-purple me-2 fs-5"></i> Fitur Tambahan</div>
                 </div>
                 <div class="grid-container">
-                        <a href="{{ route('notifications.index') ?? '#' }}" class="grid-item">
+                        <a href="/public/notifications" class="grid-item">
                                 <div class="icon-box yellow"><i class="bi bi-bell"></i></div>
                                 <span class="icon-text">Notifikasi</span>
                         </a>
-                        <a href="#" class="grid-item" onclick="alert('Fitur Prediksi Data (AI) masih dalam tahap pengembangan!')">
+                        <a href="/public/prediksi" class="grid-item">
                                 <div class="icon-box purple"><i class="bi bi-magic"></i></div>
                                 <span class="icon-text">Prediksi</span>
                         </a>
