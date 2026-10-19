@@ -16,12 +16,24 @@ class DashboardGudangController extends Controller
     {
         $userId = Auth::id();
 
+        // --- PENYESUAIAN DETEKSI DATA TERAKHIR DINAMIS ---
+        $lastMasuk = DB::table('barang_masuks')->where('user_id', $userId)->max('tanggal_masuk');
+
+        if ($lastMasuk) {
+            $latestCarbon  = Carbon::parse($lastMasuk);
+            $lastDataFrom  = $latestCarbon->copy()->startOfMonth()->format('Y-m-d');
+            $lastDataTo    = $latestCarbon->copy()->endOfMonth()->format('Y-m-d');
+            $lastDataLabel = 'Data Terakhir (' . $latestCarbon->translatedFormat('M Y') . ')';
+        } else {
+            $lastDataFrom  = date('Y-m-01');
+            $lastDataTo    = date('Y-m-t');
+            $lastDataLabel = 'Data Terakhir';
+        }
+
         if ($request->filled('date_from') && $request->filled('date_to')) {
             $dateFrom = Carbon::parse($request->input('date_from'))->startOfDay();
             $dateTo   = Carbon::parse($request->input('date_to'))->endOfDay();
         } else {
-            $lastMasuk = DB::table('barang_masuks')->max('tanggal_masuk');
-
             if ($lastMasuk) {
                 $latestCarbon = Carbon::parse($lastMasuk);
                 $dateFrom     = $latestCarbon->copy()->startOfMonth()->startOfDay();
@@ -52,41 +64,29 @@ class DashboardGudangController extends Controller
             ->whereNotNull('barang_masuks.id')
             ->get();
 
-        // 2. Segera Kadaluarsa (dalam 30 hari)
+        // 2. Segera Kadaluarsa (Per Batch FEFO)
         $sortKadaluarsa = strtolower($request->input('sort_kadaluarsa', 'asc')) === 'desc' ? 'desc' : 'asc';
-
-        $barangKeluarSub = DB::table('barang_keluars')
-            ->select('kode_barang', DB::raw('SUM(jumlah_keluar) as total_keluar'))
-            ->groupBy('kode_barang');
 
         $kadaluarsa = DB::table('barang_masuks')
             ->leftJoin('items', 'barang_masuks.kode_barang', '=', 'items.kode_barang')
-            ->leftJoinSub($barangKeluarSub, 'bk', function ($join) {
-                $join->on('barang_masuks.kode_barang', '=', 'bk.kode_barang');
-            })
             ->where('barang_masuks.user_id', '=', $userId)
             ->whereNotNull('barang_masuks.tanggal_kadaluarsa')
+            ->where('barang_masuks.jumlah', '>', 0)
             ->select(
-                DB::raw('MAX(barang_masuks.id) as id'),
+                'barang_masuks.id',
                 'barang_masuks.kode_barang',
-                DB::raw('MAX(barang_masuks.id_lokasi) as id_lokasi'),
-                DB::raw('MAX(barang_masuks.id_kondisi) as id_kondisi'),
-                DB::raw('COALESCE(items.nama_barang, barang_masuks.kode_barang) as nama_barang'),
-                // Sisa Stok Riil = (Total Masuk - Total Keluar)
-                DB::raw('GREATEST(SUM(barang_masuks.jumlah) - COALESCE(MAX(bk.total_keluar), 0), 0) as jumlah'),
-                DB::raw('MIN(barang_masuks.tanggal_kadaluarsa) as tanggal_kadaluarsa')
+                'barang_masuks.id_lokasi',
+                'barang_masuks.id_kondisi',
+                'barang_masuks.jumlah', // Jumlah unit batch transaksi ini
+                'barang_masuks.tanggal_masuk',
+                'barang_masuks.tanggal_kadaluarsa',
+                DB::raw('COALESCE(items.nama_barang, barang_masuks.kode_barang) as nama_barang')
             )
-            ->groupBy(
-                'barang_masuks.kode_barang',
-                DB::raw('COALESCE(items.nama_barang, barang_masuks.kode_barang)')
-            )
-            // Filter hanya tampilkan jika sisa stok masih ada (> 0)
-            ->havingRaw('GREATEST(SUM(barang_masuks.jumlah) - COALESCE(MAX(bk.total_keluar), 0), 0) > 0')
-            ->orderBy('tanggal_kadaluarsa', $sortKadaluarsa)
+            ->orderBy('barang_masuks.tanggal_kadaluarsa', $sortKadaluarsa)
             ->paginate(5, ['*'], 'kadaluarsa_page')
             ->withQueryString();
 
-        // 3. 5 Barang Stok Terendah
+    // 3. 5 Barang Stok Terendah
         $stokTerendah = DB::table('items')
             ->leftJoin('barang_masuks', function ($join) use ($userId) {
                 $join->on('items.kode_barang', '=', 'barang_masuks.kode_barang')
@@ -127,7 +127,7 @@ class DashboardGudangController extends Controller
             ->whereBetween('barang_keluars.tanggal_keluar', [$dateFrom, $dateTo])
             ->select('items.nama_barang', DB::raw('SUM(jumlah_keluar) as total'), DB::raw('COUNT(barang_keluars.id) as frekuensi'))
             ->groupBy('barang_keluars.kode_barang', 'items.nama_barang')
-            ->orderByDesc('frekuensi')
+            ->orderByDesc('total') // <-- Diurutkan berdasarkan jumlah fisik barang keluar
             ->limit(5)
             ->get();
 
@@ -160,13 +160,12 @@ class DashboardGudangController extends Controller
         $trenTransaksi = collect();
 
         foreach ($period as $date) {
-        $tglStr = $date->format('Y-m-d');
-        $trenTransaksi->push([
-            'label'  => $date->format('d M'),
-            'masuk'  => (int) ($masukHarian[$tglStr] ?? 0),
-            'keluar' => (int) ($keluarHarian[$tglStr] ?? 0),
-        ]);
-
+            $tglStr = $date->format('Y-m-d');
+            $trenTransaksi->push([
+                'label'  => $date->format('d M'),
+                'masuk'  => (int) ($masukHarian[$tglStr] ?? 0),
+                'keluar' => (int) ($keluarHarian[$tglStr] ?? 0),
+            ]);
         }
 
         $kpi = [
@@ -257,6 +256,7 @@ class DashboardGudangController extends Controller
         );
 
         $prioritasTindakan->appends($request->all());
+
         // 9. Top Pemasok
         $topPemasok = DB::table('pemasoks')
             ->join('barang_masuks', 'pemasoks.id', '=', 'barang_masuks.id_pemasok')
@@ -299,234 +299,234 @@ class DashboardGudangController extends Controller
             }
         }
 
-            return view('dashboard.gudang', compact(
-                'dateFrom', 'dateTo', 'kpi', 'trenTransaksi',
-                'topKeluar', 'topMasuk', 'stokTerendah', 'kadaluarsa', 'prioritasTindakan',
-                'idleStock', 'topPemasok', 'sortKadaluarsa'
-            ));
-        }
-
-        public function getIdleStockData(Request $request, $isExport = false)
-        {
-            $userId = Auth::id();
-
-            $sortOrder = $request->input('idle_sort', 'desc');
-            $fsnFilter = $request->input('fsn_filter', 'all');
-            $today = Carbon::now();
-
-            $barangs = DB::table('items')
-                ->where('user_id', $userId)
-                ->select('kode_barang', 'nama_barang', 'stok_minimum')
-                ->get();
-
-            $filteredCollection = $barangs->map(function ($barang) use ($today, $userId) {
-                $kode = $barang->kode_barang;
-
-                $total_masuk = DB::table('barang_masuks')
-                    ->where('user_id', $userId)
-                    ->where('kode_barang', $kode)
-                    ->sum('jumlah');
-
-                $totalKeluar = DB::table('barang_keluars')
-                    ->where('user_id', $userId)
-                    ->where('kode_barang', $kode)
-                    ->sum('jumlah_keluar');
-
-                $stokSaatIni = max(0, $total_masuk - $totalKeluar);
-
-                $lastKeluar = DB::table('barang_keluars')
-                    ->where('user_id', $userId)
-                    ->where('kode_barang', $kode)
-                    ->latest('tanggal_keluar')
-                    ->value('tanggal_keluar');
-
-                $lastMasuk = DB::table('barang_masuks')
-                    ->where('user_id', $userId)
-                    ->where('kode_barang', $kode)
-                    ->latest('tanggal_masuk')
-                    ->value('tanggal_masuk');
-
-                if ($lastKeluar) {
-                    $lastActivityDate = Carbon::parse($lastKeluar);
-                    $dslm = (int) $lastActivityDate->diffInDays($today);
-                    $tglKeluarStr = $lastActivityDate->format('d M Y');
-                } else {
-                    $firstMasuk = DB::table('barang_masuks')
-                        ->where('user_id', $userId)
-                        ->where('kode_barang', $kode)
-                        ->oldest('tanggal_masuk')
-                        ->value('tanggal_masuk');
-
-                    if ($firstMasuk) {
-                        $firstMasukDate = Carbon::parse($firstMasuk);
-                        $dslm =(int) $firstMasukDate->diffInDays($today);
-                    } else {
-                            $dslm = 0;
-                    }
-                    $tglKeluarStr = 'Belum Ada Transaksi Keluar';
-                }
-
-
-                $keluar365Hari = DB::table('barang_keluars')
-                    ->where('user_id', $userId)
-                    ->where('kode_barang', $kode)
-                    ->where('tanggal_keluar', '>=', $today->copy()->subDays(365))
-                    ->sum('jumlah_keluar');
-
-                $tor = $stokSaatIni > 0 ? round($keluar365Hari / $stokSaatIni, 2) : 0;
-
-                # Klasifikasi FSN — berbasis TOR sebagai penentu utama
-                if ($keluar365Hari == 0 && $dslm >= 30) {
-                    $kategoriFsn = 'Non-Moving (Idle)';
-                    $badgeColor  = 'danger';
-                }
-                # Klasifikasi FSN — berbasis TOR sebagai penentu utama
-                elseif ($tor < 1) {
-                    $kategoriFsn = 'Non-Moving (Idle)';
-                    $badgeColor  = 'danger';
-                } elseif ($tor <= 3) {
-                    $kategoriFsn = 'Slow-Moving';
-                    $badgeColor  = 'warning';
-                } else {
-                    $kategoriFsn = 'Fast-Moving';
-                    $badgeColor  = 'success';
-                }
-
-                return [
-                    'kode_barang'       => $kode,
-                    'nama_barang'       => $barang->nama_barang,
-                    'stok'              => $stokSaatIni,
-                    'hari_idle'         => $dslm . ' Hari',
-                    'hari_idle_num'     => $dslm,
-                    'terakhir_bergerak' => $tglKeluarStr,
-                    'tor'               => $tor,
-                    'kategori_fsn'      => $kategoriFsn,
-                    'badge_color'       => $badgeColor,
-                ];
-            })
-            ->filter(function ($row) {
-                return $row['stok'] > 0;
-               
-            });
-            
-            if ($sortOrder === 'asc') {
-                $filteredCollection = $filteredCollection->sortBy('hari_idle_num')->values();
-            } else {
-                $filteredCollection = $filteredCollection->sortByDesc('hari_idle_num')->values();
-            }
-
-            if ($isExport) {
-                return $filteredCollection;
-            }
-
-            $perPage = 5;
-            $currentPage = LengthAwarePaginator::resolveCurrentPage('idle_page');
-            $currentPageItems = $filteredCollection->slice(($currentPage - 1) * $perPage, $perPage)->values();
-
-            $paginatedItems = new LengthAwarePaginator(
-                $currentPageItems,
-                $filteredCollection->count(),
-                $perPage,
-                $currentPage,
-                [
-                    'path' => LengthAwarePaginator::resolveCurrentPath(),
-                    'pageName' => 'idle_page',
-                ]
-            );
-
-            return $paginatedItems->appends($request->all());
-        }
-public function exportPrioritasPdf(Request $request)
-{
-    $dateFrom     = $request->input('date_from', date('Y-m-01'));
-    $dateTo       = $request->input('date_to', date('Y-m-d'));
-    $filterStatus = strtolower($request->input('filter_status', 'semua'));
-    $userId       = \Illuminate\Support\Facades\Auth::id();
-
-    // 1. Ambil barang milik user login
-    $allItems = \App\Models\Item::where('user_id', '=', $userId)->get();
-
-    // 2. Hitung TOTAL kumulatif barang masuk
-    $barangMasuk = DB::table('barang_masuks')
-        ->select('kode_barang', DB::raw('SUM(jumlah) as total_masuk'))
-        ->where('user_id', '=', $userId)
-        ->groupBy('kode_barang')
-        ->pluck('total_masuk', 'kode_barang');
-
-    // 3. Hitung TOTAL kumulatif barang keluar
-    $barangKeluar = DB::table('barang_keluars')
-        ->select('kode_barang', DB::raw('SUM(jumlah_keluar) as total_keluar'))
-        ->where('user_id', '=', $userId)
-        ->groupBy('kode_barang')
-        ->pluck('total_keluar', 'kode_barang');
-
-    // 4. Kalkulasi Stok Akhir & Tag Status
-    $dataPrioritas = $allItems->map(function ($item) use ($barangMasuk, $barangKeluar) {
-        $kode = $item->kode_barang;
-
-        $masuk = $barangMasuk[$kode] ?? 0;
-        $keluar = $barangKeluar[$kode] ?? 0;
-
-        $stokAkhir = $masuk - $keluar;
-        if ($stokAkhir < 0) { $stokAkhir = 0; }
-
-        $minStok = $item->stok_minimum ?? 5;
-
-        if ($stokAkhir == 0) {
-            $tag = 'Habis';
-            $urgensi = 1;
-        } elseif ($stokAkhir <= $minStok) {
-            $tag = 'Kritis';
-            $urgensi = 2;
-        } elseif ($stokAkhir <= ($minStok * 1.5)) {
-            $tag = 'Rendah';
-            $urgensi = 3;
-        } else {
-            $tag = 'Aman';
-            $urgensi = 4;
-        }
-
-        return [
-            'kode_barang'  => $item->kode_barang,
-            'nama'         => $item->nama_barang,
-            'stok_akhir'   => $stokAkhir,
-            'stok_minimum' => $minStok,
-            'tag'          => $tag,
-            'urgensi'      => $urgensi,
-        ];
-    });
-
-    // 5. Filter berdasarkan status yang dipilih
-    if ($filterStatus !== 'semua') {
-        $dataPrioritas = $dataPrioritas->filter(function ($item) use ($filterStatus) {
-            return strtolower($item['tag']) === $filterStatus;
-        });
+        return view('dashboard.gudang', compact(
+            'dateFrom', 'dateTo', 'kpi', 'trenTransaksi',
+            'topKeluar', 'topMasuk', 'stokTerendah', 'kadaluarsa', 'prioritasTindakan',
+            'idleStock', 'topPemasok', 'sortKadaluarsa',
+            'lastDataFrom', 'lastDataTo', 'lastDataLabel'
+        ));
     }
 
-    $prioritasItems = $dataPrioritas->sortBy('urgensi')->values();
+    public function getIdleStockData(Request $request, $isExport = false)
+    {
+        $userId = Auth::id();
 
-    // 6. Generate PDF (Sertakan $dateFrom dan $dateTo)
-    $pdf = Pdf::loadView('dashboard.prioritas_pdf', [
-        'items'        => $prioritasItems,
-        'dateFrom'     => $dateFrom,
-        'dateTo'       => $dateTo,
-        'filterStatus' => ucfirst($filterStatus),
-        'printedBy'    => Auth::check() ? Auth::user()->name : 'Gudang',
-    ])->setPaper('a4', 'portrait');
+        $sortOrder = $request->input('idle_sort', 'desc');
+        $fsnFilter = $request->input('fsn_filter', 'all');
+        $today = Carbon::now();
 
-    return $pdf->stream('laporan_prioritas_tindakan_' . date('Ymd_His') . '.pdf');
-}
+        $barangs = DB::table('items')
+            ->where('user_id', $userId)
+            ->select('kode_barang', 'nama_barang', 'stok_minimum')
+            ->get();
 
-        public function exportIdleStockPdf (Request $request)
-        {
-            $idleItems = $this->getIdleStockData($request, true);
+        $filteredCollection = $barangs->map(function ($barang) use ($today, $userId) {
+            $kode = $barang->kode_barang;
 
-            $pdf = Pdf::loadView('dashboard.idle_stock_pdf', [
-                'items'     => $idleItems,
-                'sortOrder' => $request->input('idle_sort', 'desc'),
-                'printedBy' => Auth::check() ? Auth::user()->name : 'Gudang',
-            ])->setPaper('a4', 'portrait');
+            $total_masuk = DB::table('barang_masuks')
+                ->where('user_id', $userId)
+                ->where('kode_barang', $kode)
+                ->sum('jumlah');
 
-            return $pdf->stream('laporan_idle_stock_' . date('Ymd_His') . '.pdf');
+            $totalKeluar = DB::table('barang_keluars')
+                ->where('user_id', $userId)
+                ->where('kode_barang', $kode)
+                ->sum('jumlah_keluar');
+
+            $stokSaatIni = max(0, $total_masuk - $totalKeluar);
+
+            $lastKeluar = DB::table('barang_keluars')
+                ->where('user_id', $userId)
+                ->where('kode_barang', $kode)
+                ->latest('tanggal_keluar')
+                ->value('tanggal_keluar');
+
+            $lastMasuk = DB::table('barang_masuks')
+                ->where('user_id', $userId)
+                ->where('kode_barang', $kode)
+                ->latest('tanggal_masuk')
+                ->value('tanggal_masuk');
+
+            if ($lastKeluar) {
+                $lastActivityDate = Carbon::parse($lastKeluar);
+                $dslm = (int) $lastActivityDate->diffInDays($today);
+                $tglKeluarStr = $lastActivityDate->format('d M Y');
+            } else {
+                $firstMasuk = DB::table('barang_masuks')
+                    ->where('user_id', $userId)
+                    ->where('kode_barang', $kode)
+                    ->oldest('tanggal_masuk')
+                    ->value('tanggal_masuk');
+
+                if ($firstMasuk) {
+                    $firstMasukDate = Carbon::parse($firstMasuk);
+                    $dslm =(int) $firstMasukDate->diffInDays($today);
+                } else {
+                    $dslm = 0;
+                }
+                $tglKeluarStr = 'Belum Ada Transaksi Keluar';
+            }
+
+            $keluar365Hari = DB::table('barang_keluars')
+                ->where('user_id', $userId)
+                ->where('kode_barang', $kode)
+                ->where('tanggal_keluar', '>=', $today->copy()->subDays(365))
+                ->sum('jumlah_keluar');
+
+            $tor = $stokSaatIni > 0 ? round($keluar365Hari / $stokSaatIni, 2) : 0;
+
+            # Klasifikasi FSN — berbasis TOR sebagai penentu utama
+            if ($keluar365Hari == 0 && $dslm >= 30) {
+                $kategoriFsn = 'Non-Moving (Idle)';
+                $badgeColor  = 'danger';
+            }
+            # Klasifikasi FSN — berbasis TOR sebagai penentu utama
+            elseif ($tor < 1) {
+                $kategoriFsn = 'Non-Moving (Idle)';
+                $badgeColor  = 'danger';
+            } elseif ($tor <= 3) {
+                $kategoriFsn = 'Slow-Moving';
+                $badgeColor  = 'warning';
+            } else {
+                $kategoriFsn = 'Fast-Moving';
+                $badgeColor  = 'success';
+            }
+
+            return [
+                'kode_barang'       => $kode,
+                'nama_barang'       => $barang->nama_barang,
+                'stok'              => $stokSaatIni,
+                'hari_idle'         => $dslm . ' Hari',
+                'hari_idle_num'     => $dslm,
+                'terakhir_bergerak' => $tglKeluarStr,
+                'tor'               => $tor,
+                'kategori_fsn'      => $kategoriFsn,
+                'badge_color'       => $badgeColor,
+            ];
+        })
+        ->filter(function ($row) {
+            return $row['stok'] > 0;
+        });
+        
+        if ($sortOrder === 'asc') {
+            $filteredCollection = $filteredCollection->sortBy('hari_idle_num')->values();
+        } else {
+            $filteredCollection = $filteredCollection->sortByDesc('hari_idle_num')->values();
         }
+
+        if ($isExport) {
+            return $filteredCollection;
+        }
+
+        $perPage = 5;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage('idle_page');
+        $currentPageItems = $filteredCollection->slice(($currentPage - 1) * $perPage, $perPage)->values();
+
+        $paginatedItems = new LengthAwarePaginator(
+            $currentPageItems,
+            $filteredCollection->count(),
+            $perPage,
+            $currentPage,
+            [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+                'pageName' => 'idle_page',
+            ]
+        );
+
+        return $paginatedItems->appends($request->all());
+    }
+
+    public function exportPrioritasPdf(Request $request)
+    {
+        $dateFrom     = $request->input('date_from', date('Y-m-01'));
+        $dateTo       = $request->input('date_to', date('Y-m-d'));
+        $filterStatus = strtolower($request->input('filter_status', 'semua'));
+        $userId       = \Illuminate\Support\Facades\Auth::id();
+
+        // 1. Ambil barang milik user login
+        $allItems = \App\Models\Item::where('user_id', '=', $userId)->get();
+
+        // 2. Hitung TOTAL kumulatif barang masuk
+        $barangMasuk = DB::table('barang_masuks')
+            ->select('kode_barang', DB::raw('SUM(jumlah) as total_masuk'))
+            ->where('user_id', '=', $userId)
+            ->groupBy('kode_barang')
+            ->pluck('total_masuk', 'kode_barang');
+
+        // 3. Hitung TOTAL kumulatif barang keluar
+        $barangKeluar = DB::table('barang_keluars')
+            ->select('kode_barang', DB::raw('SUM(jumlah_keluar) as total_keluar'))
+            ->where('user_id', '=', $userId)
+            ->groupBy('kode_barang')
+            ->pluck('total_keluar', 'kode_barang');
+
+        // 4. Kalkulasi Stok Akhir & Tag Status
+        $dataPrioritas = $allItems->map(function ($item) use ($barangMasuk, $barangKeluar) {
+            $kode = $item->kode_barang;
+
+            $masuk = $barangMasuk[$kode] ?? 0;
+            $keluar = $barangKeluar[$kode] ?? 0;
+
+            $stokAkhir = $masuk - $keluar;
+            if ($stokAkhir < 0) { $stokAkhir = 0; }
+
+            $minStok = $item->stok_minimum ?? 5;
+
+            if ($stokAkhir == 0) {
+                $tag = 'Habis';
+                $urgensi = 1;
+            } elseif ($stokAkhir <= $minStok) {
+                $tag = 'Kritis';
+                $urgensi = 2;
+            } elseif ($stokAkhir <= ($minStok * 1.5)) {
+                $tag = 'Rendah';
+                $urgensi = 3;
+            } else {
+                $tag = 'Aman';
+                $urgensi = 4;
+            }
+
+            return [
+                'kode_barang'  => $item->kode_barang,
+                'nama'         => $item->nama_barang,
+                'stok_akhir'   => $stokAkhir,
+                'stok_minimum' => $minStok,
+                'tag'          => $tag,
+                'urgensi'      => $urgensi,
+            ];
+        });
+
+        // 5. Filter berdasarkan status yang dipilih
+        if ($filterStatus !== 'semua') {
+            $dataPrioritas = $dataPrioritas->filter(function ($item) use ($filterStatus) {
+                return strtolower($item['tag']) === $filterStatus;
+            });
+        }
+
+        $prioritasItems = $dataPrioritas->sortBy('urgensi')->values();
+
+        // 6. Generate PDF (Sertakan $dateFrom dan $dateTo)
+        $pdf = Pdf::loadView('dashboard.prioritas_pdf', [
+            'items'        => $prioritasItems,
+            'dateFrom'     => $dateFrom,
+            'dateTo'       => $dateTo,
+            'filterStatus' => ucfirst($filterStatus),
+            'printedBy'    => Auth::check() ? Auth::user()->name : 'Gudang',
+        ])->setPaper('a4', 'portrait');
+
+        return $pdf->stream('laporan_prioritas_tindakan_' . date('Ymd_His') . '.pdf');
+    }
+
+    public function exportIdleStockPdf (Request $request)
+    {
+        $idleItems = $this->getIdleStockData($request, true);
+
+        $pdf = Pdf::loadView('dashboard.idle_stock_pdf', [
+            'items'     => $idleItems,
+            'sortOrder' => $request->input('idle_sort', 'desc'),
+            'printedBy' => Auth::check() ? Auth::user()->name : 'Gudang',
+        ])->setPaper('a4', 'portrait');
+
+        return $pdf->stream('laporan_idle_stock_' . date('Ymd_His') . '.pdf');
+    }
 }

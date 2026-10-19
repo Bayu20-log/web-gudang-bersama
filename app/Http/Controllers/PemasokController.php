@@ -195,6 +195,7 @@ class PemasokController extends Controller
             $query->where('pemasoks.id', '=', $selectedPemasokId);
         }
 
+        // MENGGUNAKAN PAGINATE(10) AGAR SUPPORT PAGINASI DI BLADE
         $pemasoks = $query->select(
                 'pemasoks.id',
                 'pemasoks.nama_pemasok',
@@ -207,9 +208,10 @@ class PemasokController extends Controller
             )
             ->groupBy('pemasoks.id', 'pemasoks.nama_pemasok', 'pemasoks.nama_pic', 'pemasoks.no_telepon', 'pemasoks.email')
             ->orderByDesc('total_barang_masuk')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
-        return view('pemasok.detail_pasokan', compact(
+        return view('pemasok\detail_pasokan', compact(
             'pemasoks', 
             'listPemasok',
             'selectedPemasokId',
