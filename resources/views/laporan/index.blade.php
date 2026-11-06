@@ -95,10 +95,13 @@
     {{-- Ringkasan jumlah barang + tombol Ekspor --}}
     <div class="report-count-row">
         <div class="rc-text">
-            <strong>{{ $totalBarang }}</strong> barang
             @if($filterAktif)
+                <strong>{{ $perluTindakan }}</strong> barang perlu tindakan
                 &middot; <a href="{{ route('laporan', array_merge(request()->except('filter', 'page'))) }}" class="rc-warn" style="text-decoration:underline;">Tampilkan semua</a>
-            @elseif($perluTindakan > 0)
+            @else
+                <strong>{{ $totalBarang }}</strong> barang
+            @endif
+            @if(!$filterAktif && $perluTindakan > 0)
                 &middot; <a href="{{ route('laporan', array_merge(request()->except('page'), ['filter' => 'perlu_tindakan'])) }}" class="rc-warn" style="text-decoration:underline;">{{ $perluTindakan }} perlu tindakan</a>
             @endif
         </div>
@@ -264,43 +267,5 @@
             @endif
         </div>
     </div>
-
-    @php $chartItems = $isPaginator ? $data->items() : $data; @endphp
-    @if ($total > 0)
-        <div class="card border-0 shadow-sm mt-5 p-4 rounded-4 bg-white">
-            <h5 class="fw-bold mb-4 text-center" style="color:#1e293b;">Grafik Stok Akhir</h5>
-            <canvas id="stokChart" height="100"></canvas>
-        </div>
-        
-        <!-- PERBAIKAN: SCRIPT DIPINDAH KE SINI AGAR LANGSUNG DIEKSEKUSI -->
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const labels   = {!! json_encode(collect($chartItems)->pluck('nama_barang')->values()) !!};
-                const stokData = {!! json_encode(collect($chartItems)->pluck('stok_akhir')->values()) !!};
-                const ctx = document.getElementById('stokChart').getContext('2d');
-                
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Stok Akhir',
-                            data: stokData,
-                            backgroundColor: '#f97316',
-                            borderRadius: 4
-                        }]
-                    },
-                    options: { 
-                        responsive: true, 
-                        scales: { y: { beginAtZero: true } },
-                        plugins: {
-                            legend: { display: false } // Menyembunyikan legend ganda agar lebih bersih
-                        }
-                    }
-                });
-            });
-        </script>
-    @endif
 </div>
 @endsection

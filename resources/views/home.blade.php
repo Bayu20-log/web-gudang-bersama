@@ -122,16 +122,18 @@
                 transform: scale(1.1);
         }
 
-        /* Desain Grid Membagi 4 Kolom di HP */
+        /* Grid ikon di HP: jumlah kolom menyesuaikan lebar kontainer (umumnya 4),
+           sehingga ikon tidak pernah keluar dari kotak walau layarnya sangat sempit */
         .grid-container {
                 display: grid;
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(auto-fill, minmax(max(64px, calc((100% - 40px) / 4)), 1fr)); /* maks. 4 kolom, mengecil otomatis kalau sempit */
                 gap: 15px 10px;
         }
         .grid-item {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+                min-width: 0;
                 text-decoration: none;
                 color: #374151;
                 transition: transform 0.2s;
@@ -163,6 +165,8 @@
                 font-weight: 600;
                 text-align: center;
                 line-height: 1.2;
+                max-width: 100%;
+                overflow-wrap: anywhere;
         }
 
         /* Kustomisasi warna ikon */
@@ -276,7 +280,7 @@
                         </a>
                         <a href="{{ route('barang-masuk.create') }}" class="grid-item">
                                 <div class="icon-box green"><i class="bi bi-box-arrow-in-down"></i></div>
-                                <span class="icon-text">Tambah Brg Masuk</span>
+                                <span class="icon-text">Tambah Barang Masuk</span>
                         </a>
                         <a href="{{ route('barang-keluar.index') }}" class="grid-item">
                                 <div class="icon-box blue"><i class="bi bi-journal-arrow-up"></i></div>
@@ -284,7 +288,7 @@
                         </a>
                         <a href="{{ route('barang-keluar.create') }}" class="grid-item">
                                 <div class="icon-box red"><i class="bi bi-box-arrow-up"></i></div>
-                                <span class="icon-text">Tambah Brg Keluar</span>
+                                <span class="icon-text">Tambah Barang Keluar</span>
                         </a>
                 </div>
         </div>
@@ -310,7 +314,7 @@
                         </a>
                         <a href="{{ route('lokasi.index') }}" class="grid-item">
                                 <div class="icon-box"><i class="bi bi-shop"></i></div>
-                                <span class="icon-text">Gudang</span>
+                                <span class="icon-text">Lokasi</span>
                         </a>
                         <a href="{{ route('kategori.index') }}" class="grid-item">
                                 <div class="icon-box"><i class="bi bi-tags"></i></div>
