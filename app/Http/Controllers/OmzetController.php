@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Models\BarangKeluar;
 use App\Models\Lokasi;
 use App\Models\Kondisi;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 
 
@@ -100,6 +101,21 @@ class OmzetController extends Controller
 
 
     $total_omzet = $data->sum('omzet_item');
+
+
+
+
+    // --- Pagination manual untuk Collection hasil filter (10 per halaman)
+    $perPage = (int) $request->get('per_page', 10);
+    $page    = LengthAwarePaginator::resolveCurrentPage();
+
+    $data = new LengthAwarePaginator(
+        $data->forPage($page, $perPage)->values(),
+        $data->count(),
+        $perPage,
+        $page,
+        ['path' => $request->url(), 'query' => $request->query()]
+    );
 
 
 

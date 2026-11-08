@@ -122,16 +122,18 @@
                 transform: scale(1.1);
         }
 
-        /* Desain Grid Membagi 4 Kolom di HP */
+        /* Grid ikon di HP: jumlah kolom menyesuaikan lebar kontainer (umumnya 4),
+           sehingga ikon tidak pernah keluar dari kotak walau layarnya sangat sempit */
         .grid-container {
                 display: grid;
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(auto-fill, minmax(max(64px, calc((100% - 40px) / 4)), 1fr)); /* maks. 4 kolom, mengecil otomatis kalau sempit */
                 gap: 15px 10px;
         }
         .grid-item {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+                min-width: 0;
                 text-decoration: none;
                 color: #374151;
                 transition: transform 0.2s;
@@ -163,6 +165,8 @@
                 font-weight: 600;
                 text-align: center;
                 line-height: 1.2;
+                max-width: 100%;
+                overflow-wrap: anywhere;
         }
 
         /* Kustomisasi warna ikon */
@@ -276,7 +280,7 @@
                         </a>
                         <a href="{{ route('barang-masuk.create') }}" class="grid-item">
                                 <div class="icon-box green"><i class="bi bi-box-arrow-in-down"></i></div>
-                                <span class="icon-text">Tambah Brg Masuk</span>
+                                <span class="icon-text">Tambah Barang Masuk</span>
                         </a>
                         <a href="{{ route('barang-keluar.index') }}" class="grid-item">
                                 <div class="icon-box blue"><i class="bi bi-journal-arrow-up"></i></div>
@@ -284,7 +288,7 @@
                         </a>
                         <a href="{{ route('barang-keluar.create') }}" class="grid-item">
                                 <div class="icon-box red"><i class="bi bi-box-arrow-up"></i></div>
-                                <span class="icon-text">Tambah Brg Keluar</span>
+                                <span class="icon-text">Tambah Barang Keluar</span>
                         </a>
                 </div>
         </div>
@@ -310,7 +314,7 @@
                         </a>
                         <a href="{{ route('lokasi.index') }}" class="grid-item">
                                 <div class="icon-box"><i class="bi bi-shop"></i></div>
-                                <span class="icon-text">Gudang</span>
+                                <span class="icon-text">Lokasi</span>
                         </a>
                         <a href="{{ route('kategori.index') }}" class="grid-item">
                                 <div class="icon-box"><i class="bi bi-tags"></i></div>
@@ -354,18 +358,23 @@
         </div>
 
         <!-- Kategori 4: FITUR TAMBAHAN -->
-        <div class="category-wrapper">
+        <div id="tour-tambahan" class="category-wrapper">
                 <div class="section-title">
                         <div><i class="bi bi-grid-fill text-purple me-2 fs-5"></i> Fitur Tambahan</div>
+                        <i class="bi bi-info-circle info-icon fs-5" onclick="showInfo('tambahan')" title="Info Kontainer"></i>
                 </div>
                 <div class="grid-container">
-                        <a href="{{ route('notifications.index') ?? '#' }}" class="grid-item">
+                        <a href="/public/notifications" class="grid-item">
                                 <div class="icon-box yellow"><i class="bi bi-bell"></i></div>
                                 <span class="icon-text">Notifikasi</span>
                         </a>
-                        <a href="#" class="grid-item" onclick="alert('Fitur Prediksi Data (AI) masih dalam tahap pengembangan!')">
+                        <a href="/public/prediksi" class="grid-item">
                                 <div class="icon-box purple"><i class="bi bi-magic"></i></div>
                                 <span class="icon-text">Prediksi</span>
+                        </a>
+                        <a href="/public/prediksi/create" class="grid-item">
+                                <div class="icon-box purple"><i class="bi bi-plus-circle"></i></div>
+                                <span class="icon-text">Tambah Prediksi</span>
                         </a>
                 </div>
         </div>
@@ -420,6 +429,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     side: "top",
                     align: 'start'
                 }
+            },
+            {
+                element: '#tour-tambahan',
+                popover: {
+                    title: 'Fitur Tambahan',
+                    description: 'Pantau notifikasi stok yang perlu perhatian, lihat hasil prediksi, atau buat prediksi baru lewat Tambah Prediksi.',
+                    side: "top",
+                    align: 'start'
+                }
             }
         ]
     });
@@ -450,6 +468,11 @@ document.addEventListener('DOMContentLoaded', function() {
             stepConfig = {
                 element: '#tour-laporan',
                 popover: { title: 'Ekspor & Pantau Laporan', description: 'Lacak arus pergerakan barang, omzet harian, dan aset gudang, serta ekspor langsung ke PDF/Excel.', side: "top", align: 'start' }
+            };
+        } else if (section === 'tambahan') {
+            stepConfig = {
+                element: '#tour-tambahan',
+                popover: { title: 'Fitur Tambahan', description: 'Pantau notifikasi stok yang perlu perhatian, lihat hasil prediksi, atau buat prediksi baru lewat Tambah Prediksi.', side: "top", align: 'start' }
             };
         }
 

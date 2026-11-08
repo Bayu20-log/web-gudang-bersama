@@ -202,8 +202,13 @@
         </tbody>
     </table>
     </div>
-    <div class="d-flex justify-content-center mt-4">
-        {!! $data->appends(request()->query())->links() !!}
+    <div class="mt-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <div class="small text-muted mb-2 mb-md-0 fw-medium">
+            Menampilkan {{ $data->firstItem() ?? 0 }} - {{ $data->lastItem() ?? 0 }} dari {{ $data->total() }} data
+        </div>
+        <div>
+            {!! $data->appends(request()->query())->links() !!}
+        </div>
     </div>
 </div>
 @endsection

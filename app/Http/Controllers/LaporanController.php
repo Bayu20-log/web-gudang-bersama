@@ -146,13 +146,21 @@ class LaporanController extends Controller
 
 
         // Ringkasan: total barang & yang perlu perhatian (kritis/rendah/habis)
-        $totalBarang = $collection->count();
-        $perluTindakan = $collection->filter(function ($item) {
+        $cekPerluTindakan = function ($item) {
             $min = $item['stok_minimum'] ?? 0;
             if ($item['stok_akhir'] <= 0) return true;
             if ($min > 0 && $item['stok_akhir'] < $min * 1.5) return true;
             return false;
-        })->count();
+        };
+
+        $totalBarang = $collection->count();
+        $perluTindakan = $collection->filter($cekPerluTindakan)->count();
+
+        // Kalau user klik "X perlu tindakan", filter koleksinya sebelum dipaginasi
+        $filterAktif = $request->get('filter') === 'perlu_tindakan';
+        if ($filterAktif) {
+            $collection = $collection->filter($cekPerluTindakan)->values();
+        }
 
 
 
@@ -184,6 +192,7 @@ class LaporanController extends Controller
             'lokasis' => $lokasiList,
             'totalBarang' => $totalBarang,
             'perluTindakan' => $perluTindakan,
+            'filterAktif' => $filterAktif,
         ]);
     }
 
