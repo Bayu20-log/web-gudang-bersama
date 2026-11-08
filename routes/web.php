@@ -50,6 +50,13 @@ Route::middleware(['auth', 'auto.logout'])->group(function () {
     Route::get('/dashboard/viewer', function () {
         return view('dashboard.viewer');
     })->name('dashboard.viewer');
+
+    // --- FITUR KHUSUS DASHBOARD & PEMASOK (RANIA) ---
+    Route::get('/pemasok/detail-pasokan', [PemasokController::class, 'detailPasokan'])->name('pemasok.detail-pasokan');
+    Route::get('/pemasok/export-pdf', [PemasokController::class, 'exportPdf'])->name('pemasok.export-pdf');
+    Route::get('/prioritas-tindakan/export-pdf', [DashboardGudangController::class, 'exportPrioritasPdf'])->name('prioritas-tindakan.export-pdf');
+    Route::get('/idle-stock/export-pdf', [DashboardGudangController::class, 'exportIdleStockPdf'])->name('idle-stock.export-pdf');
+
     Route::middleware(['auth', 'role:gudang'])->group(function () {
     Route::get('/stock-notifications', [StockNotificationController::class, 'index'])->name('stock-notifications.index');
     Route::post('/stock-notifications/evaluate', [StockNotificationController::class, 'evaluate'])->name('stock-notifications.evaluate');

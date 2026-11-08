@@ -19,6 +19,11 @@
     }
 </style>
 
+@php
+    // Preselect item (punya Rania): dari old(), URL ?kode_barang=, atau $selectedItemId dari controller
+    $targetKode = old('kode_barang') ?? request('kode_barang') ?? ($selectedItemId ?? null);
+@endphp
+
 <div class="container mt-2 mb-5">
     <h3 class="fw-bold mb-4" style="color: #374151;">Tambah Transaksi</h3>
     
@@ -32,7 +37,7 @@
     <form id="formBarangMasuk" method="POST" action="{{ route('barang-masuk.store') }}" onsubmit="confirmSimpan(event)">
         @csrf
         <div class="row g-4 form-grid-row">
-            
+
             <!-- KOLOM KIRI -->
             <div class="col-md-6">
                 {{-- Pilih Produk --}}
@@ -42,14 +47,18 @@
                         <option value=""></option>
                         <option value="ADD_NEW">Buat Produk Baru</option>
                         @foreach ($items as $item)
-                            <option value="{{ $item->kode_barang }}" {{ (old('kode_barang') ?: request('kode_barang')) == $item->kode_barang ? 'selected' : '' }}>
+                            @php
+                                $selected = !empty($targetKode)
+                                    && ((string)$targetKode === (string)$item->kode_barang || (string)$targetKode === (string)$item->id);
+                            @endphp
+                            <option value="{{ $item->kode_barang }}" {{ $selected ? 'selected' : '' }}>
                                 {{ $item->kode_barang }} - {{ $item->nama_barang }}
                             </option>
                         @endforeach
                     </select>
                     @error('kode_barang') <div class="text-danger mt-1" style="font-size: 0.85em;">{{ $message }}</div> @enderror
                 </div>
-                
+
                 {{-- Jumlah & Harga Beli --}}
                 <div class="row">
                     <div class="col-md-6 mb-3">
@@ -63,13 +72,13 @@
                         @error('harga_satuan') <div class="text-danger mt-1" style="font-size: 0.85em;">{{ $message }}</div> @enderror
                     </div>
                 </div>
-                
+
                 {{-- Total Harga (Readonly) --}}
                 <div class="mb-3">
                     <label class="form-label">Total Harga</label>
                     <input type="number" name="total_harga" id="total_harga" class="form-control" readonly style="background-color: #e2e8f0;">
                 </div>
-                
+
                 {{-- Tanggal Masuk & Kadaluarsa --}}
                 <div class="row">
                     <div class="col-md-6 mb-3">
@@ -98,7 +107,7 @@
                         @endforeach
                     </select>
                 </div>
-                
+
                 {{-- Lokasi --}}
                 <div class="mb-3">
                     <label class="form-label">Lokasi <span class="text-danger">*</span></label>
@@ -112,7 +121,7 @@
                         @endforeach
                     </select>
                 </div>
-                
+
                 {{-- Kondisi --}}
                 <div class="mb-3">
                     <label class="form-label">Kondisi <span class="text-danger">*</span></label>
@@ -126,7 +135,7 @@
                         @endforeach
                     </select>
                 </div>
-                
+
                 {{-- Catatan --}}
                 <div class="mb-3">
                     <label class="form-label">Catatan</label>
@@ -227,8 +236,15 @@
   </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+{{-- Library: hanya dimuat kalau belum dimuat oleh layout (supaya tidak dobel) --}}
+<script>
+    window.jQuery || document.write('<script src="https://code.jquery.com/jquery-3.7.1.min.js"><\/script>');
+</script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    window.Swal || document.write('<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"><\/script>');
+    window.bootstrap || document.write('<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"><\/script>');
+</script>
 <script>
     $(document).ready(function() {
         $('.select2-custom').select2({
@@ -239,7 +255,7 @@
             if (e.params.data.id === 'ADD_NEW') {
                 $(this).val('').trigger('change');
                 let targetAction = $(this).data('action');
-                
+
                 // Cek apakah aksinya pindah halaman atau buka modal
                 if (targetAction === 'redirect') {
                     window.location.href = "{{ route('item.create') }}?redirect=barang-masuk";
@@ -266,6 +282,7 @@
     }
     document.getElementById('jumlah').addEventListener('input', updateTotalHarga);
     document.getElementById('harga_satuan').addEventListener('input', updateTotalHarga);
+    updateTotalHarga(); // hitung saat halaman dibuka (misal setelah validasi gagal)
 
     function confirmSimpan(event) {
         event.preventDefault();
@@ -310,7 +327,7 @@
                 errorDiv.innerText = data.message || 'Gagal menyimpan data';
                 errorDiv.style.display = 'block';
             }
-        } catch (error) { errorDiv.innerText = 'Terjadi kesalahan sistem.'; errorDiv.style.display = 'block'; } 
+        } catch (error) { errorDiv.innerText = 'Terjadi kesalahan sistem.'; errorDiv.style.display = 'block'; }
         finally { btnSave.disabled = false; btnSave.innerText = 'Simpan'; }
     }
 
@@ -336,7 +353,7 @@
                 errorDiv.innerText = data.message || 'Gagal menyimpan data';
                 errorDiv.style.display = 'block';
             }
-        } catch (error) { errorDiv.innerText = 'Terjadi kesalahan sistem.'; errorDiv.style.display = 'block'; } 
+        } catch (error) { errorDiv.innerText = 'Terjadi kesalahan sistem.'; errorDiv.style.display = 'block'; }
         finally { btnSave.disabled = false; btnSave.innerText = 'Simpan'; }
     }
 
@@ -362,7 +379,7 @@
                 errorDiv.innerText = data.message || 'Gagal menyimpan data';
                 errorDiv.style.display = 'block';
             }
-        } catch (error) { errorDiv.innerText = 'Terjadi kesalahan sistem.'; errorDiv.style.display = 'block'; } 
+        } catch (error) { errorDiv.innerText = 'Terjadi kesalahan sistem.'; errorDiv.style.display = 'block'; }
         finally { btnSave.disabled = false; btnSave.innerText = 'Simpan'; }
     }
 </script>

@@ -47,16 +47,31 @@ class BarangMasukController extends Controller
         return view('barangmasuk.index', compact('barangMasuks', 'lokasis'));
     }
 
-    public function create()
+
+
+
+    public function create(Request $request)
     {
+
+        $selectedItemId = $request->query('item.id');
+
+        $selectedKodeBarang = $request->query('kode_barang');
+
+        $barangs = Item::all();
+
         return view('barangmasuk.create', [
             'items' => Item::where('user_id', Auth::id())->get(),
             'pemasoks' => Pemasok::where('user_id', Auth::id())->get(),
             'lokasis' => Lokasi::where('user_id', Auth::id())->get(),
             'kondisis' => Kondisi::where('user_id', Auth::id())->get(),
             'users' => User::all(),
+            'selectedItemId' => $selectedItemId,
+            'selectedKodeBarang' => $selectedKodeBarang,
         ]);
+
     }
+
+
 
     public function store(Request $request)
     {

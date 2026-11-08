@@ -6,14 +6,17 @@ use App\Models\Pemasok;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class PemasokController extends Controller
 {
     public function index(Request $request)
     {
         $query = Pemasok::query()
-            ->where('user_id', Auth::id()); 
+            ->where('user_id', Auth::id()); // filter hanya data user login
 
         if ($request->search) {
             $search = $request->search;
@@ -29,6 +32,7 @@ class PemasokController extends Controller
         }
 
         $pemasoks = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
         return view('pemasok.index', compact('pemasoks'));
     }
 
@@ -58,14 +62,14 @@ class PemasokController extends Controller
             'bergabung_sejak'=> $request->bergabung_sejak,
             'nama_pic'       => $request->nama_pic,
             'user_id'        => Auth::id(),
-        ]);
-        
+        ]);    
+
         return redirect()->route('pemasok.index')->with('success', 'Pemasok berhasil ditambahkan');
     }
 
-    // ==========================================
-    // FUNGSI AJAX: DISAMAKAN DENGAN MASTER DATA
-    // ==========================================
+    /**
+     * FUNGSI AJAX: Menangani simpan pemasok baru via Modal di form Barang Masuk
+     */
     public function storeAjax(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -145,6 +149,7 @@ class PemasokController extends Controller
             }
 
             $pemasok->delete();
+
             return redirect()->route('pemasok.index')->with('success', 'Pemasok berhasil dihapus.');
         } catch (QueryException $e) {
             $mysqlCode   = $e->errorInfo[1] ?? null;
@@ -158,5 +163,106 @@ class PemasokController extends Controller
             report($e);
             return back()->with('error', 'Terjadi kesalahan saat menghapus data.');
         }
+    }
+
+    public function detailPasokan(Request $request)
+    {
+        $userId = Auth::id();
+
+        $formattedDateFrom = $request->input('date_from', date('Y-m-01'));
+        $formattedDateTo   = $request->input('date_to', date('Y-m-d'));
+        $selectedPemasokId = $request->input('pemasok_id');
+
+        $dateFrom = Carbon::parse($formattedDateFrom)->startOfDay();
+        $dateTo   = Carbon::parse($formattedDateTo)->endOfDay();
+
+        $listPemasok = DB::table('pemasoks')
+            ->where('user_id', '=', $userId)
+            ->select('id', 'nama_pemasok')
+            ->orderBy('nama_pemasok', 'asc')
+            ->get();
+
+        $query = DB::table('pemasoks')
+            ->where('pemasoks.user_id', '=', $userId)
+            ->leftJoin('barang_masuks', function ($join) use ($userId, $dateFrom, $dateTo) {
+                $join->on('pemasoks.id', '=', 'barang_masuks.id_pemasok')
+                    ->where('barang_masuks.user_id', '=', $userId)
+                    ->where('barang_masuks.tanggal_masuk', '>=', $dateFrom)
+                    ->where('barang_masuks.tanggal_masuk', '<=', $dateTo);
+            });
+
+        if (!empty($selectedPemasokId)) {
+            $query->where('pemasoks.id', '=', $selectedPemasokId);
+        }
+
+        // MENGGUNAKAN PAGINATE(10) AGAR SUPPORT PAGINASI DI BLADE
+        $pemasoks = $query->select(
+                'pemasoks.id',
+                'pemasoks.nama_pemasok',
+                'pemasoks.nama_pic',
+                'pemasoks.no_telepon',
+                'pemasoks.email',
+                DB::raw('COUNT(barang_masuks.id) as total_transaksi'),
+                DB::raw('IFNULL(SUM(barang_masuks.jumlah), 0) as total_barang_masuk'),
+                DB::raw('IFNULL(SUM(barang_masuks.total_harga), 0) as total_nominal')
+            )
+            ->groupBy('pemasoks.id', 'pemasoks.nama_pemasok', 'pemasoks.nama_pic', 'pemasoks.no_telepon', 'pemasoks.email')
+            ->orderByDesc('total_barang_masuk')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('pemasok.detail_pasokan', compact(
+            'pemasoks', 
+            'listPemasok',
+            'selectedPemasokId',
+            'formattedDateFrom', 
+            'formattedDateTo', 
+            'dateFrom', 
+            'dateTo'
+        ));
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $userId = Auth::id();
+
+        $formattedDateFrom = $request->input('date_from', date('Y-m-01'));
+        $formattedDateTo   = $request->input('date_to', date('Y-m-d'));
+        $selectedPemasokId = $request->input('pemasok_id');
+
+        $dateFrom = Carbon::parse($formattedDateFrom)->startOfDay();
+        $dateTo   = Carbon::parse($formattedDateTo)->endOfDay();
+
+        $query = DB::table('pemasoks')
+            ->leftJoin('barang_masuks', function($join) use ($userId, $dateFrom, $dateTo) {
+                $join->on('pemasoks.id', '=', 'barang_masuks.id_pemasok')
+                ->where('barang_masuks.user_id', '=', $userId)
+                ->whereBetween('barang_masuks.tanggal_masuk', [$dateFrom, $dateTo]);
+            })
+            ->select(
+                'pemasoks.nama_pemasok',
+                'pemasoks.email',
+                'pemasoks.nama_pic as pic',
+                'pemasoks.no_telepon as no_hp',
+                DB::raw('COUNT(barang_masuks.id) as frekuensi'),
+                DB::raw('COALESCE(SUM(barang_masuks.jumlah), 0) as total_barang_masuk'),
+                DB::raw('COALESCE(SUM(barang_masuks.total_harga), 0) as total_nominal')
+            )
+            ->groupBy('pemasoks.id', 'pemasoks.nama_pemasok', 'pemasoks.email', 'pemasoks.nama_pic', 'pemasoks.no_telepon');
+
+        if (!empty($selectedPemasokId)) {
+            $query->where('pemasoks.id', '=', $selectedPemasokId);
+        }
+
+        $pemasoks = $query->get();
+
+        $pdf = Pdf::loadView('pemasok.pemasok_pdf', [
+            'pemasoks' => $pemasoks,
+            'dateFrom' => $formattedDateFrom,
+            'dateTo'   => $formattedDateTo,
+            'printedBy' => Auth::check() ? Auth::user()->name : 'Gudang',
+        ])->setPaper('a4', 'portrait');
+
+        return $pdf->stream('pemasok.pemasok_pdf' . date('Ymd_His') . '.pdf');
     }
 }

@@ -17,7 +17,6 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <!-- PERBAIKAN: onsubmit diganti memanggil event SweetAlert2 -->
     <form action="{{ route('barang-keluar.store') }}" method="POST" id="barangKeluarForm" onsubmit="confirmSimpan(event)">
         @csrf
         <div class="row g-4 form-grid-row">
@@ -133,15 +132,24 @@ function pickHarga(obj) {
   return 0;
 }
 
-// Load opsi barang ke dalam dropdown
+// Load opsi barang ke dalam dropdown & OTOMATIS PILIH DARI URL
 async function loadPilihanBarang() {
   const res = await fetch("{{ route('barang-keluar.pilihan-barang') }}");
   const data = await res.json();
   const select = document.getElementById("kode_lokasi_kondisi");
   
+  // Baca parameter dari URL (misal: ?kode_barang=BRG001&id_lokasi=1&id_kondisi=1)
+  const urlParams = new URLSearchParams(window.location.search);
+  const paramKode = urlParams.get('kode_barang');
+  const paramLokasi = urlParams.get('id_lokasi');
+  const paramKondisi = urlParams.get('id_kondisi');
+  
+  let targetValueToSelect = "";
+
   data.forEach(item => {
     const opt = document.createElement("option");
-    opt.value = `${item.kode}|${item.lokasi_id}|${item.kondisi_id}`;
+    const val = `${item.kode}|${item.lokasi_id}|${item.kondisi_id}`;
+    opt.value = val;
     opt.text  = `${item.kode} - ${item.nama_barang} - ${item.lokasi} - ${item.kondisi}`;
     if (item.nama_barang) opt.dataset.nama = item.nama_barang;
     if (item.satuan)      opt.dataset.satuan = item.satuan;
@@ -152,7 +160,25 @@ async function loadPilihanBarang() {
       opt.dataset.harga = harga; 
     }
     select.appendChild(opt);
+
+    // Pencocokan barang otomatis berdasarkan URL
+    if (paramKode && String(item.kode) === String(paramKode)) {
+      if (paramLokasi && paramKondisi) {
+        if (String(item.lokasi_id) === String(paramLokasi) && String(item.kondisi_id) === String(paramKondisi)) {
+          targetValueToSelect = val;
+        }
+      } else if (!targetValueToSelect) {
+        // Jika dari URL cuma dikirim kode_barang-nya saja
+        targetValueToSelect = val;
+      }
+    }
   });
+
+  // Jika barang dari URL ditemukan, set sebagai pilihan aktif dan pemicu ganti data
+  if (targetValueToSelect) {
+    select.value = targetValueToSelect;
+    select.dispatchEvent(new Event('change'));
+  }
 }
 
 // Mengambil detail khusus saat barang dipilih
@@ -168,22 +194,21 @@ async function fetchDetail(kode, lokasi, kondisi) {
   document.getElementById('harga_dasar').value   = pickHarga(data);
 }
 
-// PERBAIKAN: Fungsi SweetAlert2 untuk konfirmasi simpan
+// Fungsi SweetAlert2 untuk konfirmasi simpan
 function confirmSimpan(event) {
-    event.preventDefault(); // Mencegah form langsung tersubmit
+    event.preventDefault();
 
     Swal.fire({
         title: 'Konfirmasi Pengeluaran',
         text: "Apakah Anda yakin ingin mengeluarkan barang ini dari gudang?",
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#f97316', // Warna oranye sesuai tema
+        confirmButtonColor: '#f97316',
         cancelButtonColor: '#6c757d',
         confirmButtonText: '<i class="bi bi-box-arrow-up me-1"></i> Ya, Keluarkan!',
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
-            // Jika user klik "Ya", submit form secara manual
             document.getElementById('barangKeluarForm').submit();
         }
     });
@@ -196,10 +221,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const totalHarga    = document.getElementById('total_harga');
   const submitBtn     = document.getElementById('submitBtn');
 
-  // Load Data
-  loadPilihanBarang().then(() => {
-    if (select.value) select.dispatchEvent(new Event('change'));
-  });
+  // Load Data & Auto Select
+  loadPilihanBarang();
 
   async function onSelectChange() {
     const val = select.value; 
@@ -258,7 +281,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (harga < 0 || isNaN(harga)) {
         submitBtn.disabled = true;
     } else {
-        // Cek kembali kondisi jumlah keluar sebelum mengaktifkan tombol
         const jumlah = num(jumlahKeluar.value);
         const stok   = num(document.getElementById('stok_tersedia').value);
         if (jumlah > 0 && jumlah <= stok) {
