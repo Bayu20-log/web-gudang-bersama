@@ -110,10 +110,10 @@
     @php
         $sortBy = request('sort_by');
         $columns = [
+            'tanggal'       => 'Tgl Transaksi',
             'kode_barang'   => 'Kode Barang',
             'nama_barang'   => 'Nama Barang',
             'harga_dasar'   => 'Harga Dasar',
-            'tanggal'       => 'Tgl Transaksi',
             'jumlah_masuk'  => 'Jml Masuk',
             'jumlah_keluar' => 'Jml Keluar',
             'total_barang'  => 'Total Barang',
@@ -152,10 +152,10 @@
                         }
                     @endphp
                     <tr>
+                        <td>{{ \Carbon\Carbon::parse($row['tanggal'])->format('d M Y H:i') }}</td>
                         <td class="fw-medium text-secondary">{{ $kode }}</td>
                         <td class="fw-bold text-dark">{{ $row['nama_barang'] }}</td>
                         <td>Rp {{ number_format($row['harga_dasar'], 0, ',', '.') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($row['tanggal'])->format('d M Y H:i') }}</td>
                         <td class="text-green-bright fw-bold">+{{ $row['jumlah_masuk'] }}</td>
                         <td class="text-danger fw-bold">-{{ $row['jumlah_keluar'] }}</td>
                         <td>

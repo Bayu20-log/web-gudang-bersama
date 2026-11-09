@@ -78,7 +78,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Tanggal Kadaluarsa <span class="text-danger">*</span></label>
-                        <input type="datetime-local" name="tanggal_kadaluarsa" class="form-control bg-light" value="{{ old('tanggal_kadaluarsa', now()->format('Y-m-d\TH:i')) }}" required>
+                        <input type="datetime-local" name="tanggal_kadaluarsa" class="form-control bg-light" value="{{ old('tanggal_kadaluarsa') }}" required>
                     </div>
                 </div>
             </div>

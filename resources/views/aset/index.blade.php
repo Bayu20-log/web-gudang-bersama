@@ -154,7 +154,7 @@
                         <td class="fw-medium text-secondary">{{ ($grouped->firstItem() ?? 0) + $index }}</td>                         
                         <td class="fw-bold text-dark">{{ $row['nama_barang'] }}</td>                         
                         <td>{{ $row['lokasi'] }}</td>                         
-                        <td>{{ $row['kondisi'] }}</td>                         
+                        <td><span class="mc-badge {{ ['Baik' => 'aman', 'Segera Kadaluarsa' => 'rendah', 'Kadaluarsa' => 'kritis'][$row['kondisi']] ?? 'habis' }}">{{ $row['kondisi'] }}</span></td>                         
                         <td><span class="badge px-3 py-2 rounded-pill fs-6" style="background-color: #22c55e; color: #ffffff;">{{ $row['stok_akhir'] }}</span></td>                         
                         <td>Rp {{ number_format($row['harga_beli'], 0, ',', '.') }}</td>                         
                         <td class="fw-bold text-dark">Rp {{ number_format($row['jumlah_aset'], 0, ',', '.') }}</td>                     
@@ -172,8 +172,9 @@
             <div class="report-card">
                 <div class="rcard-head">
                     <span class="rcard-title">{{ $row['nama_barang'] }}</span>
+                    <span class="mc-badge {{ ['Baik' => 'aman', 'Segera Kadaluarsa' => 'rendah', 'Kadaluarsa' => 'kritis'][$row['kondisi']] ?? 'habis' }}">{{ $row['kondisi'] }}</span>
                 </div>
-                <div class="rcard-sub">{{ $row['lokasi'] }} &middot; {{ $row['kondisi'] }}</div>
+                <div class="rcard-sub">{{ $row['lokasi'] }}</div>
                 <div class="rcard-divider"></div>
                 <div class="rcard-stats">
                     <div>

@@ -29,8 +29,15 @@ class LaporanController extends Controller
         $nama   = $request->nama_barang;
         $kode   = $request->kode_barang;
         $lokasi = $request->lokasi;
-        $sortBy = $request->sort_by ?? 'nama_barang';
-        $sortDir = $request->sort_dir === 'desc' ? 'desc' : 'asc';
+        // Default (belum ada urutan/filter dipilih): barang dengan transaksi TERBARU di atas.
+        $sortBy = $request->filled('sort_by') ? $request->sort_by : 'terakhir_input';
+        $sortDir = $request->filled('sort_by')
+            ? ($request->sort_dir === 'desc' ? 'desc' : 'asc')
+            : 'desc';
+        $statusFilter = strtoupper((string) $request->get('status'));
+        if (!in_array($statusFilter, ['HABIS', 'KRITIS', 'RENDAH', 'AMAN'], true)) {
+            $statusFilter = null;
+        }
         $userId = auth()->id(); // Ambil ID user yang login
 
 
@@ -59,6 +66,7 @@ class LaporanController extends Controller
                     'username'    => $bm->user->username ?? '-',
                     'jenis'       => 'Masuk',
                     'jumlah'      => $bm->jumlah,
+                    'waktu'       => strtotime((string) $bm->tanggal_masuk) ?: 0,
                 ]);
             });
 
@@ -88,6 +96,7 @@ class LaporanController extends Controller
                     'username'    => $bk->user->username ?? '-',
                     'jenis'       => 'Keluar',
                     'jumlah'      => $bk->jumlah_keluar,
+                    'waktu'       => strtotime((string) $bk->tanggal_keluar) ?: 0,
                 ]);
             });
 
@@ -121,6 +130,7 @@ class LaporanController extends Controller
                 'lokasi'       => $rows->first()['lokasi'],
                 'kondisi'      => $rows->first()['kondisi'],
                 'username'     => $rows->first()['username'],
+                'terakhir_input' => $rows->max('waktu'),
             ];
         });
 
@@ -146,12 +156,19 @@ class LaporanController extends Controller
 
 
         // Ringkasan: total barang & yang perlu perhatian (kritis/rendah/habis)
-        $cekPerluTindakan = function ($item) {
+        // Aturan status stok (sama dengan badge di tampilan):
+        // HABIS  : stok 0 / kurang
+        // KRITIS : di bawah stok minimum
+        // RENDAH : di atas minimum tapi belum 1,5x minimum
+        // AMAN   : selebihnya
+        $statusStok = function ($item) {
             $min = $item['stok_minimum'] ?? 0;
-            if ($item['stok_akhir'] <= 0) return true;
-            if ($min > 0 && $item['stok_akhir'] < $min * 1.5) return true;
-            return false;
+            if ($item['stok_akhir'] <= 0) return 'HABIS';
+            if ($min > 0 && $item['stok_akhir'] < $min) return 'KRITIS';
+            if ($min > 0 && $item['stok_akhir'] < $min * 1.5) return 'RENDAH';
+            return 'AMAN';
         };
+        $cekPerluTindakan = fn ($item) => $statusStok($item) !== 'AMAN';
 
         $totalBarang = $collection->count();
         $perluTindakan = $collection->filter($cekPerluTindakan)->count();
@@ -161,6 +178,12 @@ class LaporanController extends Controller
         if ($filterAktif) {
             $collection = $collection->filter($cekPerluTindakan)->values();
         }
+
+        // Filter berdasarkan status stok (dari panel Filter)
+        if ($statusFilter) {
+            $collection = $collection->filter(fn ($item) => $statusStok($item) === $statusFilter)->values();
+        }
+        $jumlahTerfilter = $collection->count();
 
 
 
@@ -193,6 +216,8 @@ class LaporanController extends Controller
             'totalBarang' => $totalBarang,
             'perluTindakan' => $perluTindakan,
             'filterAktif' => $filterAktif,
+            'statusFilter' => $statusFilter,
+            'jumlahTerfilter' => $jumlahTerfilter,
         ]);
     }
 
@@ -309,8 +334,10 @@ class LaporanController extends Controller
 
 
         // Sorting manual
+        // Default (belum ada filter/urutan dipilih user): transaksi TERBARU di atas.
+        // Kalau user klik judul kolom, urutan mengikuti pilihannya.
         $sortBy = $request->get('sort_by', 'tanggal');
-        $sortDir = $request->get('sort_dir', 'asc');
+        $sortDir = $request->get('sort_dir', $request->filled('sort_by') ? 'asc' : 'desc');
         $enhanced = $enhanced->sortBy($sortBy, SORT_REGULAR, $sortDir === 'desc')->values();
 
 

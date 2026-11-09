@@ -66,7 +66,7 @@ class BarangMasukController extends Controller
             'harga_satuan' => 'required|numeric|min:0',
             'total_harga' => 'nullable|numeric',
             'tanggal_masuk' => 'required|date',
-            'tanggal_kadaluarsa' => 'nullable|date|after_or_equal:tanggal_masuk',
+            'tanggal_kadaluarsa' => 'required|date|after_or_equal:tanggal_masuk',
             'id_pemasok' => 'required|exists:pemasoks,id',
             'id_lokasi' => 'required|exists:lokasis,id',
             'id_kondisi' => 'required|exists:kondisis,id',
