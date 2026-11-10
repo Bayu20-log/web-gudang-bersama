@@ -52,10 +52,11 @@
             <input type="text" name="nama_barang" placeholder="Cari nama barang..." value="{{ request('nama_barang') }}" onchange="this.form.submit()">
             @if(request('kode_barang'))<input type="hidden" name="kode_barang" value="{{ request('kode_barang') }}">@endif
             @if(request('lokasi'))<input type="hidden" name="lokasi" value="{{ request('lokasi') }}">@endif
+            @if($statusFilter)<input type="hidden" name="status" value="{{ $statusFilter }}">@endif
         </form>
         <button type="button" class="filter-icon-btn" data-bs-toggle="offcanvas" data-bs-target="#filterLaporanStok" title="Filter">
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3ZM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05Zm-4.9 5a2.5 2.5 0 0 1 4.9 0H16v1H9.05a2.5 2.5 0 0 1-4.9 0H0V8h4.15Zm.9.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0ZM.5 12a2.5 2.5 0 0 1 4.9 0H16v1H5.4a2.5 2.5 0 0 1-4.9 0H0v-1h.5Z"/></svg>
-            @if(request('kode_barang') || request('lokasi'))<span class="filter-dot"></span>@endif
+            @if(request('kode_barang') || request('lokasi') || $statusFilter)<span class="filter-dot"></span>@endif
         </button>
     </div>
 
@@ -84,6 +85,14 @@
                         </option>
                     @endforeach
                 </select>
+                <label>Status Stok</label>
+                <select name="status" class="form-select">
+                    <option value="">-- Semua Status --</option>
+                    <option value="HABIS"  {{ $statusFilter === 'HABIS'  ? 'selected' : '' }}>Habis</option>
+                    <option value="KRITIS" {{ $statusFilter === 'KRITIS' ? 'selected' : '' }}>Kritis</option>
+                    <option value="RENDAH" {{ $statusFilter === 'RENDAH' ? 'selected' : '' }}>Rendah</option>
+                    <option value="AMAN"   {{ $statusFilter === 'AMAN'   ? 'selected' : '' }}>Aman</option>
+                </select>
             </div>
             <div class="offcanvas-footer">
                 <a href="{{ route('laporan') }}" class="btn btn-outline-dark fw-bold flex-fill">Reset</a>
@@ -96,12 +105,15 @@
     <div class="report-count-row">
         <div class="rc-text">
             @if($filterAktif)
-                <strong>{{ $perluTindakan }}</strong> barang perlu tindakan
-                &middot; <a href="{{ route('laporan', array_merge(request()->except('filter', 'page'))) }}" class="rc-warn" style="text-decoration:underline;">Tampilkan semua</a>
+                <strong>{{ $jumlahTerfilter }}</strong> barang perlu tindakan
+            @elseif($statusFilter)
+                <strong>{{ $jumlahTerfilter }}</strong> barang berstatus {{ ucfirst(strtolower($statusFilter)) }}
             @else
                 <strong>{{ $totalBarang }}</strong> barang
             @endif
-            @if(!$filterAktif && $perluTindakan > 0)
+            @if($filterAktif || $statusFilter)
+                &middot; <a href="{{ route('laporan', request()->except('filter', 'status', 'page')) }}" class="rc-warn" style="text-decoration:underline;">Tampilkan semua</a>
+            @elseif($perluTindakan > 0)
                 &middot; <a href="{{ route('laporan', array_merge(request()->except('page'), ['filter' => 'perlu_tindakan'])) }}" class="rc-warn" style="text-decoration:underline;">{{ $perluTindakan }} perlu tindakan</a>
             @endif
         </div>
