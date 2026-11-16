@@ -20,17 +20,23 @@ class NotificationController extends Controller
         $levelCounts = DB::table('stock_notifications')
             ->join('items', 'items.kode_barang', '=', 'stock_notifications.item_id')
             ->where('items.user_id', auth()->id())
+            // Notifikasi pemulihan (stok membaik/kembali aman) bukan peringatan,
+            // jadi tidak ikut dihitung di kartu Rendah/Kritis/Habis.
+            ->where('stock_notifications.type', '!=', 'resolution')
             ->select('stock_notifications.level', DB::raw('count(*) as total'))
             ->groupBy('stock_notifications.level')
             ->pluck('total', 'level');
 
-        // Daftar notifikasi yang ditampilkan -- ini yang kena filter & limit.
+        // Daftar notifikasi yang ditampilkan -- kena filter & dibagi 10 per halaman.
         $stockNotificationsQuery = DB::table('stock_notifications')
             ->join('items', 'items.kode_barang', '=', 'stock_notifications.item_id')
             ->where('items.user_id', auth()->id());
 
         if (in_array($statusFilter, ['info', 'warning', 'critical'])) {
-            $stockNotificationsQuery->where('stock_notifications.level', $statusFilter);
+            // Filter Rendah/Kritis/Habis: hanya notifikasi peringatan
+            $stockNotificationsQuery
+                ->where('stock_notifications.level', $statusFilter)
+                ->where('stock_notifications.type', '!=', 'resolution');
         }
 
         $stockNotifications = $stockNotificationsQuery
@@ -38,7 +44,14 @@ class NotificationController extends Controller
             ->orderByRaw("FIELD(stock_notifications.level, 'critical', 'warning', 'info')")
             ->orderByDesc('stock_notifications.created_at')
             ->select('stock_notifications.*', 'items.nama_barang')
-            ->get();
+            ->paginate(10)
+            ->withQueryString(); // supaya filter ?status= ikut terbawa saat pindah halaman
+
+        // Kalau halaman yang diminta sudah tidak ada (mis. setelah notifikasi
+        // berkurang), arahkan ke halaman terakhir yang masih berisi data.
+        if ($stockNotifications->isEmpty() && $stockNotifications->currentPage() > 1) {
+            return redirect($stockNotifications->url($stockNotifications->lastPage()));
+        }
 
         return view('notifications.index', compact(
             'notifications',

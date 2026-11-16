@@ -166,8 +166,8 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        flex-wrap: wrap;
-        gap: 0.75rem;
+        flex-wrap: nowrap;
+        gap: 1rem;
         transition: transform 0.15s ease, box-shadow 0.15s ease;
         border: 1px solid transparent;
         animation: notifFadeIn 0.35s ease-out;
@@ -204,6 +204,18 @@
         color: var(--accent, #ccc);
     }
 
+    /* Notifikasi pemulihan: Aman = hijau penuh (tuntas), Membaik = hijau muda + panah (belum tuntas) */
+    .notif-item-badge.badge-aman {
+        background: #15803d;
+        color: #fff;
+    }
+    .notif-item-badge.badge-aman::before { color: #fff; }
+    .notif-item-badge.badge-membaik::before {
+        content: '↗';
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
     .notif-item-title {
         font-weight: 700;
         color: #0f172a;
@@ -224,11 +236,23 @@
         font-weight: 500;
     }
 
+    /* Kolom teks mengisi sisa ruang, kolom tombol lebarnya tetap */
+    .notif-item > div:first-child { flex: 1 1 auto; min-width: 0; }
+
     .notif-item-actions {
         display: flex;
         flex-direction: column;
         gap: 0.4rem;
-        align-items: flex-end;
+        align-items: stretch;
+        flex: 0 0 170px;
+    }
+
+    /* Semua tombol di kolom aksi sama lebar dan teksnya di tengah */
+    .notif-item-actions > a,
+    .notif-item-actions button {
+        display: block;
+        width: 100%;
+        text-align: center;
     }
 
     .notif-item-actions form {
@@ -310,6 +334,15 @@
     .notif-summary-card .label { color: var(--accent-text, #64748b); }
     .notif-summary-card .icon-circle { display: none; }
 
+    /* ===== Pagination (warna disamakan dengan tema notifikasi) ===== */
+    .notif-pagination .pagination { margin-bottom: 0; }
+    .notif-pagination .page-link { color: var(--raksakti-navy); border-radius: 8px; margin: 0 2px; }
+    .notif-pagination .page-item.active .page-link {
+        background-color: var(--raksakti-orange);
+        border-color: var(--raksakti-orange);
+        color: #fff;
+    }
+
     /* ===== Tampilan HP ===== */
     @media (max-width: 576px) {
         .notif-page-header { padding: 1.25rem 1.25rem; border-radius: 20px; }
@@ -328,7 +361,8 @@
         .notif-summary-card .count { color: var(--accent-text, #0f172a); }
         .notif-summary-card .label { color: var(--accent-text, #64748b); }
 
-        .notif-item { padding: 1rem 1.1rem; }
+        .notif-item { padding: 1rem 1.1rem; flex-wrap: wrap; }
+        .notif-item-actions { flex: 1 1 100%; }
         .notif-item > div:first-child { width: 100%; }
         .notif-item-actions {
             flex-direction: row;
@@ -401,20 +435,29 @@
     {{-- Daftar notifikasi --}}
     @if($stockNotifications->isEmpty())
         <div class="notif-empty">
-            <div class="icon-circle"><i class="fa-solid fa-champagne-glasses"></i></div>
-            <div class="empty-title">Semua stok aman terkendali!</div>
             <div>Tidak ada notifikasi untuk filter ini.</div>
         </div>
     @else
         <div class="notif-card-list">
             @foreach($stockNotifications as $notif)
                 @php
-                    $colors = match($notif->level) {
+                    // Notifikasi pemulihan (type = resolution) dicek DULU sebelum level,
+                    // karena disimpan dengan level 'info' yang biasanya berarti Rendah.
+                    $isPemulihan = $notif->type === 'resolution';
+
+                    $colors = $isPemulihan
+                        ? ['accent' => '#16a34a', 'soft' => '#dcfce7', 'text' => '#15803d']
+                        : match($notif->level) {
                         'critical' => ['accent' => '#dc3545', 'soft' => '#fee2e2', 'text' => '#b91c1c'],
                         'warning'  => ['accent' => '#f5b301', 'soft' => '#fef3c7', 'text' => '#92400e'],
                         default    => ['accent' => '#0dcaf0', 'soft' => '#e0f7fa', 'text' => '#0e7490'],
                     };
-                    $levelLabel = match($notif->level) {
+                    $badgeClass = $isPemulihan
+                        ? ($notif->is_resolved ? 'badge-aman' : 'badge-membaik')
+                        : '';
+                    $levelLabel = $isPemulihan
+                        ? ($notif->is_resolved ? 'Aman' : 'Membaik')
+                        : match($notif->level) {
                         'critical' => 'Habis',
                         'warning'  => 'Kritis',
                         default    => 'Rendah',
@@ -429,13 +472,15 @@
                 @endphp
                 <div class="notif-item {{ $notif->is_read ? 'is-read' : '' }}" style="--accent: {{ $colors['accent'] }}; --accent-soft: {{ $colors['soft'] }}; --accent-text: {{ $colors['text'] }};">
                     <div>
-                        <span class="notif-item-badge">{{ $levelLabel }}</span>
+                        <span class="notif-item-badge {{ $badgeClass }}">{{ $levelLabel }}</span>
                         <div class="notif-item-title">{{ $displayTitle }}</div>
                         <div class="notif-item-message">{{ $displayMessage }}</div>
                         <div class="notif-item-time">{{ \Carbon\Carbon::parse($notif->created_at)->diffForHumans() }}</div>
                     </div>
                     <div class="notif-item-actions">
-                        @if(in_array($notif->level, ['warning', 'critical']))
+                        {{-- Semua peringatan (Rendah, Kritis, Habis) diberi tombol Tambah Stok;
+                             notifikasi pemulihan (stok sudah aman/membaik) cukup Lihat Detail --}}
+                        @if(!$isPemulihan)
                             <a href="{{ route('barang-masuk.create', ['kode_barang' => $notif->item_id]) }}" class="notif-btn-primary text-decoration-none">
                                 Tambah Stok
                             </a>
@@ -459,6 +504,16 @@
                     </div>
                 </div>
             @endforeach
+        </div>
+
+        {{-- Pagination: maksimal 10 notifikasi per halaman --}}
+        <div class="notif-pagination mt-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <div class="small text-muted fw-medium">
+                Menampilkan {{ $stockNotifications->firstItem() }} - {{ $stockNotifications->lastItem() }} dari {{ $stockNotifications->total() }} notifikasi
+            </div>
+            <div>
+                {{ $stockNotifications->links('pagination::bootstrap-5') }}
+            </div>
         </div>
     @endif
 </div>

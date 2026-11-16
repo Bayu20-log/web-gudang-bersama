@@ -117,14 +117,24 @@ class BarangMasukController extends Controller
             Storage::disk('public_direct')->put($qrPath, $qrCode);
             $barang->update(['qr_code' => $qrPath]);
 
+            $pesanSukses = 'Barang masuk berhasil ditambahkan beserta QR Code.';
+
             // Evaluasi ulang status stok barang ini supaya notifikasi langsung muncul (tanpa email).
             try {
-                app(\App\Services\AdaptiveThresholdService::class)->evaluateWithoutEmail((string) $validated['kode_barang'], 'transaksi');
+                $hasil = app(\App\Services\AdaptiveThresholdService::class)->evaluateWithoutEmail((string) $validated['kode_barang'], 'transaksi');
+
+                // Kalau status stok berubah karena barang masuk ini, beri tahu user langsung
+                // di pesan sukses (mis. "Status stok Beans berubah: Habis → Aman.").
+                if (!empty($hasil['changed']) && !empty($hasil['previous_status'])) {
+                    $pesanSukses .= ' Status stok ' . ($data->item->nama_barang ?? $validated['kode_barang'])
+                        . ' berubah: ' . ucfirst($hasil['previous_status'])
+                        . ' → ' . ucfirst($hasil['status']) . '.';
+                }
             } catch (\Throwable $e) {
                 \Illuminate\Support\Facades\Log::warning('Evaluasi otomatis gagal: ' . $e->getMessage());
             }
 
-            return redirect()->route('barang-masuk.index')->with('success', 'Barang masuk berhasil ditambahkan beserta QR Code.');
+            return redirect()->route('barang-masuk.index')->with('success', $pesanSukses);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
         }

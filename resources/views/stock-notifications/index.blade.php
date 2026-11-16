@@ -399,7 +399,10 @@
             @php
                 $displayTitle = str_replace('item #' . $notif->item_id, $notif->nama_barang, $notif->title);
                 $displayMessage = str_replace('item #' . $notif->item_id, $notif->nama_barang, $notif->message);
-                $borderColor = $historyBorder[$notif->level] ?? '#94a3b8';
+                // Notifikasi pemulihan (stok membaik/kembali aman) diberi garis hijau
+                $borderColor = $notif->type === 'resolution'
+                    ? '#16a34a'
+                    : ($historyBorder[$notif->level] ?? '#94a3b8');
             @endphp
             <div class="sn-history-item" style="border-left: 4px solid {{ $borderColor }};">
                 <div>
