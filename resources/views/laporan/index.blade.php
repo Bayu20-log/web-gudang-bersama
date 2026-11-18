@@ -180,12 +180,11 @@
             <tbody>
                 @forelse ($data as $item)
                     @php
-                        $min = $item['stok_minimum'] ?? 0;
                         $stokAkhir = $item['stok_akhir'];
-                        if ($stokAkhir <= 0) { $status = 'HABIS'; $badgeClass = 'habis'; }
-                        elseif ($min > 0 && $stokAkhir < $min) { $status = 'KRITIS'; $badgeClass = 'kritis'; }
-                        elseif ($min > 0 && $stokAkhir < $min * 1.5) { $status = 'RENDAH'; $badgeClass = 'rendah'; }
-                        else { $status = 'AMAN'; $badgeClass = 'aman'; }
+                        $batas = ceil($item['batas_rendah'] ?? 0); // Batas Rendah dari threshold adaptif
+                        // Status dari threshold adaptif (dihitung di LaporanController)
+                        $status = $item['status'];
+                        $badgeClass = strtolower($status);
                     @endphp
                     <tr>
                         <td class="fw-medium text-secondary">{{ $item['kode_barang'] }}</td>
@@ -195,7 +194,7 @@
                         <td class="text-danger fw-bold">-{{ $item['total_keluar'] }}</td>
                         <td>
                             {{ $stokAkhir }}
-                            @if($min > 0)<span class="text-muted" style="font-size:12px;"> / min.{{ $min }}</span>@endif
+                            @if($batas > 0)<span class="text-muted" style="font-size:12px;"> / batas {{ $batas }}</span>@endif
                         </td>
                         <td><span class="mc-badge {{ $badgeClass }}">{{ $status }}</span></td>
                         <td>{{ is_array($item['lokasi']) ? ($item['lokasi']['nama_lokasi'] ?? '-') : $item['lokasi'] }}</td>
@@ -219,12 +218,11 @@
     <div class="mobile-card-list">
         @forelse ($data as $item)
             @php
-                $min = $item['stok_minimum'] ?? 0;
                 $stokAkhir = $item['stok_akhir'];
-                if ($stokAkhir <= 0) { $status = 'HABIS'; $badgeClass = 'habis'; }
-                elseif ($min > 0 && $stokAkhir < $min) { $status = 'KRITIS'; $badgeClass = 'kritis'; }
-                elseif ($min > 0 && $stokAkhir < $min * 1.5) { $status = 'RENDAH'; $badgeClass = 'rendah'; }
-                else { $status = 'AMAN'; $badgeClass = 'aman'; }
+                $batas = ceil($item['batas_rendah'] ?? 0); // Batas Rendah dari threshold adaptif
+                // Status dari threshold adaptif (dihitung di LaporanController)
+                $status = $item['status'];
+                $badgeClass = strtolower($status);
                 $namaLokasi = is_array($item['lokasi']) ? ($item['lokasi']['nama_lokasi'] ?? '-') : $item['lokasi'];
             @endphp
             <div class="report-card">
@@ -245,7 +243,7 @@
                     </div>
                     <div>
                         <div class="stat-label">Stok Akhir</div>
-                        <div class="stat-value" style="color:#1e293b;">{{ $stokAkhir }}@if($min > 0)<span class="stat-sub"> / min.{{ $min }}</span>@endif</div>
+                        <div class="stat-value" style="color:#1e293b;">{{ $stokAkhir }}@if($batas > 0)<span class="stat-sub"> / batas {{ $batas }}</span>@endif</div>
                     </div>
                 </div>
                 @if($status !== 'AMAN' && $role === 'gudang')

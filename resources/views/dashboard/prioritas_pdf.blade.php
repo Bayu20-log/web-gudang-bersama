@@ -114,7 +114,7 @@
                     <span class="badge {{ $badgeClass }}">{{ $item['tag'] }}</span>
                 </td>
                 <td class="text-center">
-                    Stok <strong>{{ $item['stok_akhir'] }}</strong> / Minimum {{ $item['stok_minimum'] }}
+                    Stok <strong>{{ $item['stok_akhir'] }}</strong> / {{ $item['batas_rendah'] }}
                 </td>
             </tr>
             @empty

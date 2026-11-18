@@ -116,10 +116,23 @@ class LaporanController extends Controller
 
 
 
+        // Status stok diambil dari sistem threshold adaptif (modul Ratih), supaya
+        // status di Laporan sama dengan di Notifikasi & Dashboard.
+        // Disimpan per kode barang supaya tiap barang cukup dihitung sekali.
+        $thresholdService = app(\App\Services\AdaptiveThresholdService::class);
+        $statusPerBarang = [];
+        $ambilStatus = function (string $kode) use ($thresholdService, &$statusPerBarang) {
+            if (!isset($statusPerBarang[$kode])) {
+                $statusPerBarang[$kode] = strtoupper($thresholdService->classifyStatus($kode));
+            }
+            return $statusPerBarang[$kode];
+        };
+
         // Hitung total stok
-        $collection = $grouped->map(function ($rows) {
+        $collection = $grouped->map(function ($rows) use ($ambilStatus) {
             $rows = collect($rows);
             return [
+                'status'       => $ambilStatus((string) $rows->first()['kode_barang']),
                 'kode_barang'  => $rows->first()['kode_barang'],
                 'nama_barang'  => $rows->first()['nama_barang'],
                 'harga_dasar'  => $rows->first()['harga_dasar'],
@@ -136,6 +149,16 @@ class LaporanController extends Controller
 
 
 
+
+        // Batas Rendah (ROP) per barang dari threshold adaptif, untuk teks "/ batas X"
+        // di sebelah angka stok (menggantikan "/ min. X" dari stok_minimum manual).
+        $batasRendah = DB::table('stock_thresholds')
+            ->whereIn('item_id', $collection->pluck('kode_barang')->unique()->all())
+            ->pluck('low_threshold', 'item_id');
+        $collection = $collection->map(function ($item) use ($batasRendah) {
+            $item['batas_rendah'] = (float) ($batasRendah[$item['kode_barang']] ?? 0);
+            return $item;
+        });
 
         // Sorting
         $collection = $collection->sortBy(function ($item) use ($sortBy) {
@@ -156,18 +179,8 @@ class LaporanController extends Controller
 
 
         // Ringkasan: total barang & yang perlu perhatian (kritis/rendah/habis)
-        // Aturan status stok (sama dengan badge di tampilan):
-        // HABIS  : stok 0 / kurang
-        // KRITIS : di bawah stok minimum
-        // RENDAH : di atas minimum tapi belum 1,5x minimum
-        // AMAN   : selebihnya
-        $statusStok = function ($item) {
-            $min = $item['stok_minimum'] ?? 0;
-            if ($item['stok_akhir'] <= 0) return 'HABIS';
-            if ($min > 0 && $item['stok_akhir'] < $min) return 'KRITIS';
-            if ($min > 0 && $item['stok_akhir'] < $min * 1.5) return 'RENDAH';
-            return 'AMAN';
-        };
+        // Status stok (HABIS/KRITIS/RENDAH/AMAN) dari threshold adaptif -- lihat $ambilStatus di atas.
+        $statusStok = fn ($item) => $item['status'];
         $cekPerluTindakan = fn ($item) => $statusStok($item) !== 'AMAN';
 
         $totalBarang = $collection->count();

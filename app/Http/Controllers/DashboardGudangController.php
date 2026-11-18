@@ -207,28 +207,20 @@ class DashboardGudangController extends Controller
                 $stokAkhir = 0; 
             }
 
-            $minStok = $item->stok_minimum ?? 5;
+            // Status dari threshold adaptif (modul Ratih), supaya sama dengan Notifikasi & Laporan
+            $status  = app(\App\Services\AdaptiveThresholdService::class)->classifyStatus((string) $kode);
+            $tag     = ucfirst($status); // Habis / Kritis / Rendah / Aman
+            $urgensi = ['habis' => 1, 'kritis' => 2, 'rendah' => 3, 'aman' => 4][$status] ?? 4;
 
-            // Klasifikasi Status Stok
-            if ($stokAkhir == 0) {
-                $tag = 'Habis';
-                $urgensi = 1;
-            } elseif ($stokAkhir <= $minStok) {
-                $tag = 'Kritis';
-                $urgensi = 2;
-            } elseif ($stokAkhir <= ($minStok * 1.5)) {
-                $tag = 'Rendah';
-                $urgensi = 3;
-            } else {
-                $tag = 'Aman';
-                $urgensi = 4;
-            }
+            // Batas Rendah (ROP) dari threshold adaptif, untuk keterangan
+            $batasRendah = (float) (DB::table('stock_thresholds')->where('item_id', $kode)->value('low_threshold') ?? 0);
+            $teksBatas   = $batasRendah > 0 ? 'Batas Rendah ' . ceil($batasRendah) : 'Belum ada pemakaian';
 
             return [
                 'kode_barang' => $item->kode_barang,
                 'nama'        => $item->nama_barang,
                 'tag'         => $tag,
-                'keterangan'  => "Stok {$stokAkhir} / Minimum {$minStok}",
+                'keterangan'  => "Stok {$stokAkhir} / {$teksBatas}",
                 'urgensi'     => $urgensi,
             ];
         });
@@ -470,27 +462,20 @@ class DashboardGudangController extends Controller
             $stokAkhir = $masuk - $keluar;
             if ($stokAkhir < 0) { $stokAkhir = 0; }
 
-            $minStok = $item->stok_minimum ?? 5;
+            // Status dari threshold adaptif (modul Ratih), supaya sama dengan Notifikasi & Laporan
+            $status  = app(\App\Services\AdaptiveThresholdService::class)->classifyStatus((string) $kode);
+            $tag     = ucfirst($status); // Habis / Kritis / Rendah / Aman
+            $urgensi = ['habis' => 1, 'kritis' => 2, 'rendah' => 3, 'aman' => 4][$status] ?? 4;
 
-            if ($stokAkhir == 0) {
-                $tag = 'Habis';
-                $urgensi = 1;
-            } elseif ($stokAkhir <= $minStok) {
-                $tag = 'Kritis';
-                $urgensi = 2;
-            } elseif ($stokAkhir <= ($minStok * 1.5)) {
-                $tag = 'Rendah';
-                $urgensi = 3;
-            } else {
-                $tag = 'Aman';
-                $urgensi = 4;
-            }
+            // Batas Rendah (ROP) dari threshold adaptif, untuk keterangan
+            $batasRendah = (float) (DB::table('stock_thresholds')->where('item_id', $kode)->value('low_threshold') ?? 0);
+            $teksBatas   = $batasRendah > 0 ? 'Batas Rendah ' . ceil($batasRendah) : 'Belum ada pemakaian';
 
             return [
                 'kode_barang'  => $item->kode_barang,
                 'nama'         => $item->nama_barang,
                 'stok_akhir'   => $stokAkhir,
-                'stok_minimum' => $minStok,
+                'batas_rendah' => $teksBatas,
                 'tag'          => $tag,
                 'urgensi'      => $urgensi,
             ];
