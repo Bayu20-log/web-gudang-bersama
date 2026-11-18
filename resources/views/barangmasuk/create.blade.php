@@ -30,6 +30,9 @@
     @if(session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
+    @if($errors->any())
+        <div class="alert alert-danger">Data belum tersimpan. Periksa kembali isian yang ditandai merah di bawah.</div>
+    @endif
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
@@ -83,11 +86,13 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Tanggal Masuk <span class="text-danger">*</span></label>
-                        <input type="datetime-local" name="tanggal_masuk" class="form-control bg-light" value="{{ old('tanggal_masuk', now()->format('Y-m-d\TH:i')) }}" required>
+                        <input type="datetime-local" name="tanggal_masuk" class="form-control bg-light @error('tanggal_masuk') is-invalid @enderror" value="{{ old('tanggal_masuk', now()->format('Y-m-d\TH:i')) }}" required>
+                        @error('tanggal_masuk') <div class="text-danger mt-1" style="font-size: 0.85em;">{{ $message }}</div> @enderror
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Tanggal Kadaluarsa <span class="text-danger">*</span></label>
-                        <input type="datetime-local" name="tanggal_kadaluarsa" class="form-control bg-light" value="{{ old('tanggal_kadaluarsa') }}" required>
+                        <input type="datetime-local" name="tanggal_kadaluarsa" class="form-control bg-light @error('tanggal_kadaluarsa') is-invalid @enderror" value="{{ old('tanggal_kadaluarsa') }}" required>
+                        @error('tanggal_kadaluarsa') <div class="text-danger mt-1" style="font-size: 0.85em;">{{ $message }}</div> @enderror
                     </div>
                 </div>
             </div>
@@ -106,6 +111,7 @@
                             </option>
                         @endforeach
                     </select>
+                    @error('id_pemasok') <div class="text-danger mt-1" style="font-size: 0.85em;">{{ $message }}</div> @enderror
                 </div>
 
                 {{-- Lokasi --}}
@@ -120,6 +126,7 @@
                             </option>
                         @endforeach
                     </select>
+                    @error('id_lokasi') <div class="text-danger mt-1" style="font-size: 0.85em;">{{ $message }}</div> @enderror
                 </div>
 
                 {{-- Kondisi --}}
@@ -134,12 +141,14 @@
                             </option>
                         @endforeach
                     </select>
+                    @error('id_kondisi') <div class="text-danger mt-1" style="font-size: 0.85em;">{{ $message }}</div> @enderror
                 </div>
 
                 {{-- Catatan --}}
                 <div class="mb-3">
                     <label class="form-label">Catatan</label>
-                    <textarea name="catatan" class="form-control bg-light" rows="3" placeholder="Tambahkan catatan khusus...">{{ old('catatan') }}</textarea>
+                    <textarea name="catatan" class="form-control bg-light @error('catatan') is-invalid @enderror" rows="3" placeholder="Tambahkan catatan khusus...">{{ old('catatan') }}</textarea>
+                        @error('catatan') <div class="text-danger mt-1" style="font-size: 0.85em;">{{ $message }}</div> @enderror
                 </div>
             </div>
         </div>

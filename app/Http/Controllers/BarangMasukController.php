@@ -86,7 +86,7 @@ class BarangMasukController extends Controller
             'id_lokasi' => 'required|exists:lokasis,id',
             'id_kondisi' => 'required|exists:kondisis,id',
             'catatan' => 'nullable|string|max:1000',
-        ]);
+        ], $this->pesanValidasi());
 
         try {
             $total = $validated['jumlah'] * $validated['harga_satuan'];
@@ -163,7 +163,7 @@ class BarangMasukController extends Controller
             'id_lokasi' => 'required|exists:lokasis,id',
             'id_kondisi' => 'required|exists:kondisis,id',
             'catatan' => 'nullable|string',
-        ]);
+        ], $this->pesanValidasi());
 
         $barang = BarangMasuk::findOrFail($id);
 
@@ -256,5 +256,35 @@ class BarangMasukController extends Controller
                 ->setPaper('A7', 'portrait'); 
 
         return $pdf->download('qr_kecil_' . $barangMasuk->kode_barang . '.pdf');
+    }
+
+    /**
+     * Pesan validasi form Barang Masuk dalam bahasa Indonesia
+     * (bawaan Laravel berbahasa Inggris, mis. "The tanggal kadaluarsa must be ...").
+     */
+    private function pesanValidasi(): array
+    {
+        return [
+            'kode_barang.required'             => 'Pilih barang terlebih dahulu.',
+            'kode_barang.exists'               => 'Barang tidak ditemukan.',
+            'jumlah.required'                  => 'Jumlah wajib diisi.',
+            'jumlah.integer'                   => 'Jumlah harus berupa angka bulat.',
+            'jumlah.min'                       => 'Jumlah minimal 1.',
+            'harga_satuan.required'            => 'Harga satuan wajib diisi.',
+            'harga_satuan.numeric'             => 'Harga satuan harus berupa angka.',
+            'harga_satuan.min'                 => 'Harga satuan tidak boleh kurang dari 0.',
+            'tanggal_masuk.required'           => 'Tanggal masuk wajib diisi.',
+            'tanggal_masuk.date'               => 'Format tanggal masuk tidak valid.',
+            'tanggal_kadaluarsa.required'      => 'Tanggal kadaluarsa wajib diisi.',
+            'tanggal_kadaluarsa.date'          => 'Format tanggal kadaluarsa tidak valid.',
+            'tanggal_kadaluarsa.after_or_equal'=> 'Tanggal kadaluarsa tidak boleh sebelum tanggal masuk.',
+            'id_pemasok.required'              => 'Pilih pemasok terlebih dahulu.',
+            'id_pemasok.exists'                => 'Pemasok tidak ditemukan.',
+            'id_lokasi.required'               => 'Pilih lokasi terlebih dahulu.',
+            'id_lokasi.exists'                 => 'Lokasi tidak ditemukan.',
+            'id_kondisi.required'              => 'Pilih kondisi terlebih dahulu.',
+            'id_kondisi.exists'                => 'Kondisi tidak ditemukan.',
+            'catatan.max'                      => 'Catatan maksimal 1000 karakter.',
+        ];
     }
 }
