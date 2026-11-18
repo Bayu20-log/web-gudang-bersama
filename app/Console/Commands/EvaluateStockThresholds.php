@@ -38,6 +38,8 @@ class EvaluateStockThresholds extends Command
         $changedCount = 0;
 
         foreach ($kodeBarangList as $kodeBarang) {
+            // Hitung ulang batas dari pemakaian 30 hari terakhir (adaptif), baru cek status
+            $thresholdService->calculateAndSaveThreshold((string) $kodeBarang);
             $result = $thresholdService->evaluateAndLogStatus((string) $kodeBarang, 'scheduler');
             if ($result['changed']) {
                 $changedCount++;

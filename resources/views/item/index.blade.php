@@ -116,7 +116,7 @@
                         <td>{{ $item->kategori->kategori }}</td>
                         <td>{{ $item->satuan->nama_satuan ?? '-' }}</td>
                         <td><span class="fw-bold" style="color: {{ $qtyColor }};">{{ $qtySaatIni }}</span></td>
-                        <td><span class="badge bg-secondary px-3 py-2 rounded-pill">{{ $item->batas_rendah === null ? "Belum dihitung" : ($item->batas_rendah > 0 ? number_format($item->batas_rendah, 0, ",", ".") : "Belum ada pemakaian") }}</span></td>
+                        <td><span class="badge bg-secondary px-3 py-2 rounded-pill">{{ $item->batas_rendah === null ? "Belum dihitung" : ($item->batas_rendah > 0 ? number_format($item->batas_rendah, 0, ",", ".") : "Tidak ada pemakaian 30 hari") }}</span></td>
                         <td>
                             @if ($item->foto)
                                 <img src="{{ asset($item->foto) }}" alt="Foto" class="img-thumbnail-custom shadow-sm"
@@ -171,7 +171,7 @@
                     <div class="mc-sub">{{ $item->kode_barang }} &middot; {{ $item->kategori->kategori }}</div>
                     <div class="mc-sub">
                         Stok: <span class="fw-bold" style="color: {{ $qtyColor }};">{{ $qtySaatIni }}</span>
-                        {{ $item->satuan->nama_satuan ?? '' }} &middot; Batas Min. {{ $item->batas_rendah === null ? "Belum dihitung" : ($item->batas_rendah > 0 ? number_format($item->batas_rendah, 0, ",", ".") : "Belum ada pemakaian") }}
+                        {{ $item->satuan->nama_satuan ?? '' }} &middot; Batas Min. {{ $item->batas_rendah === null ? "Belum dihitung" : ($item->batas_rendah > 0 ? number_format($item->batas_rendah, 0, ",", ".") : "Tidak ada pemakaian 30 hari") }}
                     </div>
                 </div>
                 <div class="dropdown">

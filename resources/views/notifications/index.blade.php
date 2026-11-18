@@ -578,7 +578,7 @@
                                     &middot; Batas Rendah: <strong>{{ number_format($notif->batas_rendah, 0, ',', '.') }}</strong>
                                     &middot; Batas Kritis: <strong>{{ number_format($notif->batas_kritis, 0, ',', '.') }}</strong>
                                 @else
-                                    &middot; Belum ada data pemakaian
+                                    &middot; Tidak ada pemakaian 30 hari terakhir
                                 @endif
                             </span>
                         </div>

@@ -375,7 +375,11 @@
 
                     @if ((float) $b['adc'] === 0.0)
                         <div class="sn-adc-zero-note">
-                            Rata-rata Keluar per Hari masih 0 karena barang ini belum pernah ada transaksi keluar. Sistem otomatis menganggap status minimal <strong>Rendah</strong> (bukan Aman) untuk kondisi ini.
+                            @if ($item->status === 'rendah')
+                                Rata-rata Keluar per Hari masih 0 karena barang ini belum pernah ada transaksi keluar. Sistem otomatis menganggap status minimal <strong>Rendah</strong> supaya tetap dipantau.
+                            @else
+                                Rata-rata Keluar per Hari 0 karena tidak ada barang keluar dalam 30 hari terakhir. Selama barang tidak terpakai, tidak ada risiko kehabisan, jadi statusnya <strong>{{ ucfirst($item->status) }}</strong>.
+                            @endif
                         </div>
                     @endif
                 </div>

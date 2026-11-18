@@ -199,7 +199,13 @@ class AdaptiveThresholdService
         }
 
         if ((float) $threshold->adc === 0.0) {
-            return 'rendah';
+            // ADC = 0 artinya tidak ada barang keluar dalam 30 hari terakhir:
+            //  - BELUM PERNAH keluar sama sekali (barang baru) -> Rendah, supaya dipantau
+            //  - PERNAH keluar, tapi 30 hari terakhir tidak dipakai -> Aman,
+            //    karena tidak ada risiko kehabisan selama barang tidak terpakai
+            $pernahKeluar = BarangKeluar::where('kode_barang', $kodeBarang)->exists();
+
+            return $pernahKeluar ? 'aman' : 'rendah';
         }
 
         if ($stokAktual > $threshold->low_threshold) {

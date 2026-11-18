@@ -55,7 +55,11 @@ class StockNotificationController extends Controller
             ->pluck('kode_barang');
         $changedCount = 0;
         foreach ($items as $kodeBarang) {
-            $result = $this->service->evaluateAndLogStatus((string) $kodeBarang, 'manual');
+            // Hitung ulang batas dari pemakaian 30 hari terakhir (adaptif), lalu cek status.
+            // TANPA email: kalau banyak status berubah sekaligus, mengirim email satu per satu
+            // lewat SMTP bisa melewati batas waktu 30 detik. Notifikasi di aplikasi tetap dibuat;
+            // email tetap dikirim oleh scheduler harian (stock:evaluate-thresholds).
+            $result = $this->service->evaluateWithoutEmail((string) $kodeBarang, 'manual');
             if ($result['changed']) {
                 $changedCount++;
             }

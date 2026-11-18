@@ -214,7 +214,7 @@ class DashboardGudangController extends Controller
 
             // Batas Rendah (ROP) dari threshold adaptif, untuk keterangan
             $batasRendah = (float) (DB::table('stock_thresholds')->where('item_id', $kode)->value('low_threshold') ?? 0);
-            $teksBatas   = $batasRendah > 0 ? 'Batas Rendah ' . ceil($batasRendah) : 'Belum ada pemakaian';
+            $teksBatas   = $batasRendah > 0 ? 'Batas Rendah ' . ceil($batasRendah) : 'Tidak ada pemakaian 30 hari terakhir';
 
             return [
                 'kode_barang' => $item->kode_barang,
@@ -469,7 +469,7 @@ class DashboardGudangController extends Controller
 
             // Batas Rendah (ROP) dari threshold adaptif, untuk keterangan
             $batasRendah = (float) (DB::table('stock_thresholds')->where('item_id', $kode)->value('low_threshold') ?? 0);
-            $teksBatas   = $batasRendah > 0 ? 'Batas Rendah ' . ceil($batasRendah) : 'Belum ada pemakaian';
+            $teksBatas   = $batasRendah > 0 ? 'Batas Rendah ' . ceil($batasRendah) : 'Tidak ada pemakaian 30 hari terakhir';
 
             return [
                 'kode_barang'  => $item->kode_barang,
