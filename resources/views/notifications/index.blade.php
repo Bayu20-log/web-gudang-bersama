@@ -210,10 +210,13 @@
         color: #fff;
     }
     .notif-item-badge.badge-aman::before { color: #fff; }
-    .notif-item-badge.badge-membaik::before {
-        content: '↗';
-        font-size: 0.8rem;
-        font-weight: 700;
+    /* Keterangan kecil di samping badge: barang masih bermasalah tapi sudah membaik */
+    .notif-item-trend {
+        display: inline-block;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #15803d;
+        margin-left: 0.35rem;
     }
 
     .notif-item-title {
@@ -355,6 +358,53 @@
     .notif-summary-card .label { color: var(--accent-text, #64748b); }
     .notif-summary-card .icon-circle { display: none; }
 
+    /* ===== Tombol sekunder di header (Riwayat / Kembali) ===== */
+    .notif-btn-header {
+        background: rgba(255, 255, 255, 0.12);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        border-radius: 10px;
+        padding: 0.4rem 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+    }
+    .notif-btn-header:hover { background: rgba(255, 255, 255, 0.22); color: #fff; }
+
+    /* ===== Daftar riwayat ===== */
+    .riwayat-cari { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .riwayat-cari input {
+        flex: 1 1 220px;
+        border: 1px solid #e2e8f0;
+        border-radius: 999px;
+        padding: 0.5rem 1rem;
+        font-size: 0.88rem;
+    }
+    .riwayat-chip {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        background: #fff7ed; color: #9a3412;
+        border-radius: 999px; padding: 0.35rem 0.85rem;
+        font-size: 0.82rem; font-weight: 600; margin-bottom: 1rem;
+    }
+    .riwayat-chip a { color: #9a3412; text-decoration: none; font-weight: 700; }
+    .riwayat-box { background: #fff; border-radius: 20px; box-shadow: 0 3px 12px rgba(15, 23, 42, 0.05); padding: 0.5rem 1.25rem 1rem; }
+    .riwayat-tanggal {
+        font-size: 0.78rem; font-weight: 700; color: #64748b;
+        text-transform: uppercase; letter-spacing: 0.03em;
+        padding: 0.9rem 0 0.4rem; border-bottom: 1px solid #f1f5f9;
+    }
+    .riwayat-baris {
+        display: flex; align-items: baseline; gap: 0.6rem;
+        padding: 0.55rem 0; border-bottom: 1px solid #f8fafc;
+        font-size: 0.88rem; color: #0f172a;
+    }
+    .riwayat-dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 10px; transform: translateY(1px); }
+    .riwayat-jam { color: #64748b; font-variant-numeric: tabular-nums; flex: 0 0 42px; }
+    .riwayat-teks { flex: 1 1 auto; min-width: 0; }
+    .riwayat-stok { color: #64748b; font-size: 0.8rem; white-space: nowrap; }
+
     /* ===== Pagination (warna disamakan dengan tema notifikasi) ===== */
     .notif-pagination .pagination { margin-bottom: 0; }
     .notif-pagination .page-link { color: var(--raksakti-navy); border-radius: 8px; margin: 0 2px; }
@@ -409,18 +459,30 @@
 
     <div class="notif-page-header">
         <div>
-            <h4 class="notif-page-title mb-0">Notifikasi Stok</h4>
-            <div class="notif-page-subtitle">Pantau status stok yang perlu perhatian</div>
+            <h4 class="notif-page-title mb-0">{{ $isRiwayat ? 'Riwayat Notifikasi' : 'Notifikasi Stok' }}</h4>
+            <div class="notif-page-subtitle">{{ $isRiwayat ? 'Semua perubahan status stok yang pernah tercatat' : 'Pantau status stok yang perlu perhatian' }}</div>
+            @if(!$isRiwayat)
+                <div class="notif-page-subtitle" style="font-size: 0.78rem; opacity: 0.75;">Menampilkan status terbaru tiap barang.</div>
+            @endif
         </div>
-        @if($stockNotifications->isNotEmpty())
-            <form method="POST" action="{{ route('stock-notifications.markAllRead') }}">
-                @csrf
-                <button type="submit" class="notif-btn-primary">Tandai Semua Dibaca</button>
-            </form>
-        @endif
+        <div class="d-flex flex-wrap gap-2">
+            @if($isRiwayat)
+                <a href="{{ route('notifications.index') }}" class="notif-btn-header text-decoration-none">&larr; Kembali ke Notifikasi</a>
+            @else
+                {{-- Satu-satunya pintu ke riwayat SEMUA barang --}}
+                <a href="{{ route('notifications.index', ['tab' => 'riwayat']) }}" class="notif-btn-header text-decoration-none">Riwayat</a>
+                @if($stockNotifications->isNotEmpty())
+                    <form method="POST" action="{{ route('stock-notifications.markAllRead') }}">
+                        @csrf
+                        <button type="submit" class="notif-btn-primary">Tandai Semua Dibaca</button>
+                    </form>
+                @endif
+            @endif
+        </div>
     </div>
 
-    {{-- Ringkasan jumlah per status --}}
+    {{-- Ringkasan jumlah per status (hanya di tampilan utama, bukan di riwayat) --}}
+    @if(!$isRiwayat)
     <div class="notif-summary">
         <div class="notif-summary-card" style="--accent:#0dcaf0; --accent-soft:#e0f7fa; --accent-text:#0e7490;">
             <div>
@@ -444,11 +506,9 @@
             <div class="icon-circle"><i class="fa-solid fa-box-open"></i></div>
         </div>
     </div>
+    @endif
 
-    <div class="small text-muted mb-2">
-        Menampilkan status terbaru tiap barang.
-        <a href="{{ route('stock-notifications.index') }}" class="notif-item-link">Lihat riwayat lengkap &rarr;</a>
-    </div>
+    @if(!$isRiwayat)
 
     {{-- Filter pill --}}
     <div class="notif-filter-bar">
@@ -467,23 +527,32 @@
         <div class="notif-card-list">
             @foreach($stockNotifications as $notif)
                 @php
-                    // Notifikasi pemulihan (type = resolution) dicek DULU sebelum level,
-                    // karena disimpan dengan level 'info' yang biasanya berarti Rendah.
+                    // Badge selalu menunjukkan status barang SEKARANG.
+                    // Notifikasi pemulihan (type = resolution) disimpan dengan level 'info',
+                    // jadi untuk pemulihan statusnya diambil dari status terkini barang:
+                    //  - sudah Aman      -> badge hijau "AMAN"
+                    //  - masih Rendah/Kritis -> badge sesuai status itu + keterangan kecil "↗ membaik"
                     $isPemulihan = $notif->type === 'resolution';
+                    $statusSekarang = $notif->status_terkini ?? null;
+                    $isAmanKembali = $isPemulihan
+                        && ($statusSekarang === 'aman' || ($statusSekarang === null && $notif->is_resolved));
+                    $isMembaik = $isPemulihan && !$isAmanKembali;
 
-                    $colors = $isPemulihan
+                    $levelTampil = $isMembaik
+                        ? (['rendah' => 'info', 'kritis' => 'warning', 'habis' => 'critical'][$statusSekarang] ?? 'info')
+                        : $notif->level;
+
+                    $colors = $isAmanKembali
                         ? ['accent' => '#16a34a', 'soft' => '#dcfce7', 'text' => '#15803d']
-                        : match($notif->level) {
+                        : match($levelTampil) {
                         'critical' => ['accent' => '#dc3545', 'soft' => '#fee2e2', 'text' => '#b91c1c'],
                         'warning'  => ['accent' => '#f5b301', 'soft' => '#fef3c7', 'text' => '#92400e'],
                         default    => ['accent' => '#0dcaf0', 'soft' => '#e0f7fa', 'text' => '#0e7490'],
                     };
-                    $badgeClass = $isPemulihan
-                        ? ($notif->is_resolved ? 'badge-aman' : 'badge-membaik')
-                        : '';
-                    $levelLabel = $isPemulihan
-                        ? ($notif->is_resolved ? 'Aman' : 'Membaik')
-                        : match($notif->level) {
+                    $badgeClass = $isAmanKembali ? 'badge-aman' : '';
+                    $levelLabel = $isAmanKembali
+                        ? 'Aman'
+                        : match($levelTampil) {
                         'critical' => 'Habis',
                         'warning'  => 'Kritis',
                         default    => 'Rendah',
@@ -497,6 +566,9 @@
                 <div class="notif-item {{ $notif->is_read ? 'is-read' : '' }}" style="--accent: {{ $colors['accent'] }}; --accent-soft: {{ $colors['soft'] }}; --accent-text: {{ $colors['text'] }};">
                     <div>
                         <span class="notif-item-badge {{ $badgeClass }}">{{ $levelLabel }}</span>
+                        @if($isMembaik)
+                            <span class="notif-item-trend">&#8599; membaik</span>
+                        @endif
                         <div class="notif-item-title">{{ $displayTitle }}</div>
                         <div class="notif-item-message">{{ $displayMessage }}</div>
                         <div>
@@ -510,15 +582,17 @@
                                 @endif
                             </span>
                         </div>
-                        @if(!$isPemulihan)
+                        @if(!$isAmanKembali)
                             <a href="{{ route('item.show', $notif->item_id) }}" class="notif-item-link">Lihat detail produk &rarr;</a>
+                            <span class="text-muted mx-1">&middot;</span>
                         @endif
-                        <div class="notif-item-time">{{ \Carbon\Carbon::parse($notif->created_at)->diffForHumans() }}</div>
+                        <a href="{{ route('notifications.index', ['tab' => 'riwayat', 'barang' => $notif->item_id]) }}" class="notif-item-link">Riwayat barang ini &rarr;</a>
+                        <div class="notif-item-time">{{ \Carbon\Carbon::parse($notif->created_at)->locale('id')->diffForHumans() }}</div>
                     </div>
                     <div class="notif-item-actions">
-                        {{-- Semua peringatan (Rendah, Kritis, Habis) diberi tombol Tambah Stok;
-                             notifikasi pemulihan (stok sudah aman/membaik) cukup Lihat Detail --}}
-                        @if(!$isPemulihan)
+                        {{-- Barang yang masih Rendah/Kritis/Habis (termasuk yang baru membaik)
+                             diberi tombol Tambah Stok; barang yang sudah Aman cukup Lihat Detail --}}
+                        @if(!$isAmanKembali)
                             <a href="{{ route('barang-masuk.create', ['kode_barang' => $notif->item_id]) }}" class="notif-btn-primary text-decoration-none">
                                 Tambah Stok
                             </a>
@@ -553,6 +627,72 @@
                 {{ $stockNotifications->links('pagination::bootstrap-5') }}
             </div>
         </div>
+    @endif
+
+    @else
+    {{-- ===================== TAB RIWAYAT ===================== --}}
+    <form method="GET" action="{{ route('notifications.index') }}" class="riwayat-cari">
+        <input type="hidden" name="tab" value="riwayat">
+        @if($barangDipilih)<input type="hidden" name="barang" value="{{ $barangDipilih }}">@endif
+        <input type="text" name="cari" value="{{ $cariBarang }}" placeholder="Cari nama barang...">
+        <button type="submit" class="notif-btn-primary">Cari</button>
+    </form>
+
+    @if($barangDipilih)
+        <div class="riwayat-chip">
+            Riwayat: {{ $namaBarangDipilih ?? $barangDipilih }}
+            <a href="{{ route('notifications.index', ['tab' => 'riwayat']) }}" title="Tampilkan semua barang">&times;</a>
+        </div>
+    @endif
+
+    @if($riwayat->isEmpty())
+        <div class="notif-empty">
+            <div>Belum ada riwayat notifikasi{{ $cariBarang !== '' ? ' untuk "' . $cariBarang . '"' : '' }}.</div>
+        </div>
+    @else
+        <div class="riwayat-box">
+            @php $tanggalSebelumnya = null; @endphp
+            @foreach($riwayat as $r)
+                @php
+                    $waktu = \Carbon\Carbon::parse($r->created_at)->locale('id');
+                    $labelTanggal = $waktu->isToday() ? 'Hari ini'
+                        : ($waktu->isYesterday() ? 'Kemarin' : $waktu->translatedFormat('j F Y'));
+                    [$judulRiwayat] = \App\Services\AdaptiveThresholdService::teksTampil($r, $r->nama_barang);
+                    $warnaRiwayat = $r->type === 'resolution'
+                        ? '#16a34a'
+                        : match($r->level) {
+                            'critical' => '#dc3545',
+                            'warning'  => '#f5b301',
+                            default    => '#0dcaf0',
+                        };
+                @endphp
+
+                @if($labelTanggal !== $tanggalSebelumnya)
+                    <div class="riwayat-tanggal">{{ $labelTanggal }}</div>
+                    @php $tanggalSebelumnya = $labelTanggal; @endphp
+                @endif
+
+                <div class="riwayat-baris">
+                    <span class="riwayat-dot" style="background: {{ $warnaRiwayat }};"></span>
+                    <span class="riwayat-jam">{{ $waktu->format('H.i') }}</span>
+                    <span class="riwayat-teks">{{ $judulRiwayat }}</span>
+                    {{-- Stok saat status berubah (pengingat tidak punya stok baru sendiri, jadi tidak ditampilkan) --}}
+                    @if($r->type !== 'reminder' && $r->stock_snapshot !== null)
+                        <span class="riwayat-stok">stok {{ number_format((float) $r->stock_snapshot, 0, ',', '.') }}</span>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+
+        <div class="notif-pagination mt-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <div class="small text-muted fw-medium">
+                Menampilkan {{ $riwayat->firstItem() }} - {{ $riwayat->lastItem() }} dari {{ $riwayat->total() }} riwayat
+            </div>
+            <div>
+                {{ $riwayat->links('pagination::bootstrap-5') }}
+            </div>
+        </div>
+    @endif
     @endif
 </div>
 </div>

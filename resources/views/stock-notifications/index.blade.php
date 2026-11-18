@@ -408,7 +408,7 @@
                     <div class="sn-history-title">{{ $displayTitle }}</div>
                     <div class="sn-history-message">{{ $displayMessage }}</div>
                 </div>
-                <div class="sn-history-time">{{ \Carbon\Carbon::parse($notif->created_at)->diffForHumans() }}</div>
+                <div class="sn-history-time">{{ \Carbon\Carbon::parse($notif->created_at)->locale('id')->diffForHumans() }}</div>
             </div>
         @empty
             <p class="text-muted mb-0">Belum ada notifikasi.</p>

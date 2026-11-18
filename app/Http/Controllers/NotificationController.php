@@ -83,6 +83,35 @@ class NotificationController extends Controller
             return redirect($stockNotifications->url($stockNotifications->lastPage()));
         }
 
+        // ------------------------------------------------------------------
+        // Tab "Riwayat": semua notifikasi yang pernah dibuat, terbaru di atas,
+        // bisa dicari per nama barang atau disaring untuk satu barang.
+        // Memakai nama halaman "hal" supaya tidak bentrok dengan pagination tab utama.
+        // ------------------------------------------------------------------
+        $isRiwayat   = $request->query('tab') === 'riwayat';
+        $cariBarang  = trim((string) $request->query('cari', ''));
+        $barangDipilih = $request->query('barang');
+        $riwayat = null;
+        $namaBarangDipilih = null;
+
+        if ($isRiwayat) {
+            $riwayat = DB::table('stock_notifications')
+                ->join('items', 'items.kode_barang', '=', 'stock_notifications.item_id')
+                ->leftJoin('stock_status_logs', 'stock_status_logs.id', '=', 'stock_notifications.stock_status_log_id')
+                ->where('items.user_id', $userId)
+                ->when($barangDipilih, fn ($q) => $q->where('stock_notifications.item_id', $barangDipilih))
+                ->when($cariBarang !== '', fn ($q) => $q->where('items.nama_barang', 'like', '%' . $cariBarang . '%'))
+                ->orderByDesc('stock_notifications.created_at')
+                ->orderByDesc('stock_notifications.id')
+                ->select('stock_notifications.*', 'items.nama_barang', 'stock_status_logs.stock_snapshot')
+                ->paginate(20, ['*'], 'hal')
+                ->withQueryString();
+
+            if ($barangDipilih) {
+                $namaBarangDipilih = DB::table('items')->where('kode_barang', $barangDipilih)->value('nama_barang');
+            }
+        }
+
         // Info stok untuk tiap kartu: stok SAAT INI + Batas Rendah & Kritis dari
         // threshold adaptif, supaya pengguna tahu patokan statusnya.
         // Dihitung sekaligus untuk barang di halaman ini saja (maks. 10).
@@ -97,8 +126,10 @@ class NotificationController extends Controller
         $thresholds = DB::table('stock_thresholds')->whereIn('item_id', $kodeDiHalaman)
             ->get()->keyBy('item_id');
 
-        $stockNotifications->getCollection()->transform(function ($notif) use ($totalMasuk, $totalKeluar, $thresholds) {
+        $stockNotifications->getCollection()->transform(function ($notif) use ($totalMasuk, $totalKeluar, $thresholds, $statusTerkini) {
             $kode = $notif->item_id;
+            // Status barang SEKARANG (dari evaluasi terakhir) -- badge di kartu mengikuti ini
+            $notif->status_terkini = $statusTerkini[$kode] ?? null;
             $threshold = $thresholds[$kode] ?? null;
 
             $notif->stok_saat_ini = (float) ($totalMasuk[$kode] ?? 0) - (float) ($totalKeluar[$kode] ?? 0);
@@ -114,7 +145,12 @@ class NotificationController extends Controller
             'notifications',
             'stockNotifications',
             'statusFilter',
-            'levelCounts'
+            'levelCounts',
+            'isRiwayat',
+            'riwayat',
+            'cariBarang',
+            'barangDipilih',
+            'namaBarangDipilih'
         ));
     }
 
