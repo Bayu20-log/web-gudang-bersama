@@ -16,7 +16,7 @@
 
     $typeLabel = match ($type) {
         'initial' => 'Peringatan Baru',
-        'escalation' => 'Eskalasi',
+        'escalation' => 'Stok Makin Menipis',
         'resolution' => 'Resolusi',
         'reminder' => 'Pengingat',
         default => ucfirst($type),

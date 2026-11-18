@@ -230,6 +230,27 @@
         line-height: 1.4;
     }
 
+    /* Baris info stok + link detail produk */
+    .notif-item-stock {
+        font-size: 0.8rem;
+        color: #334155;
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 0.35rem 0.6rem;
+        margin: 0.35rem 0 0.3rem;
+        display: inline-block;
+    }
+    .notif-item-stock strong { color: #0f172a; }
+    .notif-item-link {
+        display: inline-block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--raksakti-orange);
+        text-decoration: none;
+        margin-bottom: 0.3rem;
+    }
+    .notif-item-link:hover { text-decoration: underline; color: #ea6a0c; }
+
     .notif-item-time {
         font-size: 0.76rem;
         color: #94a3b8;
@@ -424,6 +445,11 @@
         </div>
     </div>
 
+    <div class="small text-muted mb-2">
+        Menampilkan status terbaru tiap barang.
+        <a href="{{ route('stock-notifications.index') }}" class="notif-item-link">Lihat riwayat lengkap &rarr;</a>
+    </div>
+
     {{-- Filter pill --}}
     <div class="notif-filter-bar">
         <a href="{{ route('notifications.index') }}" class="notif-filter-pill {{ !$statusFilter ? 'active' : '' }}">Semua</a>
@@ -466,15 +492,27 @@
                     // Notifikasi lama disimpan dengan teks "item #{kode}" -- ganti
                     // jadi nama barang asli untuk tampilan, tanpa mengubah data
                     // tersimpan (yang tetap dipakai apa adanya oleh logic lain).
-                    $needle = 'item #' . $notif->item_id;
-                    $displayTitle = str_replace($needle, $notif->nama_barang, $notif->title);
-                    $displayMessage = str_replace($needle, $notif->nama_barang, $notif->message);
+                    [$displayTitle, $displayMessage] = \App\Services\AdaptiveThresholdService::teksTampil($notif, $notif->nama_barang);
                 @endphp
                 <div class="notif-item {{ $notif->is_read ? 'is-read' : '' }}" style="--accent: {{ $colors['accent'] }}; --accent-soft: {{ $colors['soft'] }}; --accent-text: {{ $colors['text'] }};">
                     <div>
                         <span class="notif-item-badge {{ $badgeClass }}">{{ $levelLabel }}</span>
                         <div class="notif-item-title">{{ $displayTitle }}</div>
                         <div class="notif-item-message">{{ $displayMessage }}</div>
+                        <div>
+                            <span class="notif-item-stock">
+                                📦 Stok saat ini: <strong>{{ number_format($notif->stok_saat_ini, 0, ',', '.') }}</strong>
+                                @if($notif->punya_batas)
+                                    &middot; Batas Rendah: <strong>{{ number_format($notif->batas_rendah, 0, ',', '.') }}</strong>
+                                    &middot; Batas Kritis: <strong>{{ number_format($notif->batas_kritis, 0, ',', '.') }}</strong>
+                                @else
+                                    &middot; Belum ada data pemakaian
+                                @endif
+                            </span>
+                        </div>
+                        @if(!$isPemulihan)
+                            <a href="{{ route('item.show', $notif->item_id) }}" class="notif-item-link">Lihat detail produk &rarr;</a>
+                        @endif
                         <div class="notif-item-time">{{ \Carbon\Carbon::parse($notif->created_at)->diffForHumans() }}</div>
                     </div>
                     <div class="notif-item-actions">

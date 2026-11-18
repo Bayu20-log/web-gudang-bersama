@@ -396,6 +396,12 @@
                                                     ->join('items', 'items.kode_barang', '=', 'stock_notifications.item_id')
                                                     ->where('items.user_id', Auth::id())
                                                     ->where('stock_notifications.is_read', false)
+                                                    // hanya notifikasi terbaru tiap barang (sama dengan halaman Notifikasi)
+                                                    ->whereIn('stock_notifications.id', function ($q) {
+                                                        $q->from('stock_notifications')
+                                                          ->selectRaw('MAX(id)')
+                                                          ->groupBy('item_id');
+                                                    })
                                                     ->count();
                                 @endphp
                                 @if($unreadStockCount > 0)

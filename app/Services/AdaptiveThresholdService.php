@@ -312,6 +312,51 @@ class AdaptiveThresholdService
     }
 
     /**
+     * Kalimat notifikasi eskalasi (status memburuk) yang mudah dipahami pelaku UMKM.
+     * Mis. "Stok Beans sekarang sudah habis" /
+     *      "Sebelumnya berstatus Rendah, sekarang Habis. Segera tambah stok."
+     * Kode "item #{kode}" tetap dipakai supaya tampilan bisa menggantinya dengan nama barang.
+     *
+     * @return array{0: string, 1: string}  [judul, pesan]
+     */
+    public static function kalimatEskalasi(string $kodeBarang, string $previousStatus, string $currentStatus): array
+    {
+        $keadaan = $currentStatus === 'habis' ? 'sudah habis' : 'hampir habis';
+
+        return [
+            "Stok item #{$kodeBarang} sekarang {$keadaan}",
+            'Sebelumnya berstatus ' . ucfirst($previousStatus) . ', sekarang ' . ucfirst($currentStatus) . '. Segera tambah stok.',
+        ];
+    }
+
+    /**
+     * Judul & pesan notifikasi untuk DITAMPILKAN: "item #{kode}" diganti nama barang,
+     * dan notifikasi eskalasi lama (format "Eskalasi stok ...: Rendah -> Habis")
+     * ikut ditampilkan dengan kalimat baru supaya semua notifikasi seragam.
+     *
+     * @return array{0: string, 1: string}  [judul, pesan]
+     */
+    public static function teksTampil(object $notif, string $namaBarang): array
+    {
+        $title   = $notif->title;
+        $message = $notif->message;
+
+        if (($notif->type ?? null) === 'escalation'
+            && preg_match('/:\s*(\w+)\s*->\s*(\w+)\s*$/', $title, $m)) {
+            [$title, $message] = self::kalimatEskalasi(
+                (string) $notif->item_id, strtolower($m[1]), strtolower($m[2])
+            );
+        }
+
+        $needle = 'item #' . $notif->item_id;
+
+        return [
+            str_replace($needle, $namaBarang, $title),
+            str_replace($needle, $namaBarang, $message),
+        ];
+    }
+
+    /**
      * Membuat notifikasi berdasarkan perubahan status (initial/escalation/resolution).
      * Dipanggil otomatis dari evaluateAndLogStatus() setiap kali status berubah.
      *
@@ -351,8 +396,7 @@ class AdaptiveThresholdService
             $type  = 'escalation';
             $level = $this->levelForStatus($currentStatus);
             $isResolved = false;
-            $title = "Eskalasi stok item #{$kodeBarang}: " . ucfirst($previousStatus) . ' -> ' . ucfirst($currentStatus);
-            $message = "Status stok item #{$kodeBarang} memburuk dari {$previousStatus} menjadi {$currentStatus}.";
+            [$title, $message] = self::kalimatEskalasi($kodeBarang, $previousStatus, $currentStatus);
         } else {
             // Status baru = 'aman' dan sebelumnya juga sudah 'aman' (harusnya
             // tidak pernah sampai sini karena evaluateAndLogStatus sudah skip

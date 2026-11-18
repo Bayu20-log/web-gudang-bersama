@@ -397,8 +397,7 @@
         @endphp
         @forelse ($notifications as $notif)
             @php
-                $displayTitle = str_replace('item #' . $notif->item_id, $notif->nama_barang, $notif->title);
-                $displayMessage = str_replace('item #' . $notif->item_id, $notif->nama_barang, $notif->message);
+                [$displayTitle, $displayMessage] = \App\Services\AdaptiveThresholdService::teksTampil($notif, $notif->nama_barang);
                 // Notifikasi pemulihan (stok membaik/kembali aman) diberi garis hijau
                 $borderColor = $notif->type === 'resolution'
                     ? '#16a34a'
