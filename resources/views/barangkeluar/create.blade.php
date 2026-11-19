@@ -69,7 +69,8 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="harga_jual" class="form-label">Harga Jual / Unit <span class="text-danger">*</span></label>
-                        <input type="number" name="harga_jual" id="harga_jual" class="form-control bg-light" placeholder="Rp" required>
+                        <input type="number" name="harga_jual" id="harga_jual" class="form-control bg-light" placeholder="Rp" min="0" required>
+                        <div id="harga_warning" class="text-danger mt-1 fw-medium" style="font-size: 0.85em;">@error('harga_jual'){{ $message }}@enderror</div>
                     </div>
                 </div>
 
@@ -198,6 +199,9 @@ async function fetchDetail(kode, lokasi, kondisi) {
 function confirmSimpan(event) {
     event.preventDefault();
 
+    // Tombol disabled = ada input yang belum valid (jumlah / harga), jangan lanjut
+    if (document.getElementById('submitBtn').disabled) return;
+
     Swal.fire({
         title: 'Konfirmasi Pengeluaran',
         text: "Apakah Anda yakin ingin mengeluarkan barang ini dari gudang?",
@@ -242,53 +246,68 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
     await fetchDetail(kode, lokasi, kondisi);
-    updateTotal();
+    validateForm();
   }
 
   select.addEventListener('change', onSelectChange);
 
   function updateTotal() {
-    totalHarga.value = num(jumlahKeluar.value) * num(hargaJual.value);
+    let harga = num(hargaJual.value);
+    if (harga < 0) harga = 0; // harga minus tidak ikut dihitung
+    totalHarga.value = num(jumlahKeluar.value) * harga;
   }
 
-  jumlahKeluar.addEventListener('input', function() {
-    const jumlahStr = this.value;
-    const jumlah = num(jumlahStr);
-    const stok   = num(document.getElementById('stok_tersedia').value);
-    const warning = document.getElementById('jumlah_warning');
-    
-    if (!/^\d+$/.test(jumlahStr) && jumlahStr !== "") { 
-        warning.textContent = "Jumlah harus bilangan bulat positif."; 
-        submitBtn.disabled = true; 
-    }
-    else if (jumlah < 1 && jumlahStr !== "") { 
-        warning.textContent = "Jumlah tidak boleh kurang dari 1."; 
-        submitBtn.disabled = true; 
-    }
-    else if (jumlah > stok) { 
-        warning.textContent = `Peringatan: Jumlah melebihi stok yang tersedia (${stok}).`; 
-        submitBtn.disabled = true; 
-    }
-    else { 
-        warning.textContent = ""; 
-        submitBtn.disabled = false; 
-    }
-    updateTotal();
-  });
+  // ---- Validasi langsung: Jumlah Keluar & Harga Jual ----
+  function validateJumlah() {
+    const jumlahStr = jumlahKeluar.value;
+    const jumlah    = num(jumlahStr);
+    const stok      = num(document.getElementById('stok_tersedia').value);
+    const warning   = document.getElementById('jumlah_warning');
+    let pesan = '';
 
-  hargaJual.addEventListener('input', function() {
-    const harga = num(this.value);
-    if (harga < 0 || isNaN(harga)) {
-        submitBtn.disabled = true;
-    } else {
-        const jumlah = num(jumlahKeluar.value);
-        const stok   = num(document.getElementById('stok_tersedia').value);
-        if (jumlah > 0 && jumlah <= stok) {
-            submitBtn.disabled = false;
-        }
+    if (!/^\d+$/.test(jumlahStr) && jumlahStr !== "") {
+      pesan = "Jumlah harus bilangan bulat positif.";
+    } else if (jumlah < 1 && jumlahStr !== "") {
+      pesan = "Jumlah tidak boleh kurang dari 1.";
+    } else if (jumlah > stok) {
+      pesan = `Peringatan: Jumlah melebihi stok yang tersedia (${stok}).`;
     }
+
+    warning.textContent = pesan;
+    jumlahKeluar.classList.toggle('is-invalid', pesan !== '');
+    return pesan === '';
+  }
+
+  function validateHarga() {
+    const raw     = hargaJual.value;
+    const warning = document.getElementById('harga_warning');
+    let pesan = '';
+
+    if (raw === '') {
+      // type=number mengosongkan value kalau isinya bukan angka valid (mis. hanya "-")
+      if (hargaJual.validity.badInput) pesan = "Harga jual harus berupa angka.";
+    } else {
+      const n = Number(raw);
+      if (isNaN(n))   pesan = "Harga jual harus berupa angka.";
+      else if (n < 0) pesan = "Harga jual tidak boleh minus.";
+    }
+
+    warning.textContent = pesan;
+    hargaJual.classList.toggle('is-invalid', pesan !== '');
+    return pesan === '';
+  }
+
+  // Tombol Simpan hanya aktif kalau jumlah DAN harga sama-sama valid
+  function validateForm() {
+    const jumlahOk = validateJumlah();
+    const hargaOk  = validateHarga();
+    submitBtn.disabled = !(jumlahOk && hargaOk);
     updateTotal();
-  });
+  }
+
+  jumlahKeluar.addEventListener('input', validateForm);
+  hargaJual.addEventListener('input', validateForm);
+  validateForm();
 });
 </script>
 @endsection

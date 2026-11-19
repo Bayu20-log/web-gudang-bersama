@@ -28,7 +28,7 @@
         </div>
     @endif
 
-    <form action="{{ route('item.store') }}" method="POST" enctype="multipart/form-data">
+    <form id="formItem" action="{{ route('item.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         
         <!-- Perekam Jejak Asal Halaman -->
@@ -39,7 +39,8 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="nama_barang" class="form-label">Nama Produk <span class="text-danger">*</span></label>
-                    <input type="text" name="nama_barang" id="nama_barang" class="form-control bg-light" value="{{ old('nama_barang') }}" placeholder="Masukkan nama produk" required>
+                    <input type="text" name="nama_barang" id="nama_barang" class="form-control bg-light @error('nama_barang') is-invalid @enderror" value="{{ old('nama_barang') }}" placeholder="Masukkan nama produk" required>
+                    @error('nama_barang')<div class="invalid-feedback fw-medium mt-1" style="font-size: 0.85em;">{{ $message }}</div>@enderror
                 </div>
                 
                 <div class="mb-3">
@@ -74,6 +75,7 @@
                 <div class="mb-3">
                     <label for="harga_dasar" class="form-label">Harga Dasar <span class="text-danger">*</span></label>
                     <input type="number" name="harga_dasar" id="harga_dasar" class="form-control bg-light" value="{{ old('harga_dasar') }}" placeholder="Rp" required>
+                    <div id="harga_dasar_warning" class="text-danger mt-1 fw-medium" style="font-size: 0.85em;">@error('harga_dasar'){{ $message }}@enderror</div>
                 </div>
                 
                 <div class="mb-3">
@@ -97,7 +99,7 @@
         <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top form-btn-row">
             <!-- Jika datang dari Barang Masuk, Batal akan mengarah ke Barang Masuk -->
             <a href="{{ request('redirect') == 'barang-masuk' ? route('barang-masuk.create') : route('item.index') }}" class="btn btn-outline-secondary px-4 fw-medium">Batal</a>
-            <button type="submit" class="btn btn-orange px-5 fw-bold"><i class="bi bi-save me-2"></i>Simpan</button>
+            <button type="submit" id="btnSimpanItem" class="btn btn-orange px-5 fw-bold"><i class="bi bi-save me-2"></i>Simpan</button>
         </div>
     </form>
 </div>
@@ -248,5 +250,45 @@
         } catch (error) { errorDiv.innerText = 'Terjadi kesalahan sistem.'; errorDiv.style.display = 'block'; } 
         finally { btnSave.disabled = false; btnSave.innerText = 'Simpan'; }
     }
+</script>
+
+<script>
+    // Validasi langsung (tanpa menunggu klik Simpan) untuk Stok Minimum & Harga Dasar.
+    (function () {
+        const form      = document.getElementById('formItem');
+        const submitBtn = document.getElementById('btnSimpanItem');
+        const fields = [
+            { input: document.getElementById('harga_dasar'),  warning: document.getElementById('harga_dasar_warning'),  label: 'Harga dasar',  bulat: false },
+        ];
+
+        function cek(f) {
+            const raw = f.input.value;
+            let pesan = '';
+
+            if (raw === '') {
+                // type=number mengosongkan value kalau isinya bukan angka valid (mis. hanya "-")
+                if (f.input.validity.badInput) pesan = f.label + ' harus berupa angka.';
+            } else {
+                const n = Number(raw);
+                if (isNaN(n))                            pesan = f.label + ' harus berupa angka.';
+                else if (n < 0)                          pesan = f.label + ' tidak boleh minus.';
+                else if (f.bulat && !Number.isInteger(n)) pesan = f.label + ' harus berupa bilangan bulat.';
+            }
+
+            f.warning.textContent = pesan;
+            f.input.classList.toggle('is-invalid', pesan !== '');
+            return pesan === '';
+        }
+
+        function cekSemua() {
+            const valid = fields.map(cek).every(Boolean);
+            submitBtn.disabled = !valid;
+            return valid;
+        }
+
+        fields.forEach(f => f.input.addEventListener('input', cekSemua));
+        form.addEventListener('submit', function (e) { if (!cekSemua()) e.preventDefault(); });
+        cekSemua();
+    })();
 </script>
 @endsection

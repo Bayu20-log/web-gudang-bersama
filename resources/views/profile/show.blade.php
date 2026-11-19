@@ -121,7 +121,8 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Telepon <span class="text-muted fw-normal">(Opsional)</span></label>
-                        <input name="phone" type="text" class="form-control" value="{{ old('phone', $user->phone) }}" placeholder="08xxxxxxxx">
+                        <input name="phone" type="tel" class="form-control" value="{{ old('phone', $user->phone) }}" placeholder="08xxxxxxxx" inputmode="numeric" maxlength="15" pattern="[0-9]{8,15}" title="Hanya angka, 8–15 digit" oninput="this.value = this.value.replace(/\D/g, '')">
+                        <div class="form-text">Hanya angka, 8–15 digit (contoh: 081234567890).</div>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Nama Toko <span class="text-danger">*</span></label>

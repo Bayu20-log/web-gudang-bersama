@@ -72,7 +72,7 @@
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Harga Beli <span class="text-danger">*</span></label>
                         <input type="number" name="harga_satuan" id="harga_satuan" class="form-control bg-light @error('harga_satuan') is-invalid @enderror" min="0" value="{{ old('harga_satuan') }}" required>
-                        @error('harga_satuan') <div class="text-danger mt-1" style="font-size: 0.85em;">{{ $message }}</div> @enderror
+                        <div id="harga_warning" class="text-danger mt-1 fw-medium" style="font-size: 0.85em;">@error('harga_satuan'){{ $message }}@enderror</div>
                     </div>
                 </div>
 
@@ -155,7 +155,7 @@
 
         <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top form-btn-row">
             <a href="{{ route('barang-masuk.index') }}" class="btn btn-outline-secondary px-4 fw-medium">Batal</a>
-            <button type="submit" class="btn btn-orange px-5 fw-bold"><i class="bi bi-save me-2"></i>Simpan</button>
+            <button type="submit" id="submitBtn" class="btn btn-orange px-5 fw-bold"><i class="bi bi-save me-2"></i>Simpan</button>
         </div>
     </form>
 </div>
@@ -286,15 +286,47 @@
 
     function updateTotalHarga() {
         const jumlah = parseFloat(document.getElementById('jumlah').value) || 0;
-        const harga = parseFloat(document.getElementById('harga_satuan').value) || 0;
+        let harga = parseFloat(document.getElementById('harga_satuan').value) || 0;
+        if (harga < 0) harga = 0; // harga minus tidak ikut dihitung
         document.getElementById('total_harga').value = (jumlah * harga).toFixed(2);
     }
+
+    // Peringatan langsung saat Harga Beli diisi nilai minus (tanpa menunggu klik Simpan)
+    function validateHargaBeli() {
+        const input     = document.getElementById('harga_satuan');
+        const warning   = document.getElementById('harga_warning');
+        const submitBtn = document.getElementById('submitBtn');
+        const raw       = input.value;
+        let pesan = '';
+
+        if (raw === '') {
+            // type=number mengosongkan value kalau isinya bukan angka valid (mis. hanya "-")
+            if (input.validity.badInput) pesan = 'Harga beli harus berupa angka.';
+        } else {
+            const n = Number(raw);
+            if (isNaN(n))   pesan = 'Harga beli harus berupa angka.';
+            else if (n < 0) pesan = 'Harga beli tidak boleh minus.';
+        }
+
+        warning.textContent = pesan;
+        input.classList.toggle('is-invalid', pesan !== '');
+        submitBtn.disabled = pesan !== '';
+        return pesan === '';
+    }
+
     document.getElementById('jumlah').addEventListener('input', updateTotalHarga);
-    document.getElementById('harga_satuan').addEventListener('input', updateTotalHarga);
-    updateTotalHarga(); // hitung saat halaman dibuka (misal setelah validasi gagal)
+    document.getElementById('harga_satuan').addEventListener('input', function () {
+        validateHargaBeli();
+        updateTotalHarga();
+    });
+    validateHargaBeli();
+    if (document.getElementById('jumlah').value || document.getElementById('harga_satuan').value) {
+        updateTotalHarga(); // hanya saat form kembali terisi (mis. setelah error validasi server)
+    }
 
     function confirmSimpan(event) {
         event.preventDefault();
+        if (!validateHargaBeli()) return;
         Swal.fire({
             title: 'Konfirmasi Penyimpanan',
             text: "Apakah Anda yakin ingin menyimpan data transaksi ini?",

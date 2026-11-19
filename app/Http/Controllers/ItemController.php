@@ -6,8 +6,11 @@ use Illuminate\Http\Request;
 use App\Models\Item;
 use App\Models\Kategori;
 use App\Models\Satuan;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class ItemController extends Controller
 {
@@ -26,7 +29,10 @@ class ItemController extends Controller
             $query->where('id_kategori', $request->kategori);
         }
 
+        // Terbaru di atas. created_at bisa sama persis untuk banyak data (mis. hasil seeder),
+        // jadi kode_barang dipakai sebagai pembeda supaya urutannya selalu konsisten (43, 42, 41, ...).
         $items = $query->orderBy('created_at', 'desc')
+                       ->orderBy('kode_barang', 'desc')
                        ->paginate(10)
                        ->withQueryString();
 
@@ -57,25 +63,10 @@ class ItemController extends Controller
 
     public function store(Request $request)
     {
-        $rules = [
-            'nama_barang' => 'required|string|max:255',
-            'id_kategori' => 'required|exists:kategoris,id',
-            'id_satuan'   => 'required|exists:satuans,id',
-            'harga_dasar' => 'required|numeric|min:0',
-            'deskripsi'   => 'nullable|string|max:500',
-            'foto'        => 'nullable|image|max:2048',
-        ];
+        // Rapikan spasi di awal/akhir supaya "Cup 12oz " dan "Cup 12oz" dianggap sama.
+        $request->merge(['nama_barang' => trim((string) $request->nama_barang)]);
 
-        $messages = [
-            'nama_barang.required' => 'Nama barang wajib diisi.',
-            'id_kategori.required' => 'Kategori wajib dipilih.',
-            'id_satuan.required'   => 'Satuan wajib dipilih.',
-            'harga_dasar.required' => 'Harga dasar wajib diisi.',
-            'foto.image'           => 'File foto harus berupa gambar.',
-            'foto.max'             => 'Ukuran foto maksimal 2MB.',
-        ];
-
-        $request->validate($rules, $messages);
+        $request->validate($this->rules(), $this->messages());
 
         $item = new Item();
         $item->kode_barang = Item::generateKodeBarang();
@@ -86,11 +77,25 @@ class ItemController extends Controller
         $item->deskripsi   = $request->deskripsi;
         $item->user_id     = Auth::id(); 
 
+        $fotoPath = null;
         if ($request->hasFile('foto')) {
-            $item->foto = $request->file('foto')->store('foto_barang', 'public_direct');
+            $fotoPath = $request->file('foto')->store('foto_barang', 'public_direct');
+            $item->foto = $fotoPath;
         }
 
-        $item->save();
+        try {
+            $item->save();
+        } catch (QueryException $e) {
+            // Jaga-jaga: kalau database masih punya unique index nama_barang (items_nama_barang_unique),
+            // jangan tampilkan halaman error 500, cukup beri pesan di form.
+            if ($fotoPath) {
+                Storage::disk('public_direct')->delete($fotoPath);
+            }
+            if ($this->isDuplicateNamaBarang($e)) {
+                return back()->withInput()->withErrors(['nama_barang' => self::PESAN_NAMA_DUPLIKAT]);
+            }
+            throw $e;
+        }
         
         if ($request->redirect_to == 'barang-masuk') {
             return redirect()->route('barang-masuk.create')->with('success', 'Produk berhasil ditambahkan dan sudah tersedia di pilihan.');
@@ -118,23 +123,9 @@ class ItemController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $rules = [
-            'id_kategori' => 'required|exists:kategoris,id',
-            'id_satuan'   => 'required|exists:satuans,id',
-            'harga_dasar' => 'required|numeric|min:0',
-            'deskripsi'   => 'nullable|string|max:500',
-            'foto'        => 'nullable|image|max:2048',
-        ];
+        $request->merge(['nama_barang' => trim((string) $request->nama_barang)]);
 
-        $messages = [
-            'id_kategori.required' => 'Kategori wajib dipilih.',
-            'id_satuan.required'   => 'Satuan wajib dipilih.',
-            'harga_dasar.required' => 'Harga dasar wajib diisi.',
-            'foto.image'           => 'File foto harus berupa gambar.',
-            'foto.max'             => 'Ukuran foto maksimal 2MB.',
-        ];
-
-        $request->validate($rules, $messages);
+        $request->validate($this->rules($item), $this->messages());
 
         $item->nama_barang = $request->nama_barang;
         $item->id_kategori = $request->id_kategori;
@@ -142,11 +133,23 @@ class ItemController extends Controller
         $item->harga_dasar = $request->harga_dasar;
         $item->deskripsi   = $request->deskripsi;
 
+        $fotoBaru = null;
         if ($request->hasFile('foto')) {
-            $item->foto = $request->file('foto')->store('foto_barang', 'public_direct');
+            $fotoBaru = $request->file('foto')->store('foto_barang', 'public_direct');
+            $item->foto = $fotoBaru;
         }
 
-        $item->save();
+        try {
+            $item->save();
+        } catch (QueryException $e) {
+            if ($fotoBaru) {
+                Storage::disk('public_direct')->delete($fotoBaru);
+            }
+            if ($this->isDuplicateNamaBarang($e)) {
+                return back()->withInput()->withErrors(['nama_barang' => self::PESAN_NAMA_DUPLIKAT]);
+            }
+            throw $e;
+        }
 
         return redirect()->route('item.index')->with('success', 'Item berhasil diperbarui.');
     }
@@ -156,8 +159,85 @@ class ItemController extends Controller
         if ($item->user_id !== Auth::id()) {
             abort(403, 'Unauthorized');
         }
-        $item->delete();
+
+        // Produk yang sudah punya riwayat barang masuk/keluar tidak boleh dihapus.
+        // (Foreign key barang_masuks/barang_keluars ke items memakai ON DELETE CASCADE,
+        //  jadi tanpa pengecekan ini seluruh riwayat transaksinya ikut terhapus.)
+        if ($item->barangMasuk()->exists() || $item->barangKeluar()->exists()) {
+            return back()->with(
+                'error',
+                'Tidak dapat menghapus data karena sudah digunakan untuk pencatatan barang masuk/keluar.'
+            );
+        }
+
+        try {
+            $item->delete();
+        } catch (QueryException $e) {
+            $sqlState  = $e->errorInfo[0] ?? null;
+            $mysqlCode = $e->errorInfo[1] ?? null;
+
+            if ($sqlState === '23000' || $mysqlCode == 1451) {
+                return back()->with(
+                    'error',
+                    'Tidak dapat menghapus data karena sudah digunakan untuk pencatatan barang masuk/keluar.'
+                );
+            }
+
+            report($e);
+            return back()->with('error', 'Terjadi kesalahan saat menghapus data.');
+        }
+
         return redirect()->route('item.index')->with('success', 'Item berhasil dihapus.');
+    }
+
+    // ==========================================
+    // VALIDASI (dipakai store & update)
+    // ==========================================
+    private const PESAN_NAMA_DUPLIKAT = 'Nama produk sudah ada. Gunakan nama yang berbeda.';
+
+    private function rules(?Item $item = null): array
+    {
+        $unikNama = Rule::unique('items', 'nama_barang')
+            ->where(fn ($q) => $q->where('user_id', Auth::id()));
+
+        if ($item) {
+            $unikNama->ignore($item->kode_barang, 'kode_barang');
+        }
+
+        return [
+            'nama_barang' => ['required', 'string', 'max:255', $unikNama],
+            'id_kategori' => 'required|exists:kategoris,id',
+            'id_satuan'   => 'required|exists:satuans,id',
+            'harga_dasar' => 'required|numeric|min:0',
+            'deskripsi'   => 'nullable|string|max:500',
+            'foto'        => 'nullable|image|max:2048',
+        ];
+    }
+
+    private function messages(): array
+    {
+        return [
+            'nama_barang.required' => 'Nama produk wajib diisi.',
+            'nama_barang.max'      => 'Nama produk maksimal 255 karakter.',
+            'nama_barang.unique'   => self::PESAN_NAMA_DUPLIKAT,
+            'id_kategori.required' => 'Kategori wajib dipilih.',
+            'id_kategori.exists'   => 'Kategori yang dipilih tidak valid.',
+            'id_satuan.required'   => 'Satuan wajib dipilih.',
+            'id_satuan.exists'     => 'Satuan yang dipilih tidak valid.',
+            'harga_dasar.required' => 'Harga dasar wajib diisi.',
+            'harga_dasar.numeric'  => 'Harga dasar harus berupa angka.',
+            'harga_dasar.min'      => 'Harga dasar tidak boleh minus.',
+            'deskripsi.max'        => 'Catatan / deskripsi maksimal 500 karakter.',
+            'foto.image'           => 'File foto harus berupa gambar.',
+            'foto.max'             => 'Ukuran foto maksimal 2MB.',
+        ];
+    }
+
+    /** True kalau error 1062 (duplicate entry) berasal dari index nama_barang. */
+    private function isDuplicateNamaBarang(QueryException $e): bool
+    {
+        return ($e->errorInfo[1] ?? null) == 1062
+            && str_contains($e->getMessage(), 'nama_barang');
     }
 
     // ==========================================

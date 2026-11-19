@@ -47,11 +47,11 @@ class PemasokController extends Controller
             'nama_pemasok'    => 'required|string|max:255|unique:pemasoks,nama_pemasok',
             'email'           => 'required|string|email|max:255',
             'nama_pic'        => 'required|string|max:255',
-            'no_telepon'      => 'nullable|string|max:20',
+            'no_telepon'      => 'nullable|digits_between:8,15',
             'alamat'          => 'nullable|string',
             'jenis'           => 'nullable|string|max:50',
             'bergabung_sejak' => 'nullable|date',
-        ]);
+        ], $this->pesanValidasi());
 
         Pemasok::create([
             'nama_pemasok'   => $request->nama_pemasok,
@@ -111,6 +111,13 @@ class PemasokController extends Controller
         }
     }
 
+    private function pesanValidasi(): array
+    {
+        return [
+            'no_telepon.digits_between' => 'Nomor telepon hanya boleh berisi angka (tanpa spasi, tanda + atau -) dengan panjang 8–15 digit.',
+        ];
+    }
+
     public function edit(Pemasok $pemasok)
     {
         return view('pemasok.edit', compact('pemasok'));
@@ -122,11 +129,11 @@ class PemasokController extends Controller
             'nama_pemasok'    => 'required|string|max:255|unique:pemasoks,nama_pemasok,' . $pemasok->id,
             'email'           => 'required|string|email|max:255',
             'nama_pic'        => 'required|string|max:255',
-            'no_telepon'      => 'nullable|string|max:20',
+            'no_telepon'      => 'nullable|digits_between:8,15',
             'alamat'          => 'nullable|string',
             'jenis'           => 'nullable|string|max:50',
             'bergabung_sejak' => 'nullable|date',
-        ]);
+        ], $this->pesanValidasi());
 
         $pemasok->update($request->only([
             'nama_pemasok',
@@ -144,8 +151,9 @@ class PemasokController extends Controller
     public function destroy(Pemasok $pemasok)
     {
         try {
-            if (method_exists($pemasok, 'items') && $pemasok->items()->exists()) {
-                return back()->with('error', 'Tidak dapat menghapus data karena sudah digunakan untuk pencatatan item.');
+            // Pemasok dipakai di barang masuk (barang_masuks.id_pemasok)
+            if ($pemasok->barangMasuks()->exists()) {
+                return back()->with('error', 'Tidak dapat menghapus data karena sudah digunakan untuk pencatatan barang masuk/keluar.');
             }
 
             $pemasok->delete();

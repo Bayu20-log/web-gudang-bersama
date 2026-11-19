@@ -78,6 +78,13 @@ class BarangKeluarController extends Controller
             'catatan'        => 'required|string|max:255',
             'penerima'       => 'required|string|max:255',
             'lokasi_tujuan'  => 'required|string|max:255',
+        ], [
+            'jumlah_keluar.required' => 'Jumlah keluar wajib diisi.',
+            'jumlah_keluar.integer'  => 'Jumlah keluar harus berupa bilangan bulat.',
+            'jumlah_keluar.min'      => 'Jumlah keluar tidak boleh kurang dari 1.',
+            'harga_jual.required'    => 'Harga jual wajib diisi.',
+            'harga_jual.numeric'     => 'Harga jual harus berupa angka.',
+            'harga_jual.min'         => 'Harga jual tidak boleh minus.',
         ]);
 
 

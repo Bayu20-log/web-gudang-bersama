@@ -37,7 +37,7 @@ class ProfileController extends Controller
             'name'      => 'required|string|max:255',
             'username'  => 'required|string|max:255|unique:users,username,' . $user->id,
             'email'     => 'required|email|unique:users,email,' . $user->id,
-            'phone'     => 'required|string|max:20',
+            'phone'     => 'required|digits_between:8,15',
             'position'  => 'required|string|max:255',
             'note'      => 'nullable|string',
             'photo'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -45,6 +45,8 @@ class ProfileController extends Controller
             'new_password'     => 'nullable|string|min:6',
             'nama_toko' => 'required|string|max:255',
             'alamat_toko' => 'required|string',
+            'phone.required'       => 'Nomor telepon wajib diisi.',
+            'phone.digits_between' => 'Nomor telepon hanya boleh berisi angka (tanpa spasi, tanda + atau -) dengan panjang 8–15 digit.',
         ]);
 
 

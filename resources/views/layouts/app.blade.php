@@ -265,6 +265,30 @@
                grid kartu/galeri lain yang juga kebetulan pakai row g-4.) */
             .form-grid-row { --bs-gutter-y: 0; }
         }
+
+        /* PAGINATION: ikut palet web (oranye #f97316, navy #1e293b), bukan biru bawaan Bootstrap.
+           Berlaku untuk semua halaman karena semua memakai layout ini. */
+        .pagination {
+            --bs-pagination-font-size: 0.9rem;
+            --bs-pagination-border-radius: 8px;
+            --bs-pagination-color: #1e293b;
+            --bs-pagination-bg: #ffffff;
+            --bs-pagination-border-color: #e2e8f0;
+            --bs-pagination-hover-color: #ea580c;
+            --bs-pagination-hover-bg: #fff7ed;
+            --bs-pagination-hover-border-color: #fdba74;
+            --bs-pagination-focus-color: #ea580c;
+            --bs-pagination-focus-bg: #fff7ed;
+            --bs-pagination-focus-box-shadow: 0 0 0 0.2rem rgba(249, 115, 22, 0.25);
+            --bs-pagination-active-color: #ffffff;
+            --bs-pagination-active-bg: #f97316;
+            --bs-pagination-active-border-color: #f97316;
+            --bs-pagination-disabled-color: #94a3b8;
+            --bs-pagination-disabled-bg: #f1f5f9;
+            --bs-pagination-disabled-border-color: #e2e8f0;
+        }
+        .pagination .page-link { font-family: inherit; font-weight: 600; }
+        .pagination .page-item.active .page-link { box-shadow: 0 2px 6px rgba(249, 115, 22, 0.3); }
     </style>
 </head>
 @if(Auth::check())

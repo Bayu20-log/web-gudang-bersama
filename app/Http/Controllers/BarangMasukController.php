@@ -140,6 +140,19 @@ class BarangMasukController extends Controller
         }
     }
 
+    /** Pesan validasi (Bahasa Indonesia) untuk form barang masuk. */
+    private function pesanValidasi(): array
+    {
+        return [
+            'jumlah.required'       => 'Jumlah wajib diisi.',
+            'jumlah.integer'        => 'Jumlah harus berupa bilangan bulat.',
+            'jumlah.min'            => 'Jumlah tidak boleh kurang dari 1.',
+            'harga_satuan.required' => 'Harga beli wajib diisi.',
+            'harga_satuan.numeric'  => 'Harga beli harus berupa angka.',
+            'harga_satuan.min'      => 'Harga beli tidak boleh minus.',
+        ];
+    }
+
     public function edit($id)
     {
         return view('barangmasuk.edit', [
