@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Lokasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 
 class LokasiController extends Controller
@@ -115,11 +116,25 @@ class LokasiController extends Controller
 
     public function destroy(Lokasi $lokasi)
     {
+        $pesanTerpakai = 'Tidak dapat menghapus data karena sudah digunakan untuk pencatatan barang masuk/keluar.';
+
         try {
+            if ($lokasi->barangMasuks()->exists() || $lokasi->barangKeluars()->exists()) {
+                return back()->with('error', $pesanTerpakai);
+            }
+
             $lokasi->delete();
             return redirect()->route('lokasi.index')->with('success', 'Lokasi berhasil dihapus.');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Tidak dapat menghapus data karena sudah digunakan untuk pencatatan barang masuk/keluar.');
+        } catch (QueryException $e) {
+            $mysqlCode = $e->errorInfo[1] ?? null;
+            $sqlState  = $e->errorInfo[0] ?? null;
+
+            if ($sqlState === '23000' || $mysqlCode == 1451) {
+                return back()->with('error', $pesanTerpakai);
+            }
+
+            report($e);
+            return back()->with('error', 'Terjadi kesalahan saat menghapus data.');
         }
     }
 }

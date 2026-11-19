@@ -72,6 +72,8 @@ class ExportController extends Controller
                 'jenis'       => 'Masuk',
                 'jumlah'      => $bm->jumlah,
                 'tanggal'     => $bm->tanggal_masuk,
+                'lokasi_id'   => $bm->lokasi->id ?? null,
+                'waktu'       => strtotime((string) $bm->tanggal_masuk) ?: 0,
             ]);
         });
 
@@ -101,6 +103,8 @@ class ExportController extends Controller
                 'jenis'       => 'Keluar',
                 'jumlah'      => $bk->jumlah_keluar,
                 'tanggal'     => $bk->tanggal_keluar,
+                'lokasi_id'   => $bk->lokasi->id ?? null,
+                'waktu'       => strtotime((string) $bk->tanggal_keluar) ?: 0,
             ]);
         });
 
@@ -143,8 +147,13 @@ class ExportController extends Controller
             'lokasi'       => $rows->first()['lokasi'],
             'kondisi'      => $rows->first()['kondisi'],
             'username'     => $rows->first()['username'],
+            'lokasi_id'    => $rows->first()['lokasi_id'],
+            'terakhir_input' => $rows->max('waktu'),
         ];
     })->filter(fn($row) => $row['stok_akhir'] > 0)->values();
+
+    // Urutkan sama persis dengan tampilan web (kolom yang diklik / default terbaru di atas)
+    $data = $this->urutkanLaporanStok($data, $request);
 
 
 
@@ -251,6 +260,8 @@ public function exportExcel(Request $request)
                 'username'    => $bm->user->username ?? '-',
                 'jenis'       => 'Masuk',
                 'jumlah'      => $bm->jumlah,
+                'lokasi_id'   => $bm->lokasi->id ?? null,
+                'waktu'       => strtotime((string) $bm->tanggal_masuk) ?: 0,
             ]);
         });
 
@@ -286,6 +297,8 @@ public function exportExcel(Request $request)
                 'username'    => $bk->user->username ?? '-',
                 'jenis'       => 'Keluar',
                 'jumlah'      => $bk->jumlah_keluar,
+                'lokasi_id'   => $bk->lokasi->id ?? null,
+                'waktu'       => strtotime((string) $bk->tanggal_keluar) ?: 0,
                
             ]);
         });
@@ -368,8 +381,25 @@ public function exportExcel(Request $request)
 
 
             'username'     => $rows->first()['username'],
+            'lokasi_id'    => $rows->first()['lokasi_id'],
+            'terakhir_input' => $rows->max('waktu'),
         ];
-    })->values();
+    });
+
+    // Urutkan sama persis dengan tampilan web, lalu sisakan hanya kolom yang ada di heading Excel
+    // (urutan kolom Excel mengikuti urutan array, jadi kolom bantu sort harus dibuang).
+    $data = $this->urutkanLaporanStok($data, $request)
+        ->map(fn ($row) => [
+            'kode_barang'  => $row['kode_barang'],
+            'nama_barang'  => $row['nama_barang'],
+            'harga_dasar'  => $row['harga_dasar'],
+            'total_masuk'  => $row['total_masuk'],
+            'total_keluar' => $row['total_keluar'],
+            'stok_akhir'   => $row['stok_akhir'],
+            'lokasi'       => $row['lokasi'],
+            'username'     => $row['username'],
+        ])
+        ->values();
 
 
 
@@ -420,6 +450,31 @@ public function exportExcel(Request $request)
 
 
 
+
+
+    /**
+     * Urutkan data laporan stok untuk PDF/Excel dengan aturan yang SAMA dengan halaman web
+     * (LaporanController@index): kolom dari ?sort_by & ?sort_dir, dan kalau belum ada yang
+     * dipilih, barang dengan transaksi terbaru di atas.
+     */
+    private function urutkanLaporanStok(\Illuminate\Support\Collection $data, Request $request): \Illuminate\Support\Collection
+    {
+        $sortBy  = $request->filled('sort_by') ? $request->sort_by : 'terakhir_input';
+        $sortDir = $request->filled('sort_by')
+            ? ($request->sort_dir === 'desc' ? 'desc' : 'asc')
+            : 'desc';
+
+        return $data->sortBy(function ($item) use ($sortBy) {
+            // Di web kolom lokasi berupa array [id, nama_lokasi], sehingga yang dibandingkan
+            // PHP adalah id lokasi dulu, baru nama. Dibuat sama di sini supaya urutannya identik.
+            if ($sortBy === 'lokasi') {
+                return [$item['lokasi_id'] ?? null, $item['lokasi'] ?? null];
+            }
+
+            $value = data_get($item, $sortBy);
+            return is_string($value) ? strtolower($value) : $value;
+        }, SORT_REGULAR, $sortDir === 'desc')->values();
+    }
 
     public function exportArusPdf(Request $request)
 {

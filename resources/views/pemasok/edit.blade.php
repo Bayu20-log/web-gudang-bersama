@@ -45,8 +45,9 @@
                 </div>
                 <div class="col-md-6">
                     <label for="no_telepon" class="form-label">Nomor Telepon <span class="text-muted fw-normal">(Opsional)</span></label>
-                    <input type="text" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror" value="{{ old('no_telepon', $pemasok->no_telepon) }}">
+                    <input type="tel" name="no_telepon" class="form-control @error('no_telepon') is-invalid @enderror" value="{{ old('no_telepon', $pemasok->no_telepon) }}" placeholder="08xxxxxxxx" inputmode="numeric" maxlength="15" pattern="[0-9]{8,15}" title="Hanya angka, 8–15 digit" oninput="this.value = this.value.replace(/\D/g, '')">
                     @error('no_telepon')<div class="invalid-feedback fw-medium mt-1">{{ $message }}</div>@enderror
+                    <div class="form-text">Hanya angka, 8–15 digit (contoh: 081234567890).</div>
                 </div>
 
                 <div class="col-md-6">
