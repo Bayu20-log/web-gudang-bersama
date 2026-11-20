@@ -18,6 +18,7 @@ use App\Http\Controllers\DashboardGudangController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\StockNotificationController;
 use App\Http\Controllers\StockThresholdController;
+use App\Http\Controllers\PrediksiController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -148,3 +149,13 @@ Route::get('/learn-more', function () {
 })->name('learn.more');
 
 require __DIR__.'/auth.php';
+
+// Prediksi / forecasting (fitur Rafly, dari branch rafly)
+Route::middleware('auth')->group(function () {
+    Route::get('/prediksi', [PrediksiController::class, 'index'])->name('prediksi.index');
+    Route::get('/prediksi/create', [PrediksiController::class, 'create'])->name('prediksi.create');
+    Route::get('/prediksi/preview', [PrediksiController::class, 'preview'])->name('prediksi.preview'); // sebelum /prediksi/{prediksi}
+    Route::post('/prediksi', [PrediksiController::class, 'store'])->name('prediksi.store');
+    Route::get('/prediksi/{prediksi}', [PrediksiController::class, 'show'])->name('prediksi.show');
+    Route::get('/prediksi/{prediksi}/pdf', [PrediksiController::class, 'exportPdf'])->name('prediksi.pdf');
+});

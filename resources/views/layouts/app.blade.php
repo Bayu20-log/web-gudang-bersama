@@ -372,6 +372,13 @@
                                     <li><a class="dropdown-item fw-medium {{ $routeName === 'omzet.index' ? 'active' : '' }}" href="{{ route('omzet.index') }}">Omzet Penjualan</a></li>
                                 </ul>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle {{ in_array($routeName, ['prediksi.index', 'prediksi.create', 'prediksi.show']) ? 'active' : '' }}" href="#" id="prediksiDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Prediksi</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item fw-medium {{ in_array($routeName, ['prediksi.index', 'prediksi.show']) ? 'active' : '' }}" href="{{ route('prediksi.index') }}">Prediksi</a></li>
+                                    <li><a class="dropdown-item fw-medium {{ $routeName === 'prediksi.create' ? 'active' : '' }}" href="{{ route('prediksi.create') }}">Buat Prediksi</a></li>
+                                </ul>
+                            </li>
                         @elseif($role == 'viewer')
                             <li class="nav-item"><a class="nav-link {{ $routeName === 'laporan.stok.viewer' ? 'active' : '' }}" href="{{ route('laporan.stok.viewer') }}">Stok</a></li>
                         @endif
