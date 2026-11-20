@@ -9,6 +9,11 @@ return new class extends Migration
 
     public function up()
     {
+        // Kolom user_id sudah ditambahkan migration 2025_08_29_*; lewati kalau sudah ada.
+        if (Schema::hasColumn('satuans', 'user_id')) {
+            return;
+        }
+
         Schema::table('satuans', function (Blueprint $table) {
             $table->foreignId('user_id')->nullable()->after('id')->constrained('users')->onDelete('cascade');
         });
@@ -16,9 +21,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::table('satuans', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
-        });
+        // Sengaja dikosongkan: user_id dimiliki migration 2025_08_29_*, jangan dihapus di sini.
     }
 };
