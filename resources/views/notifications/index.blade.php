@@ -48,7 +48,11 @@
         height: 180px;
         background: radial-gradient(circle, rgba(249,115,22,0.35) 0%, rgba(249,115,22,0) 70%);
         border-radius: 50%;
+        pointer-events: none; /* hiasan saja, jangan menghalangi klik tombol */
     }
+
+    /* Isi header di atas hiasan supaya tombol Riwayat bisa diklik */
+    .notif-page-header > * { position: relative; z-index: 1; }
 
     .notif-page-title {
         font-weight: 700;
