@@ -351,8 +351,9 @@
                 <div class="sn-breakdown">
                     <div class="sn-breakdown-step">
                         <div class="sn-breakdown-title">1. Menghitung Rata-rata Keluar per Hari</div>
-                        <div>Total barang keluar 30 hari terakhir: <strong>{{ $b['total_outflow'] }} unit</strong></div>
-                        <div>Dibagi jumlah hari valid (maks. 30 hari): <strong>{{ $b['valid_days'] }} hari</strong></div>
+                         <div>Data yang dipakai: <strong>{{ $b['jumlah_rekap'] }} rekap harian terakhir</strong> (maks. 10)@if($b['tanggal_awal']), {{ \Carbon\Carbon::parse($b['tanggal_awal'])->format('d/m/Y') }} – {{ \Carbon\Carbon::parse($b['tanggal_akhir'])->format('d/m/Y') }}@endif</div>
+                        <div>Total barang keluar: <strong>{{ $b['total_outflow'] }} unit</strong>, dibagi rentang <strong>{{ $b['valid_days'] }} hari</strong></div>
+                        <div>Pemakaian harian terbesar (D maks): <strong>{{ $b['d_max'] }} unit</strong></div>
                         <div class="sn-formula-calc">
                             Rata-rata Keluar per Hari = {{ $b['total_outflow'] }} ÷ {{ $b['valid_days'] }} = {{ $b['adc'] }} unit/hari
                         </div>
@@ -375,11 +376,7 @@
 
                     @if ((float) $b['adc'] === 0.0)
                         <div class="sn-adc-zero-note">
-                            @if ($item->status === 'rendah')
-                                Rata-rata Keluar per Hari masih 0 karena barang ini belum pernah ada transaksi keluar. Sistem otomatis menganggap status minimal <strong>Rendah</strong> supaya tetap dipantau.
-                            @else
-                                Rata-rata Keluar per Hari 0 karena tidak ada barang keluar dalam 30 hari terakhir. Selama barang tidak terpakai, tidak ada risiko kehabisan, jadi statusnya <strong>{{ ucfirst($item->status) }}</strong>.
-                            @endif
+                                                            Rata-rata Keluar per Hari masih 0 karena barang ini belum pernah ada transaksi keluar. Sistem otomatis menganggap status minimal <strong>Rendah</strong> supaya tetap dipantau.
                         </div>
                     @endif
                 </div>

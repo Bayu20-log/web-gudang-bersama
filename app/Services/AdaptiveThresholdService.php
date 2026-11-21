@@ -10,49 +10,84 @@ use Illuminate\Support\Facades\Mail;
 
 class AdaptiveThresholdService
 {
-    /**
-     * Periode observasi maksimal (hari) untuk menghitung ADC.
-     */
-    private const MAX_OBSERVATION_DAYS = 30;
 
     /**
-     * Menghitung ADC (Average Daily Consumption) untuk satu item.
+     * Jumlah rekap harian terakhir yang dipakai untuk menghitung
+     * D̄ (rata-rata per hari) dan D maks (pemakaian harian terbesar).
      *
-     * ADC = total barang keluar dalam periode observasi ÷ jumlah hari valid
-     * (hari tanpa transaksi tetap dihitung sebagai bagian periode).
+     * Delimitasi desain: N = 10, berdasarkan pola data riil coffee shop
+     * (81% barang memiliki minimal 10 rekap harian barang keluar).
+     */
+    private const N_REKAP_HARIAN = 10;
+
+    /**
+     * Menghitung statistik pemakaian satu barang dari N rekap harian terakhir.
+     *
+     * - Barang keluar dijumlahkan per tanggal (1 tanggal = 1 rekap harian).
+     * - Diambil N tanggal terakhir yang ada barang keluar. Kalau datanya
+     *   kurang dari N, dipakai semua yang ada (aturan cadangan).
+     * - D̄ = total keluar ÷ rentang hari, dihitung dari tanggal pertama
+     *   sampai tanggal terakhir di antara N rekap itu. Hari tanpa transaksi
+     *   DI DALAM rentang tetap dihitung; jeda setelah transaksi terakhir tidak.
+     * - D maks = pemakaian harian terbesar di antara N rekap itu.
+     *
+     * @param  string  $kodeBarang
+     * @return array
+     */
+    public function getDemandStats(string $kodeBarang): array
+    {
+        $rekapHarian = BarangKeluar::where('kode_barang', $kodeBarang)
+            ->selectRaw('DATE(tanggal_keluar) as tanggal, SUM(jumlah_keluar) as total')
+            ->groupByRaw('DATE(tanggal_keluar)')
+            ->orderByDesc('tanggal')
+            ->limit(self::N_REKAP_HARIAN)
+            ->get();
+
+        // Belum pernah ada barang keluar sama sekali
+        if ($rekapHarian->isEmpty()) {
+            return [
+                'd_avg'         => 0.0,
+                'd_max'         => 0.0,
+                'total_outflow' => 0.0,
+                'jumlah_rekap'  => 0,
+                'rentang_hari'  => 0,
+                'tanggal_awal'  => null,
+                'tanggal_akhir' => null,
+            ];
+        }
+
+        // Ubah ke angka dulu supaya perbandingan max() tidak salah
+        // (hasil SUM dari database bertipe teks)
+        $totals = $rekapHarian->pluck('total')->map(fn ($v) => (float) $v);
+
+        $tanggalAwal  = Carbon::parse($rekapHarian->min('tanggal'));
+        $tanggalAkhir = Carbon::parse($rekapHarian->max('tanggal'));
+        $rentangHari  = $tanggalAwal->diffInDays($tanggalAkhir) + 1;
+
+        $totalOutflow = $totals->sum();
+
+        return [
+            'd_avg'         => round($totalOutflow / $rentangHari, 2),
+            'd_max'         => $totals->max(),
+            'total_outflow' => $totalOutflow,
+            'jumlah_rekap'  => $rekapHarian->count(),
+            'rentang_hari'  => $rentangHari,
+            'tanggal_awal'  => $tanggalAwal->toDateString(),
+            'tanggal_akhir' => $tanggalAkhir->toDateString(),
+        ];
+    }
+
+    /**
+     * Menghitung ADC (Average Daily Consumption) = D̄.
+     * Sekarang hanya mengambil d_avg dari getDemandStats(),
+     * supaya kode lain yang memanggil fungsi ini tidak perlu diubah.
      *
      * @param  string  $kodeBarang
      * @return float
      */
     public function calculateADC(string $kodeBarang): float
     {
-        $today = Carbon::now();
-        $observationStart = $today->copy()->subDays(self::MAX_OBSERVATION_DAYS);
-
-        // Total barang keluar dalam periode observasi (maks 30 hari terakhir)
-        $totalOutflow = BarangKeluar::where('kode_barang', $kodeBarang)
-            ->where('tanggal_keluar', '>=', $observationStart)
-            ->sum('jumlah_keluar');
-
-        // Cari kapan item ini pertama kali punya transaksi keluar
-        // (dipakai untuk menentukan jumlah hari valid, kalau item masih baru)
-        $firstTransaction = BarangKeluar::where('kode_barang', $kodeBarang)
-            ->orderBy('tanggal_keluar', 'asc')
-            ->value('tanggal_keluar');
-
-        if ($firstTransaction === null) {
-            // Belum pernah ada transaksi keluar sama sekali -> ADC = 0
-            return 0.0;
-        }
-
-        $firstTransactionDate = Carbon::parse($firstTransaction);
-
-        // Jumlah hari sejak transaksi pertama, dibatasi maksimal 30 hari,
-        // dan minimal 1 hari supaya tidak dibagi nol.
-        $daysSinceFirstTransaction = $firstTransactionDate->diffInDays($today) + 1;
-        $validDays = min(self::MAX_OBSERVATION_DAYS, max(1, $daysSinceFirstTransaction));
-
-        return round($totalOutflow / $validDays, 2);
+        return $this->getDemandStats($kodeBarang)['d_avg'];
     }
 
     /**
@@ -118,24 +153,8 @@ class AdaptiveThresholdService
      */
     public function getThresholdBreakdown(string $kodeBarang): array
     {
-        $today = Carbon::now();
-        $observationStart = $today->copy()->subDays(self::MAX_OBSERVATION_DAYS);
-
-        $totalOutflow = BarangKeluar::where('kode_barang', $kodeBarang)
-            ->where('tanggal_keluar', '>=', $observationStart)
-            ->sum('jumlah_keluar');
-
-        $firstTransaction = BarangKeluar::where('kode_barang', $kodeBarang)
-            ->orderBy('tanggal_keluar', 'asc')
-            ->value('tanggal_keluar');
-
-        if ($firstTransaction === null) {
-            $validDays = 0;
-        } else {
-            $firstTransactionDate = Carbon::parse($firstTransaction);
-            $daysSinceFirstTransaction = $firstTransactionDate->diffInDays($today) + 1;
-            $validDays = min(self::MAX_OBSERVATION_DAYS, max(1, $daysSinceFirstTransaction));
-        }
+    
+        $stats = $this->getDemandStats($kodeBarang);
 
         $threshold = DB::table('stock_thresholds')->where('item_id', $kodeBarang)->first();
 
@@ -145,8 +164,12 @@ class AdaptiveThresholdService
         $responseTimeDays  = $threshold->response_time_days ?? 1;
 
         return [
-            'total_outflow'      => $totalOutflow,
-            'valid_days'         => $validDays,
+            'total_outflow'      => $stats['total_outflow'],
+            'valid_days'         => $stats['rentang_hari'],
+            'jumlah_rekap'       => $stats['jumlah_rekap'],
+            'tanggal_awal'       => $stats['tanggal_awal'],
+            'tanggal_akhir'      => $stats['tanggal_akhir'],
+            'd_max'              => $stats['d_max'],
             'adc'                => $adc,
             'lead_time_days'     => $leadTimeDays,
             'safety_stock_days'  => $safetyStockDays,
@@ -198,14 +221,11 @@ class AdaptiveThresholdService
                 ->first();
         }
 
-        if ((float) $threshold->adc === 0.0) {
-            // ADC = 0 artinya tidak ada barang keluar dalam 30 hari terakhir:
-            //  - BELUM PERNAH keluar sama sekali (barang baru) -> Rendah, supaya dipantau
-            //  - PERNAH keluar, tapi 30 hari terakhir tidak dipakai -> Aman,
-            //    karena tidak ada risiko kehabisan selama barang tidak terpakai
-            $pernahKeluar = BarangKeluar::where('kode_barang', $kodeBarang)->exists();
-
-            return $pernahKeluar ? 'aman' : 'rendah';
+                if ((float) $threshold->adc === 0.0) {
+            // ADC = 0 artinya barang ini BELUM PERNAH keluar sama sekali
+            // (ADC dihitung dari 10 rekap harian terakhir, bukan 30 hari kalender).
+            // Status minimal Rendah supaya barang baru tetap dipantau.
+            return 'rendah';
         }
 
         if ($stokAktual > $threshold->low_threshold) {
