@@ -351,7 +351,7 @@
                 <div class="sn-breakdown">
                     <div class="sn-breakdown-step">
                         <div class="sn-breakdown-title">1. Menghitung Rata-rata Keluar per Hari</div>
-                         <div>Data yang dipakai: <strong>{{ $b['jumlah_rekap'] }} rekap harian terakhir</strong> (maks. 10)@if($b['tanggal_awal']), {{ \Carbon\Carbon::parse($b['tanggal_awal'])->format('d/m/Y') }} – {{ \Carbon\Carbon::parse($b['tanggal_akhir'])->format('d/m/Y') }}@endif</div>
+                         <div>Data yang dipakai: <strong>{{ $b['jumlah_rekap'] }} hari pemakaian terakhir</strong> (maks. 10)@if($b['tanggal_awal']), {{ \Carbon\Carbon::parse($b['tanggal_awal'])->format('d/m/Y') }} – {{ \Carbon\Carbon::parse($b['tanggal_akhir'])->format('d/m/Y') }}@endif</div>
                         <div>Total barang keluar: <strong>{{ $b['total_outflow'] }} unit</strong>, dibagi rentang <strong>{{ $b['valid_days'] }} hari</strong></div>
                         <div>Pemakaian harian terbesar (D maks): <strong>{{ $b['d_max'] }} unit</strong></div>
                         <div class="sn-formula-calc">
