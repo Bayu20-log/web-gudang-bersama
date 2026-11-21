@@ -64,9 +64,13 @@ class StockNotificationController extends Controller
                 $changedCount++;
             }
         }
+        // Sekalian cek kadaluarsa
+        $hasilKadaluarsa = app(\App\Services\ExpiryMonitoringService::class)->cekKadaluarsa((int) auth()->id());
+
         return redirect()
             ->route('stock-notifications.index')
-            ->with('success', "Evaluasi selesai. {$changedCount} item mengalami perubahan status.");
+            ->with('success', "Evaluasi selesai. {$changedCount} item mengalami perubahan status, "
+                . "{$hasilKadaluarsa['baru']} notifikasi kadaluarsa baru.");
     }
 
     /**
@@ -107,7 +111,13 @@ class StockNotificationController extends Controller
             ->where('items.user_id', auth()->id())
             ->update(['stock_notifications.is_read' => true]);
 
-        return redirect()->back()->with('success', 'Semua notifikasi stok ditandai sudah dibaca.');
+        DB::table('expiry_notifications')
+            ->join('items', 'items.kode_barang', '=', 'expiry_notifications.item_id')
+            ->where('items.user_id', auth()->id())
+            ->where('expiry_notifications.is_resolved', false)
+            ->update(['expiry_notifications.is_read' => true]);
+
+        return redirect()->back()->with('success', 'Semua notifikasi ditandai sudah dibaca.');
     }
 
     /**

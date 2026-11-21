@@ -434,6 +434,17 @@
                                                           ->groupBy('item_id');
                                                     })
                                                     ->count();
+
+                                    // Notifikasi kadaluarsa: dicek paling banyak sekali sehari
+                                    // (pengganti scheduler di server tanpa cron), lalu ditambahkan
+                                    // ke angka lonceng (jumlah barang yang belum dibaca).
+                                    try {
+                                        $expiryService = app(\App\Services\ExpiryMonitoringService::class);
+                                        $expiryService->cekHarian((int) Auth::id());
+                                        $unreadStockCount += $expiryService->jumlahBelumDibaca((int) Auth::id());
+                                    } catch (\Throwable $e) {
+                                        // jangan sampai navbar error kalau pengecekan kadaluarsa gagal
+                                    }
                                 @endphp
                                 @if($unreadStockCount > 0)
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">

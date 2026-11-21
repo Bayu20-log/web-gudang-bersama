@@ -70,7 +70,7 @@
 
     .notif-summary {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 1rem;
         margin-bottom: 1.5rem;
     }
@@ -214,6 +214,15 @@
         color: #fff;
     }
     .notif-item-badge.badge-aman::before { color: #fff; }
+    /* ===== Notifikasi kadaluarsa ===== */
+    .notif-kadaluarsa-panel {
+        display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap;
+        background: #ede9fe; color: #5b21b6; border-radius: 14px;
+        padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.88rem; font-weight: 600;
+    }
+    .notif-kadaluarsa-panel a { color: #5b21b6; font-weight: 700; text-decoration: none; white-space: nowrap; }
+    .notif-kadaluarsa-panel a:hover { text-decoration: underline; }
+
     /* Keterangan kecil di samping badge: barang masih bermasalah tapi sudah membaik */
     .notif-item-trend {
         display: inline-block;
@@ -422,7 +431,7 @@
     @media (max-width: 576px) {
         .notif-page-header { padding: 1.25rem 1.25rem; border-radius: 20px; }
 
-        .notif-summary { grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+        .notif-summary { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
         .notif-summary-card {
             flex-direction: column;
             justify-content: center;
@@ -509,6 +518,13 @@
             </div>
             <div class="icon-circle"><i class="fa-solid fa-box-open"></i></div>
         </div>
+        <div class="notif-summary-card" style="--accent:#7c3aed; --accent-soft:#ede9fe; --accent-text:#5b21b6;">
+            <div>
+                <div class="count">{{ $levelCounts['kadaluarsa'] ?? 0 }}</div>
+                <div class="label">Kadaluarsa</div>
+            </div>
+            <div class="icon-circle"><i class="fa-solid fa-hourglass-end"></i></div>
+        </div>
     </div>
     @endif
 
@@ -520,7 +536,18 @@
         <a href="{{ route('notifications.index', ['status' => 'info']) }}" class="notif-filter-pill {{ $statusFilter === 'info' ? 'active' : '' }}">Rendah</a>
         <a href="{{ route('notifications.index', ['status' => 'warning']) }}" class="notif-filter-pill {{ $statusFilter === 'warning' ? 'active' : '' }}">Kritis</a>
         <a href="{{ route('notifications.index', ['status' => 'critical']) }}" class="notif-filter-pill {{ $statusFilter === 'critical' ? 'active' : '' }}">Habis</a>
+        <a href="{{ route('notifications.index', ['status' => 'kadaluarsa']) }}" class="notif-filter-pill {{ $statusFilter === 'kadaluarsa' ? 'active' : '' }}">Kadaluarsa</a>
     </div>
+
+    {{-- Di filter "Semua": pengingat singkat kalau ada barang segera/sudah kadaluarsa --}}
+    @if(!$statusFilter && ($levelCounts['kadaluarsa'] ?? 0) > 0)
+        <div class="notif-kadaluarsa-panel">
+            <span>&#9203; {{ $levelCounts['kadaluarsa'] }} barang segera atau sudah kadaluarsa.</span>
+            <a href="{{ route('notifications.index', ['status' => 'kadaluarsa']) }}">Lihat &rarr;</a>
+        </div>
+    @endif
+
+    @if($statusFilter !== 'kadaluarsa')
 
     {{-- Daftar notifikasi --}}
     @if($stockNotifications->isEmpty())
@@ -582,7 +609,7 @@
                                     &middot; Batas Rendah: <strong>{{ number_format($notif->batas_rendah, 0, ',', '.') }}</strong>
                                     &middot; Batas Kritis: <strong>{{ number_format($notif->batas_kritis, 0, ',', '.') }}</strong>
                                 @else
-                                    &middot; Tidak ada pemakaian 30 hari terakhir
+                                    &middot; Belum ada pemakaian
                                 @endif
                             </span>
                         </div>
@@ -631,6 +658,93 @@
                 {{ $stockNotifications->links('pagination::bootstrap-5') }}
             </div>
         </div>
+    @endif
+
+    @else
+    {{-- ===================== DAFTAR KADALUARSA ===================== --}}
+    @if($kadaluarsaList->isEmpty())
+        <div class="notif-empty">
+            <div>Tidak ada barang yang segera atau sudah kadaluarsa.</div>
+        </div>
+    @else
+        <div class="notif-card-list">
+            @foreach($kadaluarsaList as $exp)
+                @php
+                    $tglExp  = \Carbon\Carbon::parse($exp->tanggal_kadaluarsa)->startOfDay();
+                    $selisih = \Carbon\Carbon::today()->diffInDays($tglExp, false); // + = masih ke depan
+                    $tglTeks = $tglExp->locale('id')->translatedFormat('j F Y');
+                    $sudah   = $exp->status === 'kadaluarsa';
+
+                    $warnaExp = $sudah
+                        ? ['accent' => '#7c3aed', 'soft' => '#ede9fe', 'text' => '#5b21b6']
+                        : ['accent' => '#ea580c', 'soft' => '#ffedd5', 'text' => '#9a3412'];
+
+                    if ($sudah) {
+                        $judulExp = 'Stok ' . $exp->nama_barang . ' sudah kadaluarsa';
+                        $pesanExp = 'Kadaluarsa sejak ' . $tglTeks . ' (' . abs($selisih) . ' hari lalu). '
+                                  . 'Pisahkan barangnya dan catat sebagai Penghapusan di Barang Keluar.';
+                    } else {
+                        $kapan = $selisih <= 0 ? 'hari ini' : ($selisih == 1 ? 'besok' : 'dalam ' . $selisih . ' hari');
+                        $judulExp = 'Stok ' . $exp->nama_barang . ' kadaluarsa ' . $kapan;
+                        $pesanExp = 'Tanggal kadaluarsa ' . $tglTeks . '. Gunakan atau jual barang ini lebih dulu.';
+                    }
+                @endphp
+                <div class="notif-item {{ $exp->is_read ? 'is-read' : '' }}" style="--accent: {{ $warnaExp['accent'] }}; --accent-soft: {{ $warnaExp['soft'] }}; --accent-text: {{ $warnaExp['text'] }};">
+                    <div>
+                        <span class="notif-item-badge">{{ $sudah ? 'Kadaluarsa' : 'Segera Kadaluarsa' }}</span>
+                        <div class="notif-item-title">{{ $judulExp }}</div>
+                        <div class="notif-item-message">{{ $pesanExp }}</div>
+                        <div>
+                            <span class="notif-item-stock">
+                                @if($exp->jumlah_kadaluarsa > 0)
+                                    &#9203; Sudah kadaluarsa: <strong>{{ number_format($exp->jumlah_kadaluarsa, 0, ',', '.') }}</strong>
+                                @endif
+                                @if($exp->jumlah_kadaluarsa > 0 && $exp->jumlah_segera > 0) &middot; @endif
+                                @if($exp->jumlah_segera > 0)
+                                    Segera kadaluarsa (&le; 30 hari): <strong>{{ number_format($exp->jumlah_segera, 0, ',', '.') }}</strong>
+                                @endif
+                                &middot; Lokasi: <strong>{{ $exp->lokasi }}</strong>
+                            </span>
+                        </div>
+                        <a href="{{ route('item.show', $exp->item_id) }}" class="notif-item-link">Lihat detail produk &rarr;</a>
+                        <div class="notif-item-time">Tercatat {{ \Carbon\Carbon::parse($exp->created_at)->locale('id')->diffForHumans() }}</div>
+                    </div>
+                    <div class="notif-item-actions">
+                        @if($sudah)
+                            <a href="{{ route('barang-keluar.create', ['kode_barang' => $exp->item_id, 'catatan' => 'Penghapusan']) }}" class="notif-btn-primary text-decoration-none">
+                                Catat Pengeluaran
+                            </a>
+                        @else
+                            <a href="{{ route('item.show', $exp->item_id) }}" class="notif-btn-ghost text-decoration-none">
+                                Lihat Detail
+                            </a>
+                        @endif
+
+                        @if(!$exp->is_read)
+                            <form method="POST" action="{{ route('notifikasi-kadaluarsa.read', $exp->item_id) }}">
+                                @csrf
+                                <button type="submit" class="notif-btn-ghost">Tandai Dibaca</button>
+                            </form>
+                        @else
+                            <form method="POST" action="{{ route('notifikasi-kadaluarsa.unread', $exp->item_id) }}">
+                                @csrf
+                                <button type="submit" class="notif-btn-ghost">Tandai Belum Dibaca</button>
+                            </form>
+                        @endif
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="notif-pagination mt-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <div class="small text-muted fw-medium">
+                Menampilkan {{ $kadaluarsaList->firstItem() }} - {{ $kadaluarsaList->lastItem() }} dari {{ $kadaluarsaList->total() }} barang
+            </div>
+            <div>
+                {{ $kadaluarsaList->links('pagination::bootstrap-5') }}
+            </div>
+        </div>
+    @endif
     @endif
 
     @else

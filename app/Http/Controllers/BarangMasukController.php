@@ -134,6 +134,13 @@ class BarangMasukController extends Controller
                 \Illuminate\Support\Facades\Log::warning('Evaluasi otomatis gagal: ' . $e->getMessage());
             }
 
+            // Cek ulang notifikasi kadaluarsa (batch baru / batch yang habis terpakai).
+            try {
+                app(\App\Services\ExpiryMonitoringService::class)->cekKadaluarsa((int) auth()->id());
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('Cek kadaluarsa gagal: ' . $e->getMessage());
+            }
+
             return redirect()->route('barang-masuk.index')->with('success', $pesanSukses);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal menyimpan data: ' . $e->getMessage());

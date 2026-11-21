@@ -133,6 +133,13 @@ class BarangKeluarController extends Controller
             \Illuminate\Support\Facades\Log::warning('Evaluasi otomatis gagal: ' . $e->getMessage());
         }
 
+        // Cek ulang notifikasi kadaluarsa (batch baru / batch yang habis terpakai).
+        try {
+            app(\App\Services\ExpiryMonitoringService::class)->cekKadaluarsa((int) auth()->id());
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Cek kadaluarsa gagal: ' . $e->getMessage());
+        }
+
         return redirect()->route('barang-keluar.index')->with('success', 'Barang keluar berhasil ditambahkan.');
     }
 

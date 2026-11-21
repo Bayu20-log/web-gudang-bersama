@@ -1,7 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 use App\Models\Notification;
+use App\Services\ExpiryMonitoringService;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class NotificationController extends Controller
@@ -16,7 +18,7 @@ class NotificationController extends Controller
 
         // Filter yang tidak dikenal (mis. ?status=abc) dikembalikan ke "Semua",
         // supaya alamatnya bersih dan tombol filter "Semua" ikut aktif.
-        if ($statusFilter !== null && !in_array($statusFilter, ['info', 'warning', 'critical'], true)) {
+        if ($statusFilter !== null && !in_array($statusFilter, ['info', 'warning', 'critical', 'kadaluarsa'], true)) {
             return redirect()->route('notifications.index');
         }
 
@@ -27,6 +29,13 @@ class NotificationController extends Controller
         // tertinggal setelah status barang berubah (mis. jadi Habis/Aman).
         // ------------------------------------------------------------------
         $userId = auth()->id();
+
+        // Cek kadaluarsa setiap kali halaman Notifikasi dibuka (pengganti scheduler
+        // di server yang tidak mendukung cron), supaya notifikasi kadaluarsa tetap
+        // muncul saat hari berganti walaupun tidak ada transaksi.
+        $expiryService = app(ExpiryMonitoringService::class);
+        $expiryService->cekKadaluarsa((int) $userId);
+        $daftarKadaluarsa = $expiryService->daftarAktifPerBarang((int) $userId);
 
         // Status TERKINI tiap barang = log status terakhir dari evaluasi.
         $logTerakhir = DB::table('stock_status_logs')
@@ -46,6 +55,8 @@ class NotificationController extends Controller
             'info'     => $jumlahPerStatus['rendah'] ?? 0,
             'warning'  => $jumlahPerStatus['kritis'] ?? 0,
             'critical' => $jumlahPerStatus['habis'] ?? 0,
+            // Kartu ke-4: jumlah BARANG yang punya batch segera/sudah kadaluarsa
+            'kadaluarsa' => $daftarKadaluarsa->count(),
         ]);
 
         // Notifikasi terbaru tiap barang
@@ -60,7 +71,10 @@ class NotificationController extends Controller
             ->join('items', 'items.kode_barang', '=', 'stock_notifications.item_id')
             ->whereIn('stock_notifications.id', $notifTerakhir);
 
-        if (in_array($statusFilter, ['info', 'warning', 'critical'])) {
+        if ($statusFilter === 'kadaluarsa') {
+            // Filter Kadaluarsa: daftar status stok disembunyikan, yang tampil daftar kadaluarsa
+            $stockNotificationsQuery->whereRaw('1 = 0');
+        } elseif (in_array($statusFilter, ['info', 'warning', 'critical'])) {
             // Filter Rendah/Kritis/Habis berdasarkan status TERKINI barangnya
             $statusDicari = ['info' => 'rendah', 'warning' => 'kritis', 'critical' => 'habis'][$statusFilter];
             $stockNotificationsQuery->whereIn(
@@ -141,7 +155,23 @@ class NotificationController extends Controller
             return $notif;
         });
 
+        // Daftar kadaluarsa (satu kartu per barang), 10 per halaman.
+        // Nama halaman "hal_kadaluarsa" supaya tidak bentrok dengan pagination status stok.
+        $halKadaluarsa = LengthAwarePaginator::resolveCurrentPage('hal_kadaluarsa');
+        $kadaluarsaList = new LengthAwarePaginator(
+            $daftarKadaluarsa->forPage($halKadaluarsa, 10)->values(),
+            $daftarKadaluarsa->count(),
+            10,
+            $halKadaluarsa,
+            [
+                'path'     => LengthAwarePaginator::resolveCurrentPath(),
+                'pageName' => 'hal_kadaluarsa',
+                'query'    => $request->query(),
+            ]
+        );
+
         return view('notifications.index', compact(
+            'kadaluarsaList',
             'notifications',
             'stockNotifications',
             'statusFilter',
@@ -168,5 +198,29 @@ class NotificationController extends Controller
             ->findOrFail($id);
         $notif->update(['is_read' => true]);
         return redirect()->back()->with('success', 'Notifikasi telah ditandai sebagai dibaca.');
+    }
+
+    /** Tandai semua notifikasi kadaluarsa aktif milik satu barang sebagai sudah dibaca. */
+    public function kadaluarsaRead($item)
+    {
+        $this->ubahStatusBacaKadaluarsa($item, true);
+        return redirect()->back()->with('success', 'Notifikasi kadaluarsa ditandai sudah dibaca.');
+    }
+
+    /** Tandai semua notifikasi kadaluarsa aktif milik satu barang sebagai belum dibaca. */
+    public function kadaluarsaUnread($item)
+    {
+        $this->ubahStatusBacaKadaluarsa($item, false);
+        return redirect()->back()->with('success', 'Notifikasi kadaluarsa ditandai belum dibaca.');
+    }
+
+    private function ubahStatusBacaKadaluarsa($item, bool $dibaca): void
+    {
+        DB::table('expiry_notifications')
+            ->join('items', 'items.kode_barang', '=', 'expiry_notifications.item_id')
+            ->where('items.user_id', auth()->id())
+            ->where('expiry_notifications.item_id', $item)
+            ->where('expiry_notifications.is_resolved', false)
+            ->update(['expiry_notifications.is_read' => $dibaca]);
     }
 }

@@ -63,6 +63,8 @@ Route::middleware(['auth', 'auto.logout'])->group(function () {
     Route::post('/stock-notifications/evaluate', [StockNotificationController::class, 'evaluate'])->name('stock-notifications.evaluate');
     Route::post('/stock-notifications/mark-all-read', [StockNotificationController::class, 'markAllRead'])->name('stock-notifications.markAllRead');
     Route::post('/stock-notifications/{id}/read', [StockNotificationController::class, 'markRead'])->name('stock-notifications.markRead');
+    Route::post('/notifikasi-kadaluarsa/{item}/read', [NotificationController::class, 'kadaluarsaRead'])->name('notifikasi-kadaluarsa.read');
+    Route::post('/notifikasi-kadaluarsa/{item}/unread', [NotificationController::class, 'kadaluarsaUnread'])->name('notifikasi-kadaluarsa.unread');
     Route::post('/stock-notifications/{id}/unread', [StockNotificationController::class, 'markUnread'])->name('stock-notifications.markUnread');
     });
     

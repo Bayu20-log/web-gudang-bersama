@@ -51,6 +51,12 @@ class EvaluateStockThresholds extends Command
         // dipanggil dari scheduler, bukan trigger manual dari web.
         $reminded = $thresholdService->checkAndSendReminders();
 
+        // Cek kadaluarsa untuk setiap user yang punya barang
+        $expiryService = app(\App\Services\ExpiryMonitoringService::class);
+        foreach (DB::table('items')->distinct()->pluck('user_id') as $userId) {
+            $expiryService->cekKadaluarsa((int) $userId);
+        }
+
         $this->info("Evaluasi selesai. {$kodeBarangList->count()} item diperiksa, {$changedCount} mengalami perubahan status, " . count($reminded) . " reminder dikirim.");
 
         return Command::SUCCESS;

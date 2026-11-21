@@ -82,10 +82,11 @@
                 <div class="mb-3">
                     <label for="catatan" class="form-label">Catatan Pengeluaran <span class="text-danger">*</span></label>
                     <select name="catatan" id="catatan" class="form-select bg-light" required>
-                        <option value="" disabled selected>-- Pilih Tujuan --</option>
-                        <option value="Penerimaan Penjualan">Penerimaan Penjualan</option>
-                        <option value="Penghapusan">Penghapusan</option>
-                        <option value="Retur">Retur</option>
+                        @php $catatanTerpilih = old('catatan', request('catatan')); @endphp
+                        <option value="" disabled {{ $catatanTerpilih ? '' : 'selected' }}>-- Pilih Tujuan --</option>
+                        <option value="Penerimaan Penjualan" {{ $catatanTerpilih === 'Penerimaan Penjualan' ? 'selected' : '' }}>Penerimaan Penjualan</option>
+                        <option value="Penghapusan" {{ $catatanTerpilih === 'Penghapusan' ? 'selected' : '' }}>Penghapusan</option>
+                        <option value="Retur" {{ $catatanTerpilih === 'Retur' ? 'selected' : '' }}>Retur</option>
                     </select>
                 </div>
 
